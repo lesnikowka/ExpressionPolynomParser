@@ -33,7 +33,7 @@ class Monom {
 
 
 	std::string using_alphabet = "xyz";
-	std::string using_symb_for_degree = "^&";
+	std::string using_symb_for_degree = "^";
 	std::string using_symb_for_multiplie = "*";
 	std::string using_separator = ".";
 	std::string using_nums = "0123456789";
@@ -50,9 +50,8 @@ public:
 	Monom(std::string str);
 
 
-	double calculate(std::vector<T> vect);
+	double calculate(std::vector<double> vect);
 	bool isSimilar(const Monom& m);
-
 
 	Monom& operator=(const Monom& m);
 	Monom& operator*=(const Monom& m);

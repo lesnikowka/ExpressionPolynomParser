@@ -2,7 +2,6 @@
 #include"list.h"
 #include"monom.h"
 
-
 /*
 Класс полином
 примеры полиномов: 2x0x5^2+3x2^7
@@ -14,14 +13,14 @@
 */
 
 class Polynom {
-	list<Monom> monoms;
+	List<Monom> monoms;
 
 	std::string using_alphabet = "xyz",
 		using_symb_for_degree = "^",
 		using_symb_for_multiplie = "*",
 		using_separator = ".",
 		using_nums = "0123456789",
-		using_operators = "+-*^";
+		using_operators = "+-*";
 
 	bool isCorrect();
 	void sort();
@@ -41,7 +40,7 @@ public:
 	Polynom operator*(const Polynom& p);
 	Polynom& operator*=(const Polynom& p);
 	
-	Polynom std::pair<Polynom,Polynom> operator/(const Polynom& p);
+	std::pair<Polynom,Polynom> operator/(const Polynom& p);
 	
 
 

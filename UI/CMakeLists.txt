@@ -1,5 +1,4 @@
-
-set(target ${MP2_CUSTOM_PROJECT})
+set(target UI)
 
 project(${target})
 
