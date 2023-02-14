@@ -27,17 +27,19 @@ enum class states {
 	ERROR
 };
 
+
 class Monom {
+	friend class Polynom;
 	std::vector<int> degree;
 	double coef;
 
-
-	std::string using_alphabet = "xyz";
-	std::string using_symb_for_degree = "^";
-	std::string using_symb_for_multiplie = "*";
-	std::string using_separator = ".";
-	std::string using_nums = "0123456789";
-	std::string using_operators = "+-*^";
+	static const std::string using_alphabet;
+	static const std::string using_symb_for_degree;
+	static const std::string using_symb_for_multiplie;
+	static const std::string using_separator;
+	static const std::string using_nums;
+	static const std::string using_operators;
+	
 
 
 	void sortIndexes();
@@ -45,6 +47,8 @@ class Monom {
 	bool isCorrect();
 
 public:
+	
+
 	Monom()=default;
 	Monom(const Monom& m) = default;
 	Monom(std::string str);
@@ -56,6 +60,10 @@ public:
 	Monom& operator=(const Monom& m);
 	Monom& operator*=(const Monom& m);
 	Monom operator*(const Monom& m);
+
+	Monom& operator*=(double m);
+	Monom operator*(double m);
+
 	bool operator==(const Monom& m);
 	bool operator!=(const Monom& m);
 	bool operator<=(const Monom& m);
@@ -69,3 +77,10 @@ public:
 
 
 };
+
+const std::string Monom::using_alphabet = "xyz";
+const std::string Monom::using_symb_for_degree = "^";
+const std::string Monom::using_symb_for_multiplie = "*";
+const std::string Monom::using_separator = ".";
+const std::string Monom::using_nums = "0123456789";
+const std::string Monom::using_operators = "+-*^";

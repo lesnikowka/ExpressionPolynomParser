@@ -1,21 +1,24 @@
 #pragma once
 #include"list.h"
 #include"monom.h"
-
+#include<iostream>
 
 class Polynom {
+
+
 	List<Monom> monoms;
+	
 
-	std::string using_alphabet = "xyz",
-		using_symb_for_degree = "^",
-		using_symb_for_multiplie = "*",
-		using_separator = ".",
-		using_nums = "0123456789",
-		using_operators = "+-*";
-
-	bool isCorrect();
 	void sort();
+	void cut();
 public:
+	std::string using_alphabet = Monom::using_alphabet,
+		using_symb_for_degree = Monom::using_symb_for_degree,
+		using_symb_for_multiplie = Monom::using_symb_for_multiplie,
+		using_separator = Monom::using_separator,
+		using_nums = Monom::using_nums,
+		using_operators = "+-";
+
 	Polynom() = default;
 	Polynom(const Polynom& p) = default;
 	Polynom(std::string str);
@@ -33,6 +36,8 @@ public:
 	
 	std::pair<Polynom,Polynom> operator/(const Polynom& p);
 	
+	Polynom integ(char s);
+	Polynom dif(char s);
 
 
 	Polynom& operator=(const Polynom & m);
