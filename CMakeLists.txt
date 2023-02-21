@@ -21,6 +21,10 @@ add_subdirectory(list)
 add_subdirectory(include)
 
 
+include_directories(./containers)
+include_directories(./UI)
+include_directories(./expressions)
+include_directories(./list)
 
 add_subdirectory(samples)
 
