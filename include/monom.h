@@ -64,21 +64,6 @@ class Monom {
 		int i = 0;
 
 		//get coef -- start
-		
-		/*
-		cur_symb = str[0]; lexem += cur_symb;
-		while ((i<str.size())&&in(cur_symb, using_alphabet)==false) {
-			cur_symb = str[i];
-			lexem += cur_symb;			
-			i++;
-		}
-		if (lexem.size() != 0) {
-			coef = std::stod(lexem);
-		}
-		else coef = 1;
-		i--;
-		lexem = "";
-		*/
 		while (i < str.size() && in(str[i], using_alphabet) == false) {
 			lexem += str[i];
 			i++;
@@ -249,7 +234,7 @@ public:
 		correctness = isCorrect(str);
 		//if (correctness == false) throw "Wrong monom";
 		if (correctness)
-		cut(str);
+			cut(str);
 	};
 
 
@@ -269,25 +254,84 @@ public:
 		return true;
 	};
 
-	Monom& operator=(const Monom& m);
-	Monom& operator*=(const Monom& m);
-	Monom operator*(const Monom& m);
+	Monom& operator=(const Monom& m) {
+		correctness = m.correctness;
+		degree = m.degree;
+		coef = m.coef;
 
-	Monom& operator*=(double m);
-	Monom operator*(double m);
+		return *this;
+	};
+	Monom& operator*=(const Monom& m) {
+		coef *= m.coef;
+		for (int i = 0; i < degree.size(); i++) {
+			degree[i] += m.degree[i];
+		}
+		return *this;
+	};
+	Monom operator*(const Monom& m) {
+		Monom tmp(*this);
+		tmp *= m;
+		return tmp;
+	};
+
+	Monom& operator*=(double m) {
+		coef *= m;
+	};
+	Monom operator*(double m){
+		Monom tmp(*this);
+		tmp.coef *= m;
+		return tmp;
+		};
+	
+	Monom derivative(char var) {
+		Monom m(*this);
+		int index = findIndex(var,using_alphabet);
+		m.coef *= m.degree[index];
+		m.degree[index]=(m.degree[index]<0)?0:(m.degree[index]-1);
+		return m;
+	}
+	Monom integral(char var) {
+		Monom m(*this);
+		int index = findIndex(var, using_alphabet);
+		
+		m.degree[index] += 1;
+		m.coef /= (m.degree[index]);
+		return m;
+	}
 
 	bool operator==(const Monom& m) {
 		if (coef != m.coef) return false;
 		return isSimilar(m);
 	};
-	bool operator!=(const Monom& m);
-	bool operator<=(const Monom& m);
-	bool operator>=(const Monom& m);
-	bool operator<(const Monom& m);
-	bool operator>(const Monom& m);
+	bool operator!=(const Monom& m) {
+		return !operator==(m);
+	};
+	bool operator<=(const Monom& m) {  
+		if (isSimilar(m) && coef <= m.coef) return 1;
+		else if (isSimilar(m) && coef > m.coef) return 0;
+		for (int i = 0; i < degree.size(); i++) {
+			if (degree[i] > m.degree[i]) return 0;
+		}
+
+		return 1;
+	};
+	bool operator>=(const Monom& m) {
+		return !(operator<(m));
+	};
+	bool operator<(const Monom& m) {
+		return (operator!=(m) && operator<=(m));
+	};
+	bool operator>(const Monom& m) {
+		return (operator!=(m) && operator>=(m));
+	};
 	
 
-	friend std::istream& operator>>(std::istream& istream, Monom& m);
+	friend std::istream& operator>>(std::istream& istream, Monom& m) {
+		std::string str;
+		istream >> str;
+		m = Monom(str);
+		return istream;
+	};
 	friend std::ostream& operator<<(std::ostream& ostream, Monom& m) {
 		if (m.coef == 0)return ostream << m.coef;
 		if (m.coef != 1)

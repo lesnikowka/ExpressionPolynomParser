@@ -17,16 +17,19 @@ add_subdirectory(UI)
 add_subdirectory(containers)
 add_subdirectory(expressions)
 add_subdirectory(list)
+add_subdirectory(samples)
 
 add_subdirectory(include)
 
 
-include_directories(./containers)
-include_directories(./UI)
-include_directories(./expressions)
-include_directories(./list)
+include_directories(containers)
+include_directories(UI)
+include_directories(expressions)
+include_directories(list)
+include_directories(samples)
 
-add_subdirectory(samples)
+include_directories(include)
+
 
 
 if(BUILD_TESTING)
