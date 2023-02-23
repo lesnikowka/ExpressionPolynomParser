@@ -59,6 +59,7 @@ class Monom {
 
 	void sortIndexes();
 	void cut(std::string str) {
+		coef = 0;
 		char cur_symb, next_symb;
 		std::string lexem;
 		int i = 0;
@@ -105,7 +106,7 @@ class Monom {
 	
 	};
 	bool isCorrect( const std::string& str) {
-		char cur_symb;
+		char cur_symb=NULL;
 		enum class states a=states::number_letter_minus;
 		for (int i = 0; i < str.size(); i++) {
 			cur_symb = str[i];
@@ -227,10 +228,15 @@ class Monom {
 public:
 	
 
-	Monom()=default;
+	Monom() {
+		degree.resize(using_alphabet.size(),0);
+		coef = 0;
+		correctness = true;
+	};
 	Monom(const Monom& m) = default;
 	Monom(std::string str) {
-		for (int i = 0; i < using_alphabet.size(); i++) degree.push_back(0);
+		degree.resize(using_alphabet.size(), 0);
+		coef = 0;
 		correctness = isCorrect(str);
 		//if (correctness == false) throw "Wrong monom";
 		if (correctness)
@@ -239,6 +245,7 @@ public:
 
 
 	double calculate(std::vector<double> vect) {
+		if (vect.size() != degree.size()) throw "Sizes are not equal";
 		double result =coef;
 		for (int i = 0; i < vect.size(); i++) {
 			for (int j = 0; j < degree[i]; j++) {
@@ -284,6 +291,7 @@ public:
 		};
 	
 	Monom derivative(char var) {
+		if (!in(var, using_alphabet)) throw "Uncorrect letter";
 		Monom m(*this);
 		int index = findIndex(var,using_alphabet);
 		m.coef *= m.degree[index];
@@ -291,6 +299,7 @@ public:
 		return m;
 	}
 	Monom integral(char var) {
+		if (!in(var, using_alphabet)) throw "Uncorrect letter";
 		Monom m(*this);
 		int index = findIndex(var, using_alphabet);
 		
@@ -309,6 +318,16 @@ public:
 	bool operator<=(const Monom& m) {  
 		if (isSimilar(m) && coef <= m.coef) return 1;
 		else if (isSimilar(m) && coef > m.coef) return 0;
+		
+		int degsum1=0, degsum2=0;
+		for (int i = 0; i < degree.size(); i++) {
+			degsum1 += degree[i];
+			degsum2 += m.degree[i];
+		}
+		
+		if (degsum1 < degsum2)return 1;
+		else if (degsum1 > degsum2) return 0;
+
 		for (int i = 0; i < degree.size(); i++) {
 			if (degree[i] > m.degree[i]) return 0;
 		}
