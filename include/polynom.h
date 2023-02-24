@@ -3,11 +3,9 @@
 #include <vector>
 #include <list>
 #include <algorithm>
-
 #include "monom.h"
 
 class Polynom {
-
 
 	std::list<Monom> monoms;
 	
@@ -19,25 +17,26 @@ class Polynom {
 	const std::string using_nums = "0123456789";
 	const std::string using_operators = "+-";
 
-	//class Comparator {
-	//public:
-	//	bool operator()(const Monom& m1, const Monom& m2)  const noexcept {
-	//		for (size_t i = 0; i < m1.degree.size(); i++) {
-	//			if (m1.degree[i] < m2.degree[i])
-	//				return true;
-	//
-	//			else if (m1.degree[i] > m2.degree[i])
-	//				return false;
-	//		}
-	//
-	//		return false;
-	//	}
-	//};
+	class Comparator {
+	public:
+		bool operator()(const Monom& m1, const Monom& m2)  const noexcept {
+			for (size_t i = 0; i < m1.degree.size(); i++) {
+				if (m1.degree[i] < m2.degree[i])
+					return true;
+	
+				else if (m1.degree[i] > m2.degree[i])
+					return false;
+			}
+	
+			return false;
+		}
+	};
+
 
 	void sort() {
-		//Comparator comp;
-		monoms.sort();
-		//monoms.sort(comp);
+		Comparator comp;
+		//monoms.sort();
+		monoms.sort(comp);
 
 		
 		if (monoms.size() >= 2) {
@@ -117,7 +116,7 @@ public:
 		auto this_it = monoms.begin();
 		auto p_it = p.monoms.begin();
 		bool insert_done;
-		//Comparator comp;
+		Comparator comp;
 		
 		while (p_it != p.monoms.end()) {
 			insert_done = false;
@@ -133,8 +132,8 @@ public:
 					insert_done = true;
 					break;
 				}
-				else if ((*this_it) < (*p_it)) {
-				//else if (comp(*p_it,*this_it)) {
+				//else if ((*this_it) < (*p_it)) {
+				else if (comp(*p_it,*this_it)) {
 					monoms.insert(this_it, *p_it);
 					insert_done = true;
 					++this_it;
@@ -222,12 +221,53 @@ public:
 		return *this;
 	}
 	Polynom operator*(double c) const{ 
-		Polynom result;
+		Polynom result(*this);
 		result *= c;
 		return result;
 	}
+
+
+	bool isDivider(const Monom& m1, const Monom& m2)  {
+		std::vector<int> degree1 = m1.getDegrees(), degree2 = m2.getDegrees();
+
+		for (size_t i = 0; i < degree1.size(); i++) {
+			if (degree1[i] < degree2[i]) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	Monom getDivider(const Monom& m1, const Monom& m2)  {
+		Monom result;
+		result.coef = m1.coef / m2.coef;
+		std::vector<int> degree1 = m1.getDegrees(), degree2 = m2.getDegrees();
+
+		for (size_t i = 0; i < degree1.size(); i++) {
+			result.degree[i] = degree1[i] - degree2[i];
+		}
+		return result;
+	}
 	
-	std::pair<Polynom, Polynom> operator/(const Polynom& p) const { return { *this, *this }; }
+	std::pair<Polynom, Polynom> operator/(const Polynom& p) { 
+		Polynom remainder = *this, quotient, divider = p;
+		Monom div;
+
+		for (Monom dl : divider.monoms) {
+			auto de = remainder.monoms.begin();
+			while(de != remainder.monoms.end()){
+				if (isDivider(*de, dl)) {
+					div = getDivider(*de, dl);
+					quotient += div;
+					remainder -= divider * div;
+					de = remainder.monoms.begin();
+				}
+				else 
+					++de;
+			}
+		}
+		return { quotient, remainder }; 
+	}
 	
 	Polynom integral(char s) const{ 
 		Polynom result(*this);
