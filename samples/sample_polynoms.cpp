@@ -4,5 +4,6 @@
 
 void main()
 {
-  
+	Monom m("-6x");
+	std::cout << m;
 }

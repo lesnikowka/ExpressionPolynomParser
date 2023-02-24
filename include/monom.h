@@ -236,7 +236,7 @@ public:
 	};
 
 
-	double calculate(std::vector<double> vect) {
+	double calculate(std::vector<double> vect) const {
 		if (vect.size() != degree.size()) throw "Sizes are not equal";
 		double result =coef;
 		for (int i = 0; i < vect.size(); i++) {
@@ -275,6 +275,7 @@ public:
 
 	Monom& operator*=(double m) {
 		coef *= m;
+		return *this;
 	};
 	Monom operator*(double m) const{
 		Monom tmp(*this);
@@ -362,15 +363,21 @@ public:
 		return istream;
 	};
 	friend std::ostream& operator<<(std::ostream& ostream, Monom& m) {
-		if (m.coef == 0)return ostream << m.coef;
-		if (m.coef != 1)
-			ostream << m.coef;
+		int tmp=0;
+		for (int i = 0; i < m.degree.size(); i++)
+			tmp += m.degree[i];
+		if ((m.coef * m.coef) != 1 || m.coef == 0||tmp==0)return ostream << m.coef;
+		if (m.coef == -1 && tmp!=0) {
+			ostream << "-";
+		}
 		for (int i = 0; i < m.using_alphabet.size(); i++) {
+			
 			if (m.degree[i] > 1)
 				ostream << m.using_alphabet[i] << "^" << m.degree[i];
 			else if (m.degree[i] == 1)
 				ostream << m.using_alphabet[i];
 		}
+		
 		return ostream;
 	};
 
