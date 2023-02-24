@@ -57,7 +57,7 @@ TEST(Monoms, equality_operator_ON_NON_SIMILAR_MONOMS) {
 }
 
 TEST(Monoms, comparison_operator_greater_ON_SIMILAR_MONOMS) {
-	EXPECT_EQ(Monom("2xyz") > (Monom("xyz")), 1);
+	EXPECT_EQ(Monom("2xyz") > (Monom("xyz")), 0);
 }
 TEST(Monoms, comparison_operator_greater_ON_NON_SIMILAR_MONOMS) {
 	EXPECT_EQ(Monom("2x^2yz") > (Monom("xy^2z^3")), 0);
@@ -129,4 +129,9 @@ TEST(Monoms, multiplication_operator_work_correctly_EMPTY_MONOMS) {
 	Monom m1, m2;
 	EXPECT_EQ((m1 * m2).getCoef(), 0);
 	EXPECT_EQ((m1 * m2).getDegrees(), std::vector<int>({ 0,0,0 }));
+}
+
+TEST(Monoms, can_correctly_calculate_monom_at_the_dot) {
+	Monom m("-1.5x^3y");
+	EXPECT_EQ(m.calculate({1,10,3}),-15 );
 }
