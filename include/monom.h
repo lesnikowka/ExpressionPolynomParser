@@ -328,9 +328,6 @@ public:
 		return !operator==(m);
 	};
 	bool operator<=(const Monom& m) const noexcept {
-		if (isSimilar(m) && coef <= m.coef) return 1;
-		else if (isSimilar(m) && coef > m.coef) return 0;
-		
 		int degsum1=0, degsum2=0;
 		for (int i = 0; i < degree.size(); i++) {
 			degsum1 += degree[i];
@@ -350,10 +347,10 @@ public:
 		return !(operator<(m));
 	};
 	bool operator<(const Monom& m) const noexcept {
-		return (operator!=(m) && operator<=(m));
+		return (!isSimilar(m) && operator<=(m));
 	};
 	  bool operator>(const Monom& m)const  noexcept {
-		return (operator!=(m) && operator>=(m));
+		return (!isSimilar(m) && operator>=(m));
 	};
 	
 
