@@ -2,31 +2,9 @@
 #include"list.h"
 #include<vector>
 #include<string>
+#include<iostream>
 
-template<typename T>
-int findIndex(T elem,std::vector<T> vect) {
-	int index=0;
-	for (index; index < vect.size(); index++) {
-		if (elem == vect[index]) return index;
-	}
-	return -1;
 
-}
-int findIndex(char elem,std::string str) {
-	int index = 0;
-	for (index; index < str.size(); index++) {
-		if (elem == str[index]) return index;
-	}
-	return -1;
-
-}
-
-bool in(char symb,std::string alph) {
-	for (int i = 0; i < alph.size(); i++) {
-		if (symb == alph[i]) return true;
-	}
-	return false;
-}
 enum class states {
 	letter,
 	number,
@@ -48,16 +26,29 @@ class Monom {
 	double coef;
 	bool correctness;
 
-	static const std::string using_alphabet;
-	static const std::string using_symb_for_degree;
-	static const std::string using_symb_for_multiplie;
-	static const std::string using_separator;
-	static const std::string using_nums;
-	static const std::string using_operators;
+	const std::string Monom::using_alphabet = "xyz";
+	const std::string Monom::using_symb_for_degree = "^";
+	const std::string Monom::using_symb_for_multiplie = "*";
+	const std::string Monom::using_separator = ".";
+	const std::string Monom::using_nums = "0123456789";
+	const std::string Monom::using_operators = "+-*^";
 	
+	int findIndex(char elem, std::string str) {
+		int index = 0;
+		for (index; index < str.size(); index++) {
+			if (elem == str[index]) return index;
+		}
+		return -1;
 
+	}
 
-	void sortIndexes();
+	bool in(char symb, std::string alph) {
+		for (int i = 0; i < alph.size(); i++) {
+			if (symb == alph[i]) return true;
+		}
+		return false;
+	}
+
 	void cut(std::string str) {
 		coef = 0;
 		char cur_symb, next_symb;
@@ -70,6 +61,7 @@ class Monom {
 			i++;
 		}
 		if (lexem.size() == 0) coef = 1;
+		else if (lexem == "-") coef = -1;
 		else coef = std::stod(lexem);
 		lexem = "";
 		//get coef -- end
@@ -301,6 +293,7 @@ public:
 	Monom integral(char var) {
 		if (!in(var, using_alphabet)) throw "Uncorrect letter";
 		Monom m(*this);
+		if (coef == 0) return m;
 		int index = findIndex(var, using_alphabet);
 		
 		m.degree[index] += 1;
@@ -308,14 +301,14 @@ public:
 		return m;
 	}
 
-	bool operator==(const Monom& m) {
+	const bool operator==(const Monom& m) noexcept {
 		if (coef != m.coef) return false;
 		return isSimilar(m);
 	};
-	bool operator!=(const Monom& m) {
+	const bool operator!=(const Monom& m) noexcept {
 		return !operator==(m);
 	};
-	bool operator<=(const Monom& m) {  
+	const bool operator<=(const Monom& m) noexcept {
 		if (isSimilar(m) && coef <= m.coef) return 1;
 		else if (isSimilar(m) && coef > m.coef) return 0;
 		
@@ -334,13 +327,13 @@ public:
 
 		return 1;
 	};
-	bool operator>=(const Monom& m) {
+	const bool operator>=(const Monom& m) noexcept {
 		return !(operator<(m));
 	};
-	bool operator<(const Monom& m) {
+	const bool operator<(const Monom& m) noexcept {
 		return (operator!=(m) && operator<=(m));
 	};
-	bool operator>(const Monom& m) {
+	const  bool operator>(const Monom& m) noexcept {
 		return (operator!=(m) && operator>=(m));
 	};
 	
@@ -369,9 +362,4 @@ public:
 	bool getCorrectness() { return correctness; }
 };
 
-const std::string Monom::using_alphabet = "xyz";
-const std::string Monom::using_symb_for_degree = "^";
-const std::string Monom::using_symb_for_multiplie = "*";
-const std::string Monom::using_separator = ".";
-const std::string Monom::using_nums = "0123456789";
-const std::string Monom::using_operators = "+-*^";
+
