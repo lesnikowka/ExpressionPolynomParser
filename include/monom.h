@@ -385,5 +385,3 @@ public:
 	std::vector<int> getDegrees() const noexcept { return degree; };
 	bool getCorrectness() const noexcept { return correctness; }
 };
-
-
