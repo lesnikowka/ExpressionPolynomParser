@@ -19,24 +19,26 @@ class Polynom {
 	const std::string using_nums = "0123456789";
 	const std::string using_operators = "+-";
 
-	class Comparator {
-	public:
-		bool operator()(const Monom& m1, const Monom& m2)  const noexcept {
-			for (size_t i = 0; i < m1.degree.size(); i++) {
-				if (m1.degree[i] < m2.degree[i])
-					return true;
-
-				else if (m1.degree[i] > m2.degree[i])
-					return false;
-			}
-
-			return false;
-		}
-	};
+	//class Comparator {
+	//public:
+	//	bool operator()(const Monom& m1, const Monom& m2)  const noexcept {
+	//		for (size_t i = 0; i < m1.degree.size(); i++) {
+	//			if (m1.degree[i] < m2.degree[i])
+	//				return true;
+	//
+	//			else if (m1.degree[i] > m2.degree[i])
+	//				return false;
+	//		}
+	//
+	//		return false;
+	//	}
+	//};
 
 	void sort() {
-		Comparator comp;
-		monoms.sort(comp);
+		//Comparator comp;
+		monoms.sort();
+		//monoms.sort(comp);
+
 		
 		if (monoms.size() >= 2) {
 			auto current = monoms.begin();
@@ -115,7 +117,7 @@ public:
 		auto this_it = monoms.begin();
 		auto p_it = p.monoms.begin();
 		bool insert_done;
-		Comparator comp;
+		//Comparator comp;
 		
 		while (p_it != p.monoms.end()) {
 			insert_done = false;
@@ -129,11 +131,14 @@ public:
 						++this_it;
 					}
 					insert_done = true;
+					break;
 				}
-				else if (comp(*p_it,*this_it)) {
+				else if ((*this_it) < (*p_it)) {
+				//else if (comp(*p_it,*this_it)) {
 					monoms.insert(this_it, *p_it);
 					insert_done = true;
 					++this_it;
+					break;
 				}
 				else {
 					++this_it;
@@ -199,10 +204,9 @@ public:
 		for (const Monom& e : p.monoms) {
 			current = *this;
 			current *= e;
-			std::cout << "current: " << current << std::endl;
 			result += current;
-			std::cout <<"result: " << result << std::endl;
 		}
+		result.sort();
 		return result;
 	}
 	Polynom& operator*=(const Polynom& p) {
