@@ -246,7 +246,7 @@ public:
 		}
 		return result;
 	};
-	bool isSimilar(const Monom& m) {
+	bool isSimilar(const Monom& m)const {
 		for (int i = 0; i < degree.size(); i++) {
 			if (degree[i] != m.degree[i])return false;
 		}
@@ -267,7 +267,7 @@ public:
 		}
 		return *this;
 	};
-	Monom operator*(const Monom& m) {
+	Monom operator*(const Monom& m) const {
 		Monom tmp(*this);
 		tmp *= m;
 		return tmp;
@@ -276,16 +276,35 @@ public:
 	Monom& operator*=(double m) {
 		coef *= m;
 	};
-	Monom operator*(double m){
+	Monom operator*(double m) const{
 		Monom tmp(*this);
 		tmp.coef *= m;
 		return tmp;
 		};
-	
+	Monom& operator+=(const Monom& m) {
+		if (isSimilar(m)) { coef += m.coef; return *this; }
+		else throw "Monoms are not similar";
+	}
+	Monom operator+(const Monom& m) const {
+		Monom tmp(*this);
+		tmp += m;
+		return tmp;
+	}
+	Monom& operator-=(const Monom& m) {
+		if (isSimilar(m)) { coef -= m.coef; return *this; }
+		else throw "Monoms are not similar";
+	}
+	Monom operator-(const Monom& m) const {
+		Monom tmp(*this);
+		tmp -= m;
+		return tmp;
+	}
+
 	Monom derivative(char var) {
 		if (!in(var, using_alphabet)) throw "Uncorrect letter";
-		Monom m(*this);
 		int index = findIndex(var,using_alphabet);
+		if (degree[index] == 0) return Monom();
+		Monom m(*this);
 		m.coef *= m.degree[index];
 		m.degree[index]=(m.degree[index]<0)?0:(m.degree[index]-1);
 		return m;
@@ -301,14 +320,14 @@ public:
 		return m;
 	}
 
-	const bool operator==(const Monom& m) noexcept {
+	bool operator==(const Monom& m)const noexcept {
 		if (coef != m.coef) return false;
 		return isSimilar(m);
 	};
-	const bool operator!=(const Monom& m) noexcept {
+	 bool operator!=(const Monom& m)const  noexcept {
 		return !operator==(m);
 	};
-	const bool operator<=(const Monom& m) noexcept {
+	bool operator<=(const Monom& m) const noexcept {
 		if (isSimilar(m) && coef <= m.coef) return 1;
 		else if (isSimilar(m) && coef > m.coef) return 0;
 		
@@ -327,13 +346,13 @@ public:
 
 		return 1;
 	};
-	const bool operator>=(const Monom& m) noexcept {
+	bool operator>=(const Monom& m) const noexcept {
 		return !(operator<(m));
 	};
-	const bool operator<(const Monom& m) noexcept {
+	bool operator<(const Monom& m) const noexcept {
 		return (operator!=(m) && operator<=(m));
 	};
-	const  bool operator>(const Monom& m) noexcept {
+	  bool operator>(const Monom& m)const  noexcept {
 		return (operator!=(m) && operator>=(m));
 	};
 	
@@ -357,9 +376,9 @@ public:
 		return ostream;
 	};
 
-	double getCoef() { return coef; }
-	std::vector<int> getDegrees() { return degree; };
-	bool getCorrectness() { return correctness; }
+	double getCoef() const noexcept{ return coef; }
+	std::vector<int> getDegrees() const noexcept { return degree; };
+	bool getCorrectness() const noexcept { return correctness; }
 };
 
 
