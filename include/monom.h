@@ -328,11 +328,21 @@ public:
 		return !operator==(m);
 	};
 	bool operator<=(const Monom& m) const noexcept {
+		int degsum1=0, degsum2=0;
 		for (int i = 0; i < degree.size(); i++) {
-			if (degree[i] > m.degree[i]) return false;
-			else if (degree[i] < m.degree[i]) return true;
+			degsum1 += degree[i];
+			degsum2 += m.degree[i];
 		}
-		return true;
+		
+		if (degsum1 < degsum2)return 1;
+		else if (degsum1 > degsum2) return 0;
+
+		for (int i = 0; i < degree.size(); i++) {
+			if (degree[i] > m.degree[i]) return 0;
+			else if (degree[i] < m.degree[i]) return 1;
+		}
+		return 1;
+
 	};
 	bool operator>=(const Monom& m) const noexcept {
 		return !(operator<(m));
