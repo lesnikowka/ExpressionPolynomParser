@@ -54,16 +54,12 @@ class Polynom {
 
 	void sort() {
 		Comparator comp;
-		//monoms.sort();
 		monoms.sort(comp);
 
 		
 		if (monoms.size() >= 2) {
 			auto current = monoms.begin();
-			auto next = monoms.begin();
-			++next;
-		
-			while (next != monoms.end()) {
+			for (auto next = ++(monoms.begin()); ++next != monoms.end();){
 				if ((*current).isSimilar(*next)) {
 					*next += *current;
 					if ((*next).getCoef() == 0) {
@@ -72,12 +68,11 @@ class Polynom {
 					monoms.erase(current);
 					current = next;
 				}
-		
-				else
+				else if (current != monoms.end())
 					++current;
-		
-				++next;
 			}
+
+
 		}
 	}
 	void cut(const std::string& str) {
@@ -157,7 +152,6 @@ public:
 					insert_done = true;
 					break;
 				}
-				//else if ((*this_it) < (*p_it)) {
 				else if (comp(*p_it,*this_it)) {
 					monoms.insert(this_it, *p_it);
 					insert_done = true;
