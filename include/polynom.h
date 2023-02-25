@@ -89,20 +89,26 @@ class Polynom {
 				if (i != 0) {
 					m = Monom();
 					m.cut(str.substr(start, i - start));
-					monoms.push_back(m);
+					if (m.getCoef() != 0) {
+						monoms.push_back(m);
+					}
 				}
 				start = i;
 			}
 			else if (str[i] == using_operators[0]) {
 				m = Monom();
 				m.cut(str.substr(start, i - start));
-				monoms.push_back(m);
+				if (m.getCoef() != 0) {
+					monoms.push_back(m);
+				}
 				start = i + 1;
 			}
 			else if (i == str.size()) {
 				m = Monom();
 				m.cut(str.substr(start, i - start));
-				monoms.push_back(m);
+				if (m.getCoef() != 0) {
+					monoms.push_back(m);
+				}
 			}
 		}
 
@@ -301,7 +307,8 @@ public:
 		return !operator==(p);
 	}
 
-	friend std::istream& operator>>(std::istream& istream, Polynom& p) { 
+	friend std::istream& operator>>(std::istream& istream, Polynom& p) {
+		p.monoms.clear();
 		std::string str;
 		istream >> str;
 		p.cut(str);
