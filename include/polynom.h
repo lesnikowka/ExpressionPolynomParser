@@ -31,7 +31,26 @@ class Polynom {
 			return false;
 		}
 	};
+	bool isDivider(const Monom& m1, const Monom& m2) {
+		std::vector<int> degree1 = m1.getDegrees(), degree2 = m2.getDegrees();
 
+		for (size_t i = 0; i < degree1.size(); i++) {
+			if (degree1[i] < degree2[i]) {
+				return false;
+			}
+		}
+		return true;
+	}
+	Monom getDivider(const Monom& m1, const Monom& m2) {
+		Monom result;
+		result.coef = m1.coef / m2.coef;
+		std::vector<int> degree1 = m1.getDegrees(), degree2 = m2.getDegrees();
+
+		for (size_t i = 0; i < degree1.size(); i++) {
+			result.degree[i] = degree1[i] - degree2[i];
+		}
+		return result;
+	}
 
 	void sort() {
 		Comparator comp;
@@ -155,46 +174,13 @@ public:
 		result += p;
 		return result;
 	}
-	Polynom& operator+=(const Monom& m) {
-		Polynom p(m);
-		operator+=(p);
-		return *this;
-	}
-	Polynom operator+(const Monom& m) const {
-		Polynom p(m), result;
-		result += m;
-		return *this;
-	}
-	
-	Polynom& operator-=(const Polynom& p) { 
+	Polynom& operator-=(const Polynom& p) {
 		operator+=(p * (-1));
 		return *this;
 	}
-	Polynom operator-(const Polynom& p) const { 
+	Polynom operator-(const Polynom& p) const {
 		Polynom result(*this);
 		result -= p;
-		return result;
-	}
-	Polynom& operator-=(const Monom& m) {
-		Polynom p(m);
-		operator-=(p);
-		return *this;
-	}
-	Polynom operator-(const Monom& m) const {
-		Polynom p(m), result;
-		result -= m;
-		return *this;
-	}
-
-
-	Polynom& operator*=(const Monom& m) { 
-		for (Monom& e : monoms)
-			e *= m;
-		return *this;
-	}
-	Polynom operator*(const Monom& m) const {
-		Polynom result(*this);
-		result *= m;
 		return result;
 	}
 	Polynom operator*(const Polynom& p) const {
@@ -212,43 +198,67 @@ public:
 		operator=((*this) * p);
 		return *this;
 	}
-	
+	Polynom& operator+=(const Monom& m) {
+		if (m.getCoef() != 0) {
+			Polynom p(m);
+			operator+=(p);
+		}
+		return *this;
+	}
+	Polynom operator+(const Monom& m) const {
+		Polynom result(*this);
+		result += m;
+		return result;
+	}
 
-
+	Polynom& operator-=(const Monom& m) {
+		if (m.getCoef() != 0) {
+			operator+=(m * (-1));
+		}
+		return *this;
+	}
+	Polynom operator-(const Monom& m) const {
+		Polynom result(*this);
+		if (m.getCoef() != 0) {
+			result -= m;
+		}
+		return result;
+	}
+	Polynom& operator*=(const Monom& m) {
+		if (m.getCoef() != 0) {
+			for (Monom& e : monoms)
+				e *= m;
+		}
+		else {
+			monoms.clear();
+		}
+		return *this;
+	}
+	Polynom operator*(const Monom& m) const {
+		Polynom result;
+		if (m.getCoef() != 0) {
+			result = *this;
+			result *= m;
+		}
+		return result;
+	}
 	Polynom& operator*=(double c) { 
-		for (Monom& i : monoms)
-			i *= c;
+		if (c != 0) {
+			for (Monom& i : monoms)
+				i *= c;
+		}
+		else {
+			monoms.clear();
+		}
 		return *this;
 	}
 	Polynom operator*(double c) const{ 
-		Polynom result(*this);
-		result *= c;
-		return result;
-	}
-
-
-	bool isDivider(const Monom& m1, const Monom& m2)  {
-		std::vector<int> degree1 = m1.getDegrees(), degree2 = m2.getDegrees();
-
-		for (size_t i = 0; i < degree1.size(); i++) {
-			if (degree1[i] < degree2[i]) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	Monom getDivider(const Monom& m1, const Monom& m2)  {
-		Monom result;
-		result.coef = m1.coef / m2.coef;
-		std::vector<int> degree1 = m1.getDegrees(), degree2 = m2.getDegrees();
-
-		for (size_t i = 0; i < degree1.size(); i++) {
-			result.degree[i] = degree1[i] - degree2[i];
+		Polynom result;
+		if (c != 0) {
+			result *= c;
 		}
 		return result;
 	}
-	
 	std::pair<Polynom, Polynom> operator/(const Polynom& p) { 
 		Polynom remainder = *this, quotient, divider = p;
 		Monom div;
@@ -281,6 +291,7 @@ public:
 			i = i.derivative(s);
 		return result;
 	}
+
 	bool operator==(const Polynom& p) const noexcept {
 		if (monoms != p.monoms)
 			return false;
