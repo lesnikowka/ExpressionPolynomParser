@@ -5,7 +5,7 @@
 #include<iostream>
 
 
-enum class states {
+enum states {
 	letter,
 	number,
 	letter_number_mult,
@@ -98,8 +98,8 @@ class Monom {
 	
 	};
 	bool isCorrect( const std::string& str) {
-		char cur_symb=NULL;
-		enum class states a=states::number_letter_minus;
+		char cur_symb='?';//using uncorrect for monom cur_symb
+		enum states a=states::number_letter_minus;
 		for (int i = 0; i < str.size(); i++) {
 			cur_symb = str[i];
 			switch (a) {
