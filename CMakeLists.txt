@@ -21,8 +21,11 @@ add_subdirectory(list)
 add_subdirectory(include)
 
 
-
 add_subdirectory(samples)
+
+
+add_subdirectory(3rdparty/googletest)
+include_directories(3rdparty/googletest)
 
 
 if(BUILD_TESTING)
