@@ -5,6 +5,12 @@
 
 class Polynom {
 
+	const std::string using_alphabet = "xyz";
+	const std::string using_symb_for_degree = "^";
+	const std::string using_symb_for_multiplie = "*";
+	const std::string using_separator = ".";
+	const std::string using_nums = "0123456789";
+	const std::string using_operators = "+-*^";
 
 	List<Monom> monoms;
 	
@@ -12,12 +18,6 @@ class Polynom {
 	void sort();
 	void cut();
 public:
-	std::string using_alphabet = Monom::using_alphabet,
-		using_symb_for_degree = Monom::using_symb_for_degree,
-		using_symb_for_multiplie = Monom::using_symb_for_multiplie,
-		using_separator = Monom::using_separator,
-		using_nums = Monom::using_nums,
-		using_operators = "+-";
 
 	Polynom() = default;
 	Polynom(const Polynom& p) = default;
