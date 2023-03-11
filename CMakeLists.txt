@@ -13,6 +13,20 @@ set(MP2_CUSTOM_PROJECT "${PROJECT_NAME}")
 set(MP2_INCLUDE "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
 
+
+set(CMAKE_CXX_STANDARD 14)
+
+include(FetchContent)
+FetchContent_Declare(
+googletest
+URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+)
+# For Windows: Prevent overriding the parent project's compiler/linker settings
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+
+
+
 add_subdirectory(UI)
 add_subdirectory(containers)
 add_subdirectory(expressions)
@@ -20,7 +34,6 @@ add_subdirectory(list)
 add_subdirectory(samples)
 
 add_subdirectory(include)
-
 
 include_directories(containers)
 include_directories(UI)
@@ -31,9 +44,7 @@ include_directories(samples)
 include_directories(include)
 
 
-
 if(BUILD_TESTING)
-    add_subdirectory(gtest)
 	add_subdirectory(test)
 endif()
 

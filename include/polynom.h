@@ -8,7 +8,6 @@
 class Polynom {
 
 	std::list<Monom> monoms;
-	
 
 	const std::string using_alphabet = "xyz";
 	const std::string using_symb_for_degree = "^";
@@ -16,6 +15,7 @@ class Polynom {
 	const std::string using_separator = ".";
 	const std::string using_nums = "0123456789";
 	const std::string using_operators = "+-";
+
 
 	class Comparator {
 	public:

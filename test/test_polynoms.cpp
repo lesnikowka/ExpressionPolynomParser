@@ -1,4 +1,5 @@
-#include <gtest.h>
+
+#include "gtest/gtest.h"
 #include "polynom.h"
 #include <sstream>
 
@@ -32,3 +33,4 @@ TEST_F(PolynomFixture, can_calculate_polynom) {
 
 	EXPECT_EQ(p3.calculate({ 1,2,3 }), 7);
 }
+
