@@ -1,5 +1,4 @@
 ﻿#include <iostream>
-
 #include"monom.h"
 
 int main()

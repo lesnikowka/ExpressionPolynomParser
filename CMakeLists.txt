@@ -35,6 +35,14 @@ add_subdirectory(samples)
 
 add_subdirectory(include)
 
+include_directories(containers)
+include_directories(UI)
+include_directories(expressions)
+include_directories(list)
+include_directories(samples)
+
+include_directories(include)
+
 
 if(BUILD_TESTING)
 	add_subdirectory(test)
