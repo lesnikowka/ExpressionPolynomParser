@@ -36,14 +36,8 @@ add_subdirectory(samples)
 add_subdirectory(include)
 
 
-include_directories(containers)
-include_directories(UI)
-include_directories(expressions)
-include_directories(list)
-include_directories(samples)
-
-include_directories(include)
-
+add_subdirectory(3rdparty/googletest)
+include_directories(3rdparty/googletest)
 
 
 if(BUILD_TESTING)
