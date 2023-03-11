@@ -1,4 +1,4 @@
-#include <gtest.h>
+#include "gtest/gtest.h"
 #include"monom.h"
 
 TEST(Monoms, can_create_empty) {
