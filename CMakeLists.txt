@@ -36,10 +36,6 @@ add_subdirectory(samples)
 add_subdirectory(include)
 
 
-add_subdirectory(3rdparty/googletest)
-include_directories(3rdparty/googletest)
-
-
 if(BUILD_TESTING)
 	add_subdirectory(test)
 endif()
