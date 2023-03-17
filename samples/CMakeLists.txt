@@ -1,9 +1,14 @@
+
+
 set(target samples)
 
 project(${target})
 
-file(GLOB hdrs "*.h*")
 file(GLOB srcs "*.cpp*")
 
+add_executable(${target} ${srcs})
 
-add_custom_target(${target} SOURCES ${hdrs} ${srcs})
+target_include_directories(${target} PUBLIC ${MP2_INCLUDE})
+target_include_directories(${target} PUBLIC ../expressions)
+target_include_directories(${target} PUBLIC ../containers)
+target_include_directories(${target} PUBLIC ../UI)
