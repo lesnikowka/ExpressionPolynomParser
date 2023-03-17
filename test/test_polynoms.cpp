@@ -193,21 +193,3 @@ TEST(Polynom, can_take_an_integral_of_non_empty_polynom) {
 
 	EXPECT_EQ(p, p3);
 }
-
-//TEST(Polynom, ){}
-
-//TEST(Polynom, ){}
-//TEST(Polynom, ){}
-//TEST(Polynom, ){}
-//TEST(Polynom, ){}
-//TEST(Polynom, ){}
-//TEST(Polynom, ){}
-//TEST(Polynom, ){}
-
-//TEST(Polynom, ){}
-//TEST(Polynom, ){}
-//TEST(Polynom, ){}
-//TEST(Polynom, ){}
-//TEST(Polynom, ){}
-//TEST(Polynom, ){}
-//TEST(Polynom, ){}
