@@ -4,10 +4,12 @@
 #include <list>
 #include <algorithm>
 #include "monom.h"
+#include <iostream>
 
 class Polynom {
 
 	std::list<Monom> monoms;
+	
 
 	const std::string using_alphabet = "xyz";
 	const std::string using_symb_for_degree = "^";
@@ -15,7 +17,6 @@ class Polynom {
 	const std::string using_separator = ".";
 	const std::string using_nums = "0123456789";
 	const std::string using_operators = "+-";
-
 
 	class Comparator {
 	public:
@@ -139,8 +140,10 @@ public:
 		Comparator comp;
 		
 		while (p_it != p.monoms.end()) {
+			//std::cout << "this: " << (*this) << "     p: " << p << "\n";
 			insert_done = false;
 			while (this_it != monoms.end()) {
+				//std::cout << "monom this: " << (*this_it) << "  monom p: " << (*p_it) << "\n";
 				if ((*this_it).isSimilar(*p_it)) {
 					*this_it += *p_it;
 					if ((*this_it).getCoef() == 0) {
@@ -155,7 +158,6 @@ public:
 				else if (comp(*p_it,*this_it)) {
 					monoms.insert(this_it, *p_it);
 					insert_done = true;
-					++this_it;
 					break;
 				}
 				else {
@@ -176,6 +178,7 @@ public:
 	}
 	Polynom& operator-=(const Polynom& p) {
 		operator+=(p * (-1));
+
 		return *this;
 	}
 	Polynom operator-(const Polynom& p) const {
@@ -253,7 +256,7 @@ public:
 		return *this;
 	}
 	Polynom operator*(double c) const{ 
-		Polynom result;
+		Polynom result(*this);
 		if (c != 0) {
 			result *= c;
 		}
@@ -308,9 +311,10 @@ public:
 		p.cut(str);
 		return istream;
 	}
-	friend std::ostream& operator<<(std::ostream& ostream, Polynom& p) { 
+	friend std::ostream& operator<<(std::ostream& ostream, Polynom p) { 
 		bool begin = true;
 		for (auto& e : p.monoms) {
+			//std::cout << "TEST MONOM COUT: " << e << "\n";
 			if (e.getCoef() > 0 && !begin) 
 				ostream << "+";
 			begin = false;
