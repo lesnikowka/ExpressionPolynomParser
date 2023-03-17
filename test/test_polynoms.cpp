@@ -10,6 +10,18 @@ TEST(Polynom, can_create_not_empty_polynom) {
 	ASSERT_NO_THROW(Polynom m("xy+z"));
 }
 
+TEST(Polynom, comparison_operator_is_correct_on_equal_polynoms) {
+	Polynom p("x+y+z"), p2("x+y+z");
+
+	EXPECT_TRUE(p == p2);
+}
+
+TEST(Polynom, comparison_operator_is_correct_on_unequal_polynoms) {
+	Polynom p("x+y+z"), p2("x+y^2+z");
+
+	EXPECT_TRUE(p != p2);
+}
+
 TEST(Polynom, can_copy_polynom) {
 	Polynom p("x+y+z");
 	
@@ -59,8 +71,6 @@ TEST(Polynom, can_add_polynom_1){
 TEST(Polynom, can_add_polynom_2) {
 	Polynom p("-1.3x^2y-z+xzy"), p2("1.3yx^2-3z-2xzy-x"), p3("-x-4z-xzy");
 
-	//std::cout << "TEST: " << p << std::endl;
-
 	p = p + p2;
 
 	EXPECT_EQ(p, p3);
@@ -71,11 +81,6 @@ TEST(Polynom, can_sub_polynom_1){
 	Polynom p("-1.3x^2y-z+xzy"), p2("1.3yx^2-3z-2xzy-x"), p3("-2.6x^2y+2z+3xzy+x");
 
 	p -= p2;
-
-	//std::cout << p;
-	
-	//std::cout << "monom test cout " << Monom("-2.6x^2y");
-
 
 	EXPECT_EQ(p, p3);
 }
@@ -111,6 +116,93 @@ TEST(Polynom, can_devide_polynoms){
 
 	EXPECT_EQ(p, p3);
 }
+
+
+TEST(Polynom, can_add_polynom_and_monom_1){
+	Polynom p("xyz-0.01x^2+z"), p3("xyz+z");
+	Monom m("0.01x^2");
+
+	p += m;
+
+	EXPECT_EQ(p, p3);
+}
+
+TEST(Polynom, can_add_polynom_and_monom_2) {
+	Polynom p("xyz-0.01x^2+z"), p3("xyz+z");
+	Monom m("0.01x^2");
+
+	p = p + m;
+
+	EXPECT_EQ(p, p3);
+}
+TEST(Polynom, can_sub_polynom_and_monom_1){
+	Polynom p("xyz-0.01x^2+z"), p3("xyz-0.01x^2+z-yx^2");
+	Monom m("yx^2");
+
+	p -= m;
+
+	EXPECT_EQ(p, p3);
+}
+
+TEST(Polynom, can_sub_polynom_and_monom_2) {
+	Polynom p("xyz-0.01x^2+z"), p3("xyz-0.01x^2+z-yx^2");
+	Monom m("yx^2");
+
+	p = p - m;
+
+	EXPECT_EQ(p, p3);
+}
+
+TEST(Polynom, can_multiply_polynom_and_monom_1){
+	Polynom p("xyz-0.01x^2+z"), p3("0.2x^2yz^2-0.002x^3z+0.2xz^2");
+	Monom m("0.2xz");
+
+	p *= m;
+
+	EXPECT_EQ(p, p3);
+}
+
+TEST(Polynom, can_multiply_polynom_and_monom_2) {
+	Polynom p("xyz-0.01x^2+z"), p3("0.2x^2yz^2-0.002x^3z+0.2xz^2");
+	Monom m("0.2xz");
+
+	p = p * m;
+
+	EXPECT_EQ(p, p3);
+}
+
+TEST(Polynom, can_take_a_derivative){
+	Polynom p("x^2yz+x+z+1"), p3("2xyz+1");
+
+	p = p.derivative('x');
+
+	EXPECT_EQ(p, p3);
+}
+TEST(Polynom, can_take_an_integral_of_empty_polynom){
+	Polynom p, p3;
+
+	p = p.integral('x');
+
+	EXPECT_EQ(p, p3);
+}
+
+TEST(Polynom, can_take_an_integral_of_non_empty_polynom) {
+	Polynom p("2x-4x^3yz"), p3("x^2-x^4yz");
+
+	p = p.integral('x');
+
+	EXPECT_EQ(p, p3);
+}
+
+//TEST(Polynom, ){}
+
+//TEST(Polynom, ){}
+//TEST(Polynom, ){}
+//TEST(Polynom, ){}
+//TEST(Polynom, ){}
+//TEST(Polynom, ){}
+//TEST(Polynom, ){}
+//TEST(Polynom, ){}
 
 //TEST(Polynom, ){}
 //TEST(Polynom, ){}

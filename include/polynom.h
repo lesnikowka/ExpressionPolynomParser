@@ -140,10 +140,8 @@ public:
 		Comparator comp;
 		
 		while (p_it != p.monoms.end()) {
-			//std::cout << "this: " << (*this) << "     p: " << p << "\n";
 			insert_done = false;
 			while (this_it != monoms.end()) {
-				//std::cout << "monom this: " << (*this_it) << "  monom p: " << (*p_it) << "\n";
 				if ((*this_it).isSimilar(*p_it)) {
 					*this_it += *p_it;
 					if ((*this_it).getCoef() == 0) {
@@ -245,6 +243,7 @@ public:
 		}
 		return result;
 	}
+
 	Polynom& operator*=(double c) { 
 		if (c != 0) {
 			for (Monom& i : monoms)
@@ -262,6 +261,7 @@ public:
 		}
 		return result;
 	}
+
 	std::pair<Polynom, Polynom> operator/(const Polynom& p) { 
 		Polynom remainder = *this, quotient, divider = p;
 		Monom div;
@@ -290,8 +290,19 @@ public:
 	}
 	Polynom derivative(char s) const { 
 		Polynom result(*this);
-		for (Monom& i : result.monoms)
-			i = i.derivative(s);
+
+		std::list<Monom>::iterator it = result.monoms.begin();
+
+		while (it != result.monoms.end()) {
+			(*it) = (*it).derivative(s);
+			
+			if ((*it).getCoef() == 0)
+				it = result.monoms.erase(it);
+			
+			else if (it != result.monoms.end())
+				++it;
+		}
+
 		return result;
 	}
 
@@ -314,7 +325,6 @@ public:
 	friend std::ostream& operator<<(std::ostream& ostream, Polynom p) { 
 		bool begin = true;
 		for (auto& e : p.monoms) {
-			//std::cout << "TEST MONOM COUT: " << e << "\n";
 			if (e.getCoef() > 0 && !begin) 
 				ostream << "+";
 			begin = false;
