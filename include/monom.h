@@ -362,14 +362,19 @@ public:
 		m = Monom(str);
 		return istream;
 	};
-	friend std::ostream& operator<<(std::ostream& ostream, Monom& m) {
+	friend std::ostream& operator<<(std::ostream& ostream,const Monom& m) {
 		int tmp=0;
 		for (int i = 0; i < m.degree.size(); i++)
 			tmp += m.degree[i];
-		if ((m.coef * m.coef) != 1 || m.coef == 0||tmp==0)return ostream << m.coef;
 		if (m.coef == -1 && tmp!=0) {
 			ostream << "-";
 		}
+		if (m.coef != 1 && m.coef != -1) {
+			ostream << m.coef;
+		}
+		
+		if (tmp == 0) return ostream<<m.coef;
+		else
 		for (int i = 0; i < m.using_alphabet.size(); i++) {
 			
 			if (m.degree[i] > 1)
