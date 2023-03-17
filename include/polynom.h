@@ -201,6 +201,7 @@ public:
 		operator=((*this) * p);
 		return *this;
 	}
+	
 	Polynom& operator+=(const Monom& m) {
 		if (m.getCoef() != 0) {
 			Polynom p(m);
@@ -213,7 +214,6 @@ public:
 		result += m;
 		return result;
 	}
-
 	Polynom& operator-=(const Monom& m) {
 		if (m.getCoef() != 0) {
 			operator+=(m * (-1));
