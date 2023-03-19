@@ -197,7 +197,49 @@ private:
 		return balance(node);
 	}
 
+	void delete_tree(Node* node) {
+		if (!node) return;
+		delete_tree(node->left);
+		delete_tree(node->right);
+		delete node;
+	}
+
+	Node* copy(Node* node_for_copying) {
+		if (!node_for_copying) return nullptr;
+
+		Node* current_node = new Node(node_for_copying->data.first, node_for_copying->data.second);
+		current_node->height = node_for_copying->height;
+
+		current_node->right = copy(node_for_copying->right);
+		current_node->left = copy(node_for_copying->left);
+
+		return current_node;
+	}
+
 public:
+	Tree() = default;
+	~Tree() {
+		delete_tree(root);
+	}
+	Tree(const Tree& tree) {
+		root = copy(tree.root);
+	}
+	Tree(Tree&& tree) {
+		root = tree.root;
+		tree.root = nullptr;
+	}
+	Tree& operator=(const Tree& tree) {
+		delete_tree(root);
+		copy(tree.root);
+
+		return *this;
+	}
+	Tree& operator=(Tree&& tree) {
+		std::swap(root, tree.root);
+
+		return *this;
+	}
+
 	Node* begin() const {
 		return root;
 	}
