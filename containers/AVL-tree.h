@@ -1,0 +1,291 @@
+#pragma once
+
+template <class T, class Y>
+class Tree {
+public:
+	struct Node {
+		std::pair<T, Y> data;
+
+		Node* left;
+		Node* right;
+
+		int height;
+
+		Node() : left(nullptr), right(nullptr), height(1), data(T(), Y()) {}
+		Node(const T& key_, const Y& value_, Node* left_ = nullptr, Node* right_ = nullptr) {
+			data.first = key_; data.second = value_;
+			left = left_; right = right_; height = 1;
+		}
+	};
+private:
+	Node* root = nullptr;
+
+	Node* insert_(const T& key, const Y& value, Node* node) {
+		if (!node) {
+			return new Node(key, value);
+		}
+		else if (key > node->data.first) {
+			node->right = insert_(key, value, node->right);
+		}
+		else {
+			node->left = insert_(key, value, node->left);
+		}
+
+		change_height(node);
+
+		return balance(node);
+	}
+	Node* erase_(const T& key, Node* node) {
+		if (key < node->data.first) {
+			node->left = erase_(key, node->left);
+		}
+		else if (key > node->data.first) {
+			node->right = erase_(key, node->right);
+		}
+		else {
+			T key = node->data.first;
+			Node* prev = find_prev(node->data.first);
+
+
+			if (prev) {
+				node = detach_prev(prev, node);
+
+				prev->left = node->left;
+				prev->right = node->right;
+
+				delete node;
+
+				node = prev;
+			}
+			else {
+				node = node->left;
+			}
+		}
+
+		change_height(node);
+
+		return balance(node);
+	}
+
+	Node* find_(const T& key, Node* node)const {
+		if (!node) return end();
+		if (node->data.first == key) return node;
+		if (key < node->data.first) {
+			return find_(key, node->left);
+		}
+		else {
+			return find_(key, node->right);
+		}
+	}
+	Node* find_max_(Node* node)const {
+		if (!node) return end();
+		if (!node->right) {
+			return node;
+		}
+		else {
+			return find_max_(node->right);
+		}
+	}
+	Node* find_min_(Node* node)const {
+		if (!node) return end();
+		if (!node->left) {
+			return node;
+		}
+		else {
+			return find_max_(node->left);
+		}
+	}
+
+	Node* right_rotation(Node* node) {
+		if (!node || !node->left) return node;
+
+		int alpha_height = node->left->left ? node->left->left->height : 0;
+		int beta_height = node->left->right ? node->left->right->height : 0;
+		int gamma_height = node->right ? node->right->height : 0;
+
+		node->height = std::max(gamma_height, beta_height) + 1;
+		node->left->height = std::max(alpha_height, node->height) + 1;
+
+		Node* left = node->left;
+		node->left = left->right;
+		left->right = node;
+		return left;
+	}
+	Node* left_rotation(Node* node) {
+		if (!node || !node->right) return node;
+
+		int alpha_height = node->left ? node->left->height : 0;
+		int beta_height = node->right->left ? node->right->left->height : 0;
+		int gamma_height = node->right->right ? node->right->right->height : 0;
+
+		node->height = std::max(alpha_height, beta_height) + 1;
+		node->right->height = std::max(node->height, gamma_height) + 1;
+
+		Node* right = node->right;
+		node->right = right->left;
+		right->left = node;
+		return right;
+	}
+	Node* complex_right_rotation(Node* node) {
+		if (!node) return node;
+		node->left = left_rotation(node->left);
+		return right_rotation(node);
+	}
+	Node* complex_left_rotation(Node* node) {
+		if (!node) return node;
+		node->right = right_rotation(node->right);
+		return left_rotation(node);
+	}
+
+	Node* balance(Node* node) {
+		if (!node) return node;
+		int right_height = node->right ? node->right->height : 0;
+		int left_height = node->left ? node->left->height : 0;
+
+
+		if (right_height - left_height == 2) {
+			int right_right_height = node->right->right ? node->right->right->height : 0;
+			int right_left_height = node->right->left ? node->right->left->height : 0;
+
+			if (right_left_height <= right_right_height) {
+				return left_rotation(node);
+			}
+			else {
+				return complex_left_rotation(node);
+			}
+		}
+		else if (left_height - right_height == 2) {
+			int left_left_height = node->left->left ? node->left->left->height : 0;
+			int left_right_height = node->left->right ? node->left->right->height : 0;
+
+			if (left_right_height <= left_left_height) {
+				return right_rotation(node);
+			}
+			else {
+				return complex_right_rotation(node);
+			}
+
+			return complex_right_rotation(node);
+		}
+
+		return node;
+	}
+
+	void change_height(Node* node) {
+		if (!node) return;
+		int right_height = node->right ? node->right->height : 0;
+		int left_height = node->left ? node->left->height : 0;
+
+		node->height = std::max(right_height, left_height) + 1;
+	}
+
+	Node* detach_prev(Node* prev, Node* node) {
+		if (!(prev && node)) return nullptr;
+
+		if (node == prev) {
+			return prev->left;
+		}
+		else if (node->data.first < prev->data.first) {
+			node->right = detach_prev(prev, node->right);
+		}
+		else {
+			node->left = detach_prev(prev, node->left);
+		}
+
+		change_height(node);
+
+		return balance(node);
+	}
+
+public:
+	Node* begin() const {
+		return root;
+	}
+	Node* end() const {
+		return nullptr;
+	}
+
+	int height() {
+		if (!root) return 0;
+		return root->height;
+	}
+
+	void insert(const std::pair<T, Y>& pair) {
+		if (!root) {
+			root = new Node(pair.first, pair.second);
+		}
+		else if (!find(pair.first)) {
+			root = insert_(pair.first, pair.second, root);
+		}
+	}
+	void emplace(const T& key, const Y& value) {
+		if (!root) {
+			root = new Node(key, value);
+		}
+		else if (!find(key)) {
+			root = insert_(key, value, root);
+		}
+	}
+	void erase(const T& key) {
+		if (!find(key)) throw std::exception("element was not founded");
+		else {
+			root = erase_(key, root);
+		}
+
+	}
+
+	Node* find(const T& key) const {
+		return find_(key, begin());
+	}
+	Node* find_max() const {
+		return find_max_(begin());
+	}
+	Node* find_min() const {
+		return find_min_(begin());
+	}
+	Node* find_prev(const T& key) const {
+		Node* node = find(key);
+		if (node) {
+			if (node->left) {
+				return find_max_(node->left);
+			}
+			else {
+				return end();
+			}
+		}
+		return end();
+	}
+	Node* find_next(const T& key) const {
+		Node* node = find(key, begin());
+		if (node) {
+			if (node->right) {
+				return find_min_(node->right);
+			}
+			else {
+				return end();
+			}
+		}
+		return end();
+	}
+	Node* find_most_similar(const T& key) const {
+		Node* node = find_prev(key);
+		if (node) {
+			return node;
+		}
+		node = find_next(key);
+		return node;
+	}
+
+	void out(std::ostream& o, Node* node) const {
+		if (!node) return;
+		out(o, node->left);
+		o << node->data.first;
+		o << ' ';
+		out(o, node->right);
+	}
+	friend std::ostream& operator<<(std::ostream& o, const Tree& t) {
+		t.out(o, t.begin());
+		return o;
+	}
+};
+
