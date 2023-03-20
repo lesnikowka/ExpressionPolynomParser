@@ -6,6 +6,7 @@
 const size_t STANDART_CAPACITY = 100;
 const size_t STANDART_STEP = 3;
 const size_t SIMPLE_NUMBER_FOR_HASH = 3;
+const size_t MULTIPLIER = 2;
 
 const double MAXIMUM_OCCUPANCY = 0.7;
 
@@ -45,10 +46,47 @@ class HashTable {
 		return hash_code;
 	}
 
+	void insert_in_vector(const std::string& key, const T& value, std::vector<Tuple>& data, size_t capacity, size_t step) {
+		size_t index = hash(key) % capacity, cropped_index;
+
+		for (size_t num_of_passed_els = 0; num_of_passed_els <= capacity; index += step, num_of_passed_els++) {
+			cropped_index = index % capacity;
+
+			if (data[cropped_index].was_used == false) {
+
+				data[cropped_index].key = key;
+				data[cropped_index].value = value;
+				data[cropped_index].was_used = true;
+
+				break;
+			}
+		}
+	}
+
+	size_t change_step(size_t new_capacity) {
+		return STANDART_STEP;
+	}
+
+	size_t change_capacity(size_t capacity, size_t multiplier) {
+		return capacity * multiplier;
+	}
+
 	void recomposing() {
 		if ((double)_number_of_elements / _capacity < MAXIMUM_OCCUPANCY) return;
+		
+		size_t new_capacity = change_capacity(_capacity, MULTIPLIER);
+		size_t new_step = change_step(new_capacity);
 
+		std::vector<Tuple> new_data(new_capacity);
 
+		_capacity = new_capacity;
+		_step = new_step;
+
+		for (const auto& row : _data)
+			if (!row.is_deleted && row.was_used)
+				insert_in_vector(row.key, row.value, new_data, new_capacity, new_step);
+
+		_data = std::move(new_data);
 	}
 
 public:
@@ -69,21 +107,16 @@ public:
 	size_t step() { return _step; }
 	size_t size() { return _number_of_elements; }
 
-	void insert(std::pair<std::string, T> key_value) {
-		size_t index = hash(key_value.first)% _capacity, cropped_index;
+	void emplace(const std::string& key, const T& value) {
+		recomposing();
 
-		for (size_t num_of_passed_els = 0; num_of_passed_els <= _capacity; index += _step, num_of_passed_els++) {
-			cropped_index = index % _capacity;
+		insert_in_vector(key, value, _data, _capacity, _step);
 
-			if (_data[cropped_index].was_used == false) {
+		_number_of_elements++;
+	}
 
-				_data[cropped_index].key = key_value.first;
-				_data[cropped_index].value = key_value.second;
-				_data[cropped_index].was_used = true;
-
-				break;
-			}
-		}
+	void insert(const std::pair<std::string, T>& key_value) {
+		emplace(key_value.first, key_value.second);
 	}
 
 	void erase(const std::string& key) {
@@ -95,6 +128,8 @@ public:
 			if (_data[cropped_index].key == key) {
 
 				_data[cropped_index].is_deleted = true;
+
+				_number_of_elements--;
 
 				return;
 			}
