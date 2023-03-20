@@ -251,15 +251,6 @@ public:
 		if (!root) return 0;
 		return root->height;
 	}
-
-	void insert(const std::pair<T, Y>& pair) {
-		if (!root) {
-			root = new Node(pair.first, pair.second);
-		}
-		else if (!find(pair.first)) {
-			root = insert_(pair.first, pair.second, root);
-		}
-	}
 	void emplace(const T& key, const Y& value) {
 		if (!root) {
 			root = new Node(key, value);
@@ -267,6 +258,9 @@ public:
 		else if (!find(key)) {
 			root = insert_(key, value, root);
 		}
+	}
+	void insert(const std::pair<T, Y>& pair) {
+		emplace(pair.first, pair.second);
 	}
 	void erase(const T& key) {
 		if (!find(key)) throw std::exception("element was not founded");
