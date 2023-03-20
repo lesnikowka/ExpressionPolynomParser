@@ -2,21 +2,50 @@
 #include<string>
 
 template<typename T, typename D>
-class Tree {
+class RBTree {
+	enum Color {
+		black,
+		red,
+	};
 	struct Node {
 		Node* left;
 		Node* right;
+		Node* parent;
+		bool color;//0-black; 1-red
 		int height;
+		int black_height;
 		T key;
 		D element;
-		Node() { left = nullptr; right = nullptr; height = 0; }
-		Node(T key, D elem) :key(key), element(elem) { left = nullptr; right = nullptr; height = 0; };
-		Node(const Node& n) :key(key), element(n.element), left(n.left), right(n.right), height(n.height) {};
+		Node() {
+			left = nullptr;
+			right = nullptr;
+
+			parent = nullptr;
+
+			height = 0;
+			black_height = 0;
+			
+			color = Color::black;
+		}
+		Node(T key, D elem, Color c, Node* parent=nullptr) :key(key),parent(parent) ,element(elem), color(c) { left = nullptr;
+		right = nullptr;
+		
+		black_height = 0;
+		height = 0; 
+		};
+		Node(const Node& n) :
+			key(key), element(n.element), 
+			left(n.left), right(n.right), 
+			parent(n.parent),
+			height(n.height),black_height(n.black_height) {};
 		Node& operator=(const Node& n) {
 			key = n.key;
 			element = n.element;
 			left = n.left;
 			right = n.right;
+			parent = n.parent;
+			height = n.height;
+			black_height = n.black_height;
 			return *this;
 		}
 		bool operator<=(const Node& n)const { return key <= n.key; }
@@ -25,173 +54,198 @@ class Tree {
 		bool operator>(const Node& n)const { return key > n.key; }
 		friend std::ostream& operator<<(std::ostream& ostream, const Node* n) {
 			if (n == nullptr) return ostream << "Empty";
-			ostream << n->key << ":" << n->element;
+			ostream << n->key << ":" << n->element;// << "\n" << "Kids:" << ((n->left) ? n->left->key : 0) << ":" << ((n->right) ? n->right->key : 0);
 			return ostream;
 		}
 	};
 	Node* root;
+	void destructor(Node* t) {
+		if (t == nullptr) return;
+		//std::cout << t<<'\n';
+		if (t->left)destructor(t->left);
+		if (t->right)destructor(t->right);
+		delete t;
+	}
 
-	Node* prinsert(T key, D elem, Node* t) {
-		if (t == nullptr)
-			return new Node(key, elem);
-		if (t->key == key) return t;
-		if (t->key > key) {
-			t->left = prinsert(key, elem, t->left);
-			balance(t);
+
+
+	void balanceInsert(Node* t) {
+		if (!t) return;
+		if (t->parent == nullptr) { t->color = Color::black; return; }
+		if (t->parent->color == Color::black) return;
+		if (U(t)&&U(t)->color == Color::black) {
+			P(t)->color = Color::black;
+			U(t)->color = Color::black;
+			G(t)->color = Color::red;
+			balanceInsert(G(t)); 
+			return;
 		}
-		if (t->key < key) {
-			t->right = prinsert(key, elem, t->right);
+		if ((P(t)&&G(t)&&G(t)->left)&&(P(t) == G(t)->left)) {
+			if (t == P(t)->right)
+				rotateLeft(P(t));
+			rotateRight(G(t));
+		}
+		else if ((P(t) && G(t) && G(t)->right) &&P(t) == G(t)->right) {
+			if (t == P(t)->left)
+				rotateRight(P(t));
+			rotateLeft(G(t));
+		}
+	}
+
+	Node* pinsert(T key, D elem, Node* t,Node* pt=nullptr) {
+		//insert
+		bool flag = false;
+		if (t == nullptr) {
+			Node* tmp = new Node(key, elem, Color::red, pt);
+			if (pt&&key > pt->key)pt->right = tmp;
+			else if (pt&&key < pt->key)pt->left = tmp;
+			//std::cout << "inserted" + std::to_string(key) + ")"<< "6)" << this->find(6) << '\n';
+			//std::cout <<"inserted"+std::to_string(key)+")" << "7)" << this->find(7) << "\n\n";
+			return tmp;
+		}
+		if (key == t->key)return t;
+
+
+		if (key > t->key) {
+			if (!t->right) flag = true;
+			pinsert(key, elem, t->right, t);
+			if (flag) {
+				balanceInsert(t->right);
+			}
+			flag = false;
+		}
+		else if (key < t->key) {
+			if (!t->left) flag = true;
+			pinsert(key, elem, t->left, t);
+			if (flag) {
+				balanceInsert(t->left);
+			}
+			flag = false;
 		}
 
+
+		//height and black_height calculation
+		int hl=0, hr=0,bhl=0,bhr=0;
+		if (t->left) {
+			hl = t->left->height;
+			if (t->left->color == Color::black)
+				bhl = t->left->black_height;
+		}
+		if (t->right) {
+			hr = t->right->height;
+			if (t->right->color == Color::black)
+				bhr = t->right->black_height;
+		}
+		t->height = ((hl>hr) ? hl: hr)+1;
+		t->black_height = ((bhl > bhr) ? bhl : bhr)+1;
 		return t;
 	}
-	Node* prfind(T key, Node* t) {
+	Node* pfind(T key,Node* t) {
 		if (t == nullptr)return t;
-		if (t->key > key)return prfind(key, t->left);
-		else if (t->key < key)return prfind(key, t->right);
-		return t;
-	}
-	Node* preraseMax(Node* t) {
-		if (t->right)t->right = preraseMax(t->right);
-		else
-			return t->left;
-		return t;
-	}
-	Node* prerase(T key, Node* t) {
-		if (t == nullptr) return t;
-		if (t->key > key) {
-			t->left = prerase(key, t->left);
-			t->height--;
-		}
-		else if (t->key < key) {
-			t->right = prerase(key, t->right);
-			t->height--;
-		}
-		else {
-			Node* max = findMax(t->left);
-			Node* left = t->left, * right = t->right;
-			delete t;
-			max->right = right;
-			max->left = preraseMax(left);
-			return max;
-		}
-		return t;
-	}
-	int prtakeSize(int& res, Node* cur_node)const {
-		res++;
-		if (cur_node->right)
-			prtakeSize(res, cur_node->right);
-		if (cur_node->left)
-			prtakeSize(res, cur_node->left);
-
-		return res;
-	};
-	int prtakeHeight(Node* n) const {
-		int l = 0, r = 0;
-		if (!n)return 0;
-		if (n->left)l = prtakeHeight(n->left);
-		if (n->right)r = prtakeHeight(n->right);
-		return ((l > r) ? l : r) + 1;
-	}
-	Node* prfindNext(Node* cur_node, bool flag = false) {
-		if (!flag && cur_node->right) cur_node = prfindNext(cur_node->right, true);
-		else if (flag && cur_node->left)cur_node = prfindNext(cur_node->left, true);
-		return cur_node;
-	}
-	Node* prfindPrev(Node* cur_node, bool flag = false) {
-		if (!flag && cur_node->left) cur_node = prfindPrev(cur_node->left, true);
-		else if (flag && cur_node->right)cur_node = prfindPrev(cur_node->right, true);
-		return cur_node;
-	}
-	Node* balance(Node* t) {
-		int balfunc = takeHeight(t->right) - takeHeight(t->left);
-		if (balfunc == 2) {
-			if (takeHeight(t->right->right) - takeHeight(t->right->left) < 0)
-				rightRotate(t->right);
-			leftRotate(t);
-		}
-		else if (balfunc == -2) {
-			if (takeHeight(t->left->left) - takeHeight(t->left->right) < 0)
-				leftRotate(t->left);
-			rightRotate(t);
-		}
+		if (key > t->key) return pfind(key, t->right);
+		if (key < t->key) return pfind(key, t->left);
 		return t;
 	}
 
-	void rightRotate(Node* t) {
-
-		Node* new_local_root = t->left;
-		t->left = new_local_root->right;
-		new_local_root->right = t;
+	void rotateLeft(Node* t) {
+		Node* new_t = t->right;
+		t->right = new_t->left;
+		if (new_t->left) new_t->left->parent = t;
+		new_t->parent = t->parent;
+		if (!new_t->parent)root = new_t;
+		if (t->parent) {
+			if (t->parent->left == t) t->parent->left = new_t;
+			else t->parent->right = new_t;
+		}
+		new_t->left = t;
+		t->parent = new_t;
 	}
-	void leftRotate(Node* t) {
-		Node* new_local_root = t->right;
-		t->right = new_local_root->left;
-		new_local_root->left = t;
-	}
+	void rotateRight(Node* t) {
+		Node* new_t = t->left;
+		t->left = new_t->right;
+		if (new_t->right)
+			new_t->right->parent = t;
+		new_t->parent = t->parent;
+		if (!new_t->parent)root = new_t;
 
+		if (t->parent) {
+			if (t->parent->right == t) t->parent->right= new_t;
+			else t->parent->left = new_t;
+		}
+		new_t->right = t;
+		t->parent = new_t;
+
+
+	}
 public:
-	Tree() { root = nullptr; }
-
-	Tree(T key, D elem) {
+	RBTree() { root = nullptr; }
+	RBTree(T key, D elem) {
+		height = 0;
 		root = new Node(key, elem);
 	}
-	Tree(const Tree& t) { root = t.root; }
-	int takeSize() const {
-		int result = 0;
-		result = prtakeSize(result, root);
-		return result;
+	RBTree(const RBTree& t) { root = t.root; height = 0; }
+	~RBTree() {
+		destructor(root);
 	}
 
-	Tree& operator= (const Tree& t) { root = t.root; return*this; }
+	Node* insert(T key, D elem) {
+		Node* tmp = pinsert(key, elem, root);
+		if (root == nullptr) root = tmp;
 
-	int takeHeight(Node* t) const {
-		return prtakeHeight(t);
+		return tmp;
 	}
 
-	Node* findMax(Node* t)
-	{
-		if (t == nullptr || t->right == nullptr) return t;
-		else findMax(t->right);
+
+	Node* P(Node* t) {
+		return t->parent;
 	}
-	Node* findMin(Node* t)
-	{
-		if (t == nullptr || t->left == nullptr) return t;
-		else findMax(t->left);
+	Node* G(Node* t) {
+		return (t&&t->parent&&t->parent->parent)?t->parent->parent:nullptr;
 	}
+	Node* U(Node* t) {
+		if (!t)return t;
+		Node* u = (t->parent&&t->parent->parent)?t->parent->parent:nullptr;
+		if (!u) return u;
+		if (t->parent == u->left)return u->right;
+		else return u->left;
+	}
+	Node* S(Node* t) {
+		if (!t)return t;
+		if (!t->parent)return nullptr;
+		
+		if (t->parent->left == t)return t->parent->right;
+		else return t->parent->left;
+	}
+
+
+
+
 	Node* find(T key) {
-		return prfind(key, root);
+		return pfind(key, root);
 	}
-	void insert(T key, D elem) {
-		this->root = prinsert(key, elem, root);
+	int getHeight(T key) {
+		return find(key)->height;
 	}
-	void erase(T key) {
-		if (key != root->key)
-			prerase(key, root);
-		Node* right = root->right;
-		Node* newleft = findMin(root->right);
-		newleft->left = root->left;
-		delete root;
-		root = right;
+	int getBlackHeight(T key) {
+		return find(key)->black_height;
 	}
-
-	Node* findNext(T key) {
-		Node* node = find(key);
-		return prfindNext(node);
+	bool getColor(Node* t) {
+		return t->color;
 	}
-	Node* findPrev(T key) {
-		Node* node = find(key);
-		return prfindPrev(node);
+	Node* getParent(Node* t) {
+		if (t == nullptr)return nullptr;
+		return t->parent;
 	}
-
 	friend std::ostream& recOut(std::ostream& ostream, const Node* n) {
+		for (int i = 0; i < n->height; i++)
+			ostream << " ";
 		ostream << n << "\n";
 		if (n->left)recOut(ostream, n->left);
 		if (n->right)recOut(ostream, n->right);
 
 		return ostream;
 	}
-	friend std::ostream& operator<<(std::ostream& ostream, const Tree& t) {
+	friend std::ostream& operator<<(std::ostream& ostream, const RBTree& t) {
 		recOut(ostream, t.root);
 
 		return ostream;
