@@ -3,10 +3,9 @@
 #include <cmath>
 #include <vector>
 
-const size_t STANDART_CAPACITY = 100;
-const size_t STANDART_STEP = 3;
-const size_t SIMPLE_NUMBER_FOR_HASH = 3;
-const size_t MULTIPLIER = 2;
+const size_t STANDART_CAPACITY = 101;
+const size_t STANDART_STEP = 5;
+const size_t MULTIPLIER = 21;
 
 const double MAXIMUM_OCCUPANCY = 0.7;
 
@@ -37,17 +36,38 @@ class HashTable {
 	size_t _step;
 	size_t _number_of_elements;
 
+	bool is_simple(size_t number) {
+		int i = 2;
+		for (; i * i <= number; i++) 
+			if (number % i == 0) return false;
+		return true;
+	}
+
+	size_t make_simple(size_t number) {
+		while (!is_simple(number))
+			number--;
+
+		return number;
+	}
+
 	size_t hash(const std::string& s) const {
 		size_t hash_code = 0;
 
-		for (size_t i = 0; i < s.size(); i++)
-			hash_code += (size_t)s[i] * pow(SIMPLE_NUMBER_FOR_HASH, i);
+		for (char c : s) {
+			hash_code += (size_t)c;
+			hash_code += hash_code << 10;
+			hash_code += hash_code >> 6;
+		}
 
-		return hash_code;
+		hash_code += hash_code << 3;
+		hash_code ^= hash_code >> 11;
+		hash_code += hash_code << 15;
+
+		return hash_code % _capacity;
 	}
 
 	void insert_in_vector(const std::string& key, const T& value, std::vector<Tuple>& data, size_t capacity, size_t step) {
-		size_t index = hash(key) % capacity, cropped_index;
+		size_t index = hash(key), cropped_index;
 
 		for (size_t num_of_passed_els = 0; num_of_passed_els <= capacity; index += step, num_of_passed_els++) {
 			cropped_index = index % capacity;
@@ -67,14 +87,14 @@ class HashTable {
 		return STANDART_STEP;
 	}
 
-	size_t change_capacity(size_t capacity, size_t multiplier) {
-		return capacity * multiplier;
+	size_t change_capacity(size_t capacity) {
+		return make_simple(capacity * MULTIPLIER);
 	}
 
 	void recomposing() {
 		if ((double)_number_of_elements / _capacity < MAXIMUM_OCCUPANCY) return;
 		
-		size_t new_capacity = change_capacity(_capacity, MULTIPLIER);
+		size_t new_capacity = change_capacity(_capacity);
 		size_t new_step = change_step(new_capacity);
 
 		std::vector<Tuple> new_data(new_capacity);
@@ -96,10 +116,19 @@ public:
 
 	HashTable(const HashTable& ht) : _capacity(ht._capacity), _step(ht._step), _data(ht._data), _number_of_elements(ht._number_of_elements) {}
 
+	HashTable(HashTable&& ht) : _capacity(ht._capacity), _step(ht._step), _data(std::move(ht._data)), _number_of_elements(ht._number_of_elements) {}
+
 	HashTable& operator=(const HashTable& ht) {
 		_capacity = ht._capacity;
 		_step = ht._step;
 		_data = ht._data;
+		_number_of_elements = ht._number_of_elements;
+	}
+
+	HashTable& operator=(HashTable&& ht) {
+		_capacity = ht._capacity;
+		_step = ht._step;
+		_data = std::move(ht._data);
 		_number_of_elements = ht._number_of_elements;
 	}
 
@@ -120,7 +149,7 @@ public:
 	}
 
 	void erase(const std::string& key) {
-		size_t index = hash(key_value.first) % _capacity, cropped_index;
+		size_t index = hash(key_value.first), cropped_index;
 
 		for (size_t num_of_passed_els = 0; num_of_passed_els <= _capacity; index += _step, num_of_passed_els++) {
 			cropped_index = index % _capacity;
@@ -139,7 +168,7 @@ public:
 	}
 
 	T& find(const std::string& key) {
-		size_t index = hash(key) % _capacity, cropped_index;
+		size_t index = hash(key), cropped_index;
 
 		for (size_t num_of_passed_els = 0; num_of_passed_els <= _capacity; index += _step, num_of_passed_els++) {
 			cropped_index = index % _capacity;
