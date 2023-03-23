@@ -5,9 +5,9 @@
 #include<string>
 #include<map>
 
+#include"polynom.h"
 
 
-//abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ
 class Expression {
 	std::string source_str, modified_str;;
 	std::string alph_nums = "0123456789", 
@@ -20,10 +20,10 @@ class Expression {
 	std::vector<std::string>alph_constants = {
 	"pi","e"
 	};
-	std::map <std::string, double> operands;
-	std::map <std::string, double> constants = {
-		{"pi",3.1415926535897932384626433832795},
-		{"e",2.7182818284590452353602874713527}
+	std::map <std::string, Polynom> operands;
+	std::map <std::string, Polynom> constants = {
+		{"pi",Polynom("3.1415926535897932384626433832795")},
+		{"e",Polynom("2.7182818284590452353602874713527")}
 	};
 	std::map < char, int > priority = {
 		{'(',0},
@@ -34,7 +34,8 @@ class Expression {
 		{'*',2},
 		{'/',2},
 	};
-	double res;
+	
+	Polynom res;
 	bool is_correct;
 
 	bool expressionIsCorrect();
@@ -44,14 +45,14 @@ class Expression {
 	bool isVariable(std::string str);
 
 public:
-	Expression() :is_correct(false),res(0) {};
+	Expression() :is_correct(false),res(Polynom("0")) {};
 	Expression(std::string str);
 	std::string getSourceString() {
 		return source_str;
 	}
 	void rewriteForUnaryMinus();
 
-	double getResult() { return res; };
+	Polynom getResult() { return res; };
 	bool isCorrect() { return is_correct; }
 	std::string getAcceptableNums() { return alph_nums; }
 	std::string getAcceptableOperations() { return alph_operations; }
@@ -61,10 +62,11 @@ public:
 	std::vector<std::string> getPostfixForm() { return postfix_form; }
 
 	Expression& operator=(std::string str);
-	Expression& operator=(const Expression& exp);
+	Expression& operator=(Expression& exp);
 
 
 
 	friend std::istream& operator>>(std::istream& istr,Expression& exp);
 	friend std::ostream& operator<<(std::ostream& ostr,const Expression& exp);
 };
+
