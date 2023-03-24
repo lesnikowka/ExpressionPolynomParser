@@ -1,22 +1,75 @@
 #pragma once
 
+#include <stack>
+
 template <class T, class Y>
 class AVLTree {
 public:
 	struct Node {
-		std::pair<T, Y> data;
+		std::pair<T, Y> key_val;
 
 		Node* left;
 		Node* right;
 
 		int height;
 
-		Node() : left(nullptr), right(nullptr), height(1), data(T(), Y()) {}
+		Node() : left(nullptr), right(nullptr), height(1), key_val(T(), Y()) {}
 		Node(const T& key_, const Y& value_, Node* left_ = nullptr, Node* right_ = nullptr) {
-			data.first = key_; data.second = value_;
+			key_val.first = key_; key_val.second = value_;
 			left = left_; right = right_; height = 1;
 		}
 	};
+
+	class iterator {
+		friend class AVLTree;
+
+		std::stack<std::pair<Node*, std::pair<bool, bool>>> history;
+
+	public:
+		iterator() = delete;
+		iterator(Node* node) { history.push({ node, {true, true} }); }
+		iterator(const iterator& it) : history(it.history) {}
+
+		std::pair<T, Y> operator*() {
+			return history.top().first->key_val;
+		}
+
+		bool operator==(const iterator& it) const {
+			return history.top() == it.history.top();
+		}
+
+		bool operator!=(const iterator& it) {
+			return !operator==(it);
+		}
+
+		iterator& operator++() {
+			if (history.top().first->left && history.top().second.first) {
+				history.push({ history.top().first->left, {true, true} });
+			}
+			else if (history.top().first->right && history.top().second.second) {
+				history.push({history.top().first->right, { true, true }});
+			}
+			else {
+				if (history.size() == 1) {
+					history.pop();
+					history.push({ nullptr, {true, true } });
+				}
+				else {
+					Node* current = history.top().first;
+					history.pop();
+					if (history.top().first->left == current) {
+						history.top().second.first = false;
+					}
+					else {
+						history.top().second.second = false;
+					}
+					return operator++();
+				}
+			}
+			return *this;
+		}
+	};
+
 private:
 	Node* root = nullptr;
 
@@ -24,7 +77,7 @@ private:
 		if (!node) {
 			return new Node(key, value);
 		}
-		else if (key > node->data.first) {
+		else if (key > node->key_val.first) {
 			node->right = insert_(key, value, node->right);
 		}
 		else {
@@ -36,15 +89,15 @@ private:
 		return balance(node);
 	}
 	Node* erase_(const T& key, Node* node) {
-		if (key < node->data.first) {
+		if (key < node->key_val.first) {
 			node->left = erase_(key, node->left);
 		}
-		else if (key > node->data.first) {
+		else if (key > node->key_val.first) {
 			node->right = erase_(key, node->right);
 		}
 		else {
-			T key = node->data.first;
-			Node* prev = find_prev(node->data.first);
+			T key = node->key_val.first;
+			Node* prev = find_prev(node->key_val.first).history.top().first;
 
 
 			if (prev) {
@@ -69,8 +122,8 @@ private:
 
 	Node* find_(const T& key, Node* node)const {
 		if (!node) return nullptr;
-		if (node->data.first == key) return node;
-		if (key < node->data.first) {
+		if (node->key_val.first == key) return node;
+		if (key < node->key_val.first) {
 			return find_(key, node->left);
 		}
 		else {
@@ -185,7 +238,7 @@ private:
 		if (node == prev) {
 			return prev->left;
 		}
-		else if (node->data.first < prev->data.first) {
+		else if (node->key_val.first < prev->key_val.first) {
 			node->right = detach_prev(prev, node->right);
 		}
 		else {
@@ -207,7 +260,7 @@ private:
 	Node* copy(Node* node_for_copying) {
 		if (!node_for_copying) return nullptr;
 
-		Node* current_node = new Node(node_for_copying->data.first, node_for_copying->data.second);
+		Node* current_node = new Node(node_for_copying->key_val.first, node_for_copying->key_val.second);
 		current_node->height = node_for_copying->height;
 
 		current_node->right = copy(node_for_copying->right);
@@ -217,6 +270,14 @@ private:
 	}
 
 public:
+	iterator begin() {
+		return iterator(root);
+	}
+
+	iterator end() {
+		return iterator(nullptr);
+	}
+
 	AVLTree() = default;
 	~AVLTree() {
 		delete_tree(root);
@@ -248,7 +309,7 @@ public:
 		if (!root) {
 			root = new Node(key, value);
 		}
-		else if (!find(key)) {
+		else if (find(key) == end()) {
 			root = insert_(key, value, root);
 		}
 	}
@@ -256,59 +317,59 @@ public:
 		emplace(pair.first, pair.second);
 	}
 	void erase(const T& key) {
-		if (!find(key)) throw std::exception("element was not founded");
+		if (find(key) == end()) throw std::exception("element was not founded");
 		else {
 			root = erase_(key, root);
 		}
 
 	}
 
-	Node* find(const T& key) const {
-		return find_(key, root);
+	iterator find(const T& key) const {
+		return iterator(find_(key, root));
 	}
-	Node* find_max() const {
-		return find_max_(root);
+	iterator find_max() const {
+		return iterator(find_max_(root));
 	}
-	Node* find_min() const {
-		return find_min_(root);
+	iterator find_min() const {
+		return iterator(find_min_(root));
 	}
-	Node* find_prev(const T& key) const {
-		Node* node = find(key);
+	iterator find_prev(const T& key) const {
+		Node* node = find_(key, root);
 		if (node) {
 			if (node->left) {
-				return find_max_(node->left);
+				return iterator(find_max_(node->left));
 			}
 			else {
-				return nullptr;
+				return iterator(nullptr);
 			}
 		}
 		return nullptr;
 	}
-	Node* find_next(const T& key) const {
-		Node* node = find(key, root);
+	iterator find_next(const T& key) const {
+		Node* node = find_(key, root);
 		if (node) {
 			if (node->right) {
-				return find_min_(node->right);
+				return iterator(find_min_(node->right));
 			}
 			else {
-				return nullptr;
+				return iterator(nullptr);
 			}
 		}
 		return nullptr;
 	}
-	Node* find_most_similar(const T& key) const {
-		Node* node = find_prev(key);
+	iterator find_most_similar(const T& key) const {
+		Node* node = find_prev(key).history.top().first;
 		if (node) {
-			return node;
+			return iterator(node);
 		}
-		node = find_next(key);
-		return node;
+		node = find_next(key).history.top().first;
+		return iterator(node);
 	}
 
 	void out(std::ostream& o, Node* node) const {
 		if (!node) return;
 		out(o, node->left);
-		o << node->data.first;
+		o << node->key_val.first;
 		o << ' ';
 		out(o, node->right);
 	}

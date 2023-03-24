@@ -4,14 +4,6 @@
 
 template <class T1, class T2>
 class OrderedTable {
-	std::vector<std::pair<T1, T2>> _data;
-
-	class Comparator {
-	public:
-		bool operator()(const std::pair<T1, T2>& p1, const std::pair<T1, T2>& p2) const noexcept {
-			return p1.first < p2.first;
-		}
-	};
 public:
 	class iterator {
 		typename std::vector<std::pair<T1, T2>>::iterator _iterator;
@@ -53,6 +45,19 @@ public:
 			return _iterator != iterator._iterator;
 		}
 	};
+
+private:
+
+	std::vector<std::pair<T1, T2>> _data;
+
+	class Comparator {
+	public:
+		bool operator()(const std::pair<T1, T2>& p1, const std::pair<T1, T2>& p2) const noexcept {
+			return p1.first < p2.first;
+		}
+	};
+public:
+
 	iterator begin() {
 		return iterator(_data.begin());
 	}

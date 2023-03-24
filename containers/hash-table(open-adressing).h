@@ -12,6 +12,7 @@ const double MAXIMUM_OCCUPANCY = 0.7;
 
 template <typename T>
 class HashTableOpenAdressing {
+private:
 	struct Tuple {
 		std::pair<std::string, T> key_val;
 
@@ -27,6 +28,72 @@ class HashTableOpenAdressing {
 			is_deleted = t.is_deleted;
 		}
 	};
+public:
+	class iterator {
+		friend class HashTableOpenAdressing;
+
+		std::vector<Tuple>* _data;
+
+		size_t _index;
+
+		bool _is_end;
+
+	public:
+		iterator() = delete;
+		iterator(std::vector<Tuple>* data, size_t index, bool is_end) : _data(data), _index(index), _is_end(is_end) {}
+		iterator(const iterator& it) : _data(it._data), _index(it._index), _is_end(it._is_end) {}
+		iterator& operator=(const iterator& it) {
+			_data = it._data;
+			_index = it._index;
+			_is_end = it._is_end;
+		}
+
+		std::pair<std::string, T> operator*() {
+			if (_is_end) throw std::exception("end iterator");
+
+			return _data->operator[](_index).key_val;
+		}
+
+		bool operator==(const iterator& it) const {
+			if (it._index == _index && !(it._is_end ^ _is_end) || (it._is_end && _is_end))  return true;
+			return false;
+		}
+
+		bool operator!=(const iterator& it) const {
+			return !operator==(it);
+		}
+
+		iterator& operator++() {
+			if (_is_end) throw std::exception("end iterator");
+
+			size_t index = _index;
+
+			bool a = _data->operator[](index).was_used;
+			bool b = _data->operator[](index).is_deleted;
+
+			while (index < _data->size() && ((_data->operator[](index).is_deleted || !_data->operator[](index).was_used) || index == _index)) {
+				index++;
+			}
+
+			if (index == _data->size()) {
+				_is_end = true;
+			}
+
+			_index = index;
+
+			return *this;
+		}
+
+		iterator operator++(int) {
+			iterator result(*this);
+
+			operator++();
+
+			return result;
+		}
+	};
+
+private:
 
 	std::vector<Tuple> _data;
 
@@ -109,70 +176,9 @@ class HashTableOpenAdressing {
 	}
 
 public:
-	class iterator {
-		friend class HashTableOpenAdressing;
 
-		std::vector<Tuple>* _data;
 
-		size_t _index;
-
-		bool _is_end;
-
-	public:
-		iterator(std::vector<Tuple>* data, size_t index, bool is_end) : _data(data), _index(index), _is_end(is_end) {}
-		iterator(const iterator& it) : _data(it._data), _index(it._index), _is_end(it._is_end) {}
-		iterator& operator=(const iterator& it) {
-			_data = it._data;
-			_index = it._index;
-			_is_end = it._is_end;
-		}
-
-		T& operator*() {
-			if (_is_end) throw std::exception("end iterator");
-
-			return _data->operator[](_index).key_val.second;
-		}
-
-		bool operator==(const iterator& it) const {
-			if (it._index == _index && !(it._is_end ^ _is_end) || (it._is_end && _is_end))  return true;
-			return false;
-		}
-
-		bool operator!=(const iterator& it) const{
-			return !operator==(it);
-		}
-
-		iterator& operator++() {
-			if (_is_end) throw std::exception("end iterator");
-
-			size_t index = _index;
-
-			bool a = _data->operator[](index).was_used;
-			bool b = _data->operator[](index).is_deleted;
-
-			while (index < _data->size() && ((_data->operator[](index).is_deleted || !_data->operator[](index).was_used) || index == _index)) {
-				index++;
-			}
-
-			if (index == _data->size()) {
-				_is_end = true;
-			}
-
-			_index = index;
-
-			return *this;	
-		}
-
-		iterator operator++(int) {
-			iterator result(*this);
-
-			operator++();
-
-			return result;
-		}
-	};
-
-	iterator begin() const{
+	iterator begin(){
 		iterator it(&_data, 0, false);
 		
 		if (_number_of_elements == 0) {
@@ -185,7 +191,7 @@ public:
 		return it;
 	}
 
-	iterator end() const{
+	iterator end() {
 		return iterator(&_data, 0, true);
 	}
 
