@@ -30,7 +30,8 @@ public:
 			return *_iterator;
 		}
 		iterator operator++() {
-			return iterator(++_iterator);
+			++_iterator;
+			return iterator(_iterator);
 		}
 		iterator operator++(int) {
 			iterator result = *this;
