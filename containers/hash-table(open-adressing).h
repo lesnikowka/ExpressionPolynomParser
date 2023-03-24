@@ -248,16 +248,16 @@ public:
 		throw std::exception("element is not found");
 	}
 
-	std::pair<T, bool> find(const std::string& key) const {
+	iterator find(const std::string& key) const {
 		size_t index = hash(key), cropped_index;
 
 		for (size_t num_of_passed_els = 0; num_of_passed_els <= _capacity; index += _step, num_of_passed_els++) {
 			if (!_data[index].was_used) break;
 
 			if (_data[index].key_val.first == key && !_data[index].is_deleted) {
-				return { _data[index].key_val.second, true };
+				return iterator(&_data, index, false);
 			}
 		}
-		return { T(), false };
+		return iterator(&data, 0, true);
 	}
 };
