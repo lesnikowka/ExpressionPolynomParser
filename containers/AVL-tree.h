@@ -1,7 +1,7 @@
 #pragma once
 
 template <class T, class Y>
-class Tree {
+class AVLTree {
 public:
 	struct Node {
 		std::pair<T, Y> data;
@@ -68,7 +68,7 @@ private:
 	}
 
 	Node* find_(const T& key, Node* node)const {
-		if (!node) return end();
+		if (!node) return nullptr;
 		if (node->data.first == key) return node;
 		if (key < node->data.first) {
 			return find_(key, node->left);
@@ -78,7 +78,7 @@ private:
 		}
 	}
 	Node* find_max_(Node* node)const {
-		if (!node) return end();
+		if (!node) return nullptr;
 		if (!node->right) {
 			return node;
 		}
@@ -87,7 +87,7 @@ private:
 		}
 	}
 	Node* find_min_(Node* node)const {
-		if (!node) return end();
+		if (!node) return nullptr;
 		if (!node->left) {
 			return node;
 		}
@@ -217,34 +217,27 @@ private:
 	}
 
 public:
-	Tree() = default;
-	~Tree() {
+	AVLTree() = default;
+	~AVLTree() {
 		delete_tree(root);
 	}
-	Tree(const Tree& tree) {
+	AVLTree(const AVLTree& tree) {
 		root = copy(tree.root);
 	}
-	Tree(Tree&& tree) {
+	AVLTree(AVLTree&& tree) {
 		root = tree.root;
 		tree.root = nullptr;
 	}
-	Tree& operator=(const Tree& tree) {
+	AVLTree& operator=(const AVLTree& tree) {
 		delete_tree(root);
 		copy(tree.root);
 
 		return *this;
 	}
-	Tree& operator=(Tree&& tree) {
+	AVLTree& operator=(AVLTree&& tree) {
 		std::swap(root, tree.root);
 
 		return *this;
-	}
-
-	Node* begin() const {
-		return root;
-	}
-	Node* end() const {
-		return nullptr;
 	}
 
 	int height() {
@@ -271,13 +264,13 @@ public:
 	}
 
 	Node* find(const T& key) const {
-		return find_(key, begin());
+		return find_(key, root);
 	}
 	Node* find_max() const {
-		return find_max_(begin());
+		return find_max_(root);
 	}
 	Node* find_min() const {
-		return find_min_(begin());
+		return find_min_(root);
 	}
 	Node* find_prev(const T& key) const {
 		Node* node = find(key);
@@ -286,22 +279,22 @@ public:
 				return find_max_(node->left);
 			}
 			else {
-				return end();
+				return nullptr;
 			}
 		}
-		return end();
+		return nullptr;
 	}
 	Node* find_next(const T& key) const {
-		Node* node = find(key, begin());
+		Node* node = find(key, root);
 		if (node) {
 			if (node->right) {
 				return find_min_(node->right);
 			}
 			else {
-				return end();
+				return nullptr;
 			}
 		}
-		return end();
+		return nullptr;
 	}
 	Node* find_most_similar(const T& key) const {
 		Node* node = find_prev(key);
@@ -319,8 +312,8 @@ public:
 		o << ' ';
 		out(o, node->right);
 	}
-	friend std::ostream& operator<<(std::ostream& o, const Tree& t) {
-		t.out(o, t.begin());
+	friend std::ostream& operator<<(std::ostream& o, const AVLTree& t) {
+		t.out(o, t.root);
 		return o;
 	}
 };

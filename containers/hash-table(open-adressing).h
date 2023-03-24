@@ -10,7 +10,7 @@ const size_t MULTIPLIER = 21;
 const double MAXIMUM_OCCUPANCY = 0.7;
 
 template <typename T>
-class HashTable {
+class HashTableOpenAdressing {
 	struct Tuple {
 		std::string key;
 
@@ -83,8 +83,8 @@ class HashTable {
 		}
 	}
 
-	size_t change_step(size_t new_capacity) {
-		return STANDART_STEP;
+	size_t change_step(size_t old_capacity, size_t new_capacity, size_t step) {
+		return step * (new_capacity / old_capacity);
 	}
 
 	size_t change_capacity(size_t capacity) {
@@ -95,7 +95,7 @@ class HashTable {
 		if ((double)_number_of_elements / _capacity < MAXIMUM_OCCUPANCY) return;
 		
 		size_t new_capacity = change_capacity(_capacity);
-		size_t new_step = change_step(new_capacity);
+		size_t new_step = change_step(_capacity, new_capacity, _step);
 
 		std::vector<Tuple> new_data(new_capacity);
 
@@ -110,22 +110,27 @@ class HashTable {
 	}
 
 public:
-	HashTable() : _capacity(STANDART_CAPACITY), _step(STANDART_STEP), _number_of_elements(0) {
+	class iterator {
+
+	};
+
+
+	HashTableOpenAdressing() : _capacity(STANDART_CAPACITY), _step(STANDART_STEP), _number_of_elements(0) {
 		_data = std::vector<Tuple>(STANDART_CAPACITY);
 	}
 
-	HashTable(const HashTable& ht) : _capacity(ht._capacity), _step(ht._step), _data(ht._data), _number_of_elements(ht._number_of_elements) {}
+	HashTableOpenAdressing(const HashTableOpenAdressing& ht) : _capacity(ht._capacity), _step(ht._step), _data(ht._data), _number_of_elements(ht._number_of_elements) {}
 
-	HashTable(HashTable&& ht) : _capacity(ht._capacity), _step(ht._step), _data(std::move(ht._data)), _number_of_elements(ht._number_of_elements) {}
+	HashTableOpenAdressing(HashTableOpenAdressing&& ht) : _capacity(ht._capacity), _step(ht._step), _data(std::move(ht._data)), _number_of_elements(ht._number_of_elements) {}
 
-	HashTable& operator=(const HashTable& ht) {
+	HashTableOpenAdressing& operator=(const HashTableOpenAdressing& ht) {
 		_capacity = ht._capacity;
 		_step = ht._step;
 		_data = ht._data;
 		_number_of_elements = ht._number_of_elements;
 	}
 
-	HashTable& operator=(HashTable&& ht) {
+	HashTableOpenAdressing& operator=(HashTableOpenAdressing&& ht) {
 		_capacity = ht._capacity;
 		_step = ht._step;
 		_data = std::move(ht._data);
