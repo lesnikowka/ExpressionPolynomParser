@@ -28,8 +28,8 @@ class RBTree {
 			is_fict = 0;
 			color = Color::black;
 		}
-		Node(T key, D elem, Color c, Node* parent = nullptr) :key(key), parent(parent), element(elem), color(c) {
-			is_fict = 0;
+		Node(T key, D elem, Color c=Color::black,bool fict=false, Node* parent = nullptr) :key(key), parent(parent), element(elem), color(c) {
+			is_fict = fict;
 			left = nullptr;
 			right = nullptr;
 
@@ -50,14 +50,18 @@ class RBTree {
 			parent = n.parent;
 			height = n.height;
 			black_height = n.black_height;
+			is_fict = n.is_fict;
 			return *this;
 		}
 		friend std::ostream& operator<<(std::ostream& ostream, const Node* n) {
 			if (n == nullptr) return ostream << "Empty";
-			ostream << n->key << ":" << n->element << ((!n->color) ? "(black) " : "(red) ") << "Kids:" 
-				<< ((n&&n->left) ? n->left->key : 0) << ":" 
-				<< ((n&&n->right) ? n->right->key : 0);
-			ostream<<"  Parent:" << ((n && n->parent) ? n->parent->key : 0);
+			if (n->is_fict == false) {
+				ostream << n->key << ":" << n->element
+				<< ((!n->color) ? "(black) " : "(red) ") << "Kids:"
+					<< ((n && n->left) ? n->left->key : 0) << ":"
+					<< ((n && n->right) ? n->right->key : 0);
+				ostream << "  Parent:" << ((n && n->parent) ? n->parent->key : 0);
+			}
 			return ostream;
 		}
 
@@ -68,9 +72,19 @@ class RBTree {
 		if (t == nullptr) return;
 		if (t->left)destructor(t->left);
 		if (t->right)destructor(t->right);
+
 		delete t;
 	}
 
+	void createFict(Node* t) {
+		t->left = new Node();
+		t->left->is_fict = 1;
+		t->left->parent = t;
+		
+		t->right = new Node();
+		t->right->is_fict = 1;
+		t->right->parent = t;
+	}
 
 	//HORROR
 	void balanceInsert(Node* t) {
@@ -163,13 +177,22 @@ class RBTree {
 	Node* pinsert(T key, D elem, Node* t,Node* pt=nullptr) {
 		//insert
 		bool flag = false;
-		if (t == nullptr) {
-			Node* tmp = new Node(key, elem, Color::red, pt);
+		if (t->is_fict == true) {
+			
+			//Node* tmp = new Node(key, elem, Color::red, pt);
+			t->key = key;
+			t->element = elem;
+			t->parent = pt;
+			t->is_fict = false;
+			t->color = Color::red;
 
-			if (pt&&key > pt->key)pt->right = tmp;
-			else if (pt&&key < pt->key)pt->left = tmp;
-			balanceInsert(tmp);
-			return tmp;
+			createFict(t);
+
+			
+			if (pt&&key > pt->key)pt->right = t;
+			else if (pt&&key < pt->key)pt->left = t;
+			balanceInsert(t);
+			return t;
 		}
 		if (key == t->key)return t;
 
@@ -185,6 +208,7 @@ class RBTree {
 			flag = false;
 		}
 
+		/*
 		//height and black_height calculation
 		int hl=0, hr=0,bhl=0,bhr=0;
 		if (t->left) {
@@ -199,6 +223,7 @@ class RBTree {
 		}
 		t->height = ((hl>hr) ? hl: hr)+1;
 		t->black_height = ((bhl > bhr) ? bhl : bhr)+1;
+		*/
 		return t;
 	}
 	Node* pfind(T key,Node* t) {
@@ -249,85 +274,50 @@ class RBTree {
 		if (t->key > key) perase(key, t->left);
 		else if (t->key < key) perase(key, t->right);
 		else {
-			/*
-			bool is_balanced = false;
 			Node* prev = findMax(t->left);
-			Node* left = t->left, *right = t->right;
-			Node* tmp;
-			if (t == root) {
-				root = prev;
-			}
-			if (prev) {
-				if (prev != left) {
-					prev->parent = t->parent; 
+			Node* left = t->left, * right = t->right;
+			Node* x = prev->left;
 
-					if (prev->left) {
-						prev->left->parent = prev->parent;
-						prev->parent->right = prev->left;
-					}
-					else {
-						left->right = nullptr;
-					}
-						prev->left = left;
-						left->parent = prev;
-					
-					prev->right = right;
-					right->parent = prev->right;
-					
-				}
-				else {
-					prev->parent = t->parent;
-					prev->right = t->right;
-					t->right->parent = prev;
-					t->parent->left = prev;
-				}
-				
-				//
-				if (!left->right) {
-					left->right = new Node();
-					left->right->parent = left;
-					left->right->is_fict = 1;
-				}
-				//
-				prev->color = t->color;
+			if (t == prev) {
+				t->right->parent = t->parent;
+				(t->parent->left==t)?t->parent->left = t->right:t->parent->right=t->right;
+
+				delete t->left;
 				delete t;
-				t = prev;
-			}
-			else {
-				if (t->right) {
-					t->right->parent = t->parent;
-
-					t->parent->right = t->right;
-					right->color = t->color;
-					delete t;
-					t = right;
-				}
-				else {
-					balanceDelete(t);
-					is_balanced = true;
-					tmp = t->parent->left;
-					t->parent->right = nullptr;
-					delete t;
-					return ;
-				}
-			}
-			if (prev == root) {
-				balanceDelete(left->right);
-				is_balanced = true;
-				delete left->right;
-				left->right = nullptr;
 				return;
 			}
-			
-			if (prev&& prev != root && prev->left&& prev->left->color == Color::red) {
+			if (prev != left) {
+				x->parent = prev->parent;
+				prev->parent->right = x;
+			}
+			if (t->parent == nullptr) { 
+				root = prev;
+			}//root
+			Node* tmp = prev->parent;
+			prev->parent = t->parent;
+			if(t->parent)
+			(t->parent->left==t)?t->parent->left = prev:t->parent->right=prev;
+
+			if (prev != left) {
+				prev->left = left;
+				left->parent = prev;
+			}
+			prev->right = right; right->parent = prev;
+			prev->color = t->color;
+
+			if (t->parent == nullptr) {
+
+				balanceDelete(tmp->right);
+			}
+			if (prev && prev != root && prev->left && prev->left->color == Color::red) {
 				prev->left->color = Color::black;
 			}
-			else if (prev && prev->left && prev->left->color == Color::black && prev->color == Color::black&&!is_balanced) {
+			else if (prev && prev->left && prev->left->color == Color::black && prev->color == Color::black ) {
 				balanceDelete(t->left);
 			}
+			delete t;
 			
-			return ;
-			*/
+
 
 		}
 		return ;
@@ -357,26 +347,27 @@ class RBTree {
 
 	Node* findMax(Node* t)
 	{
-		if (t == nullptr || t->right == nullptr) return t;
+		if (t->is_fict==true) return t->parent;
 		else findMax(t->right);
 	}
 	Node* findMin(Node* t)
 	{
-		if (t == nullptr || t->left == nullptr) return t;
+		if (t->is_fict==true) return t->parent;
 		else findMax(t->left);
 	}
 
 	friend std::ostream& recOut(std::ostream& ostream, const Node* n) {
-		for (int i = 0; i < n->height; i++)
-			ostream << " ";
-		ostream << n << "\n";
-		if (n->left)recOut(ostream, n->left);
-		if (n->right)recOut(ostream, n->right);
-
+		if (n->is_fict == false) {
+			for (int i = 0; i < n->height; i++)
+				ostream << " ";
+			ostream << n << "\n";
+			if (n->left)recOut(ostream, n->left);
+			if (n->right)recOut(ostream, n->right);
+		}
 		return ostream;
 	}
 public:
-	RBTree() { root = nullptr; }
+	RBTree() { root = new Node(); root->is_fict = true; }
 	RBTree(T key, D elem) {
 		height = 0;
 		root = new Node(key, elem);
