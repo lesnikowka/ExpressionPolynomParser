@@ -11,12 +11,12 @@ namespace WinUi {
 	using namespace System::Drawing;
 
 	/// <summary>
-	/// Сводка для MyForm
+	/// Сводка для MainForm
 	/// </summary>
-	public ref class MyForm : public System::Windows::Forms::Form
+	public ref class MainForm : public System::Windows::Forms::Form
 	{
 	public:
-		MyForm(void)
+		MainForm(void)
 		{
 			InitializeComponent();
 			//
@@ -28,7 +28,7 @@ namespace WinUi {
 		/// <summary>
 		/// Освободить все используемые ресурсы.
 		/// </summary>
-		~MyForm()
+		~MainForm()
 		{
 			if (components)
 			{
@@ -56,13 +56,13 @@ namespace WinUi {
 		{
 			this->SuspendLayout();
 			// 
-			// MyForm
+			// MainForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(284, 261);
-			this->Name = L"MyForm";
-			this->Text = L"MyForm";
+			this->Name = L"MainForm";
+			this->Text = L"MainForm";
 			this->ResumeLayout(false);
 
 		}
