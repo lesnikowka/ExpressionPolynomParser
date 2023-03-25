@@ -268,6 +268,51 @@ class RBTree {
 
 	}
 
+	Node* swap(Node* t, Node* prev) {
+		Node* oldpos,*x=prev->left;
+		if(t->parent)
+		(t->parent->left == t) ? t->parent->left = prev : t->parent->right = t;
+
+		
+		if (t == prev) {
+			t->right->parent = t->parent;
+			(t->parent->left == t) ? t->parent->left = t->right : t->parent->right = t->right;
+			delete t->left;
+			oldpos = t->right;
+		}
+		else if (t->left != prev) {
+			prev->left->parent = prev->parent;
+			prev->parent->right = prev->left;
+			prev->parent = t->parent;
+
+			
+			oldpos = prev->left;
+
+
+			prev->left = t->left;
+			t->left->parent = prev;
+			delete prev->right;
+			prev->right = t->right;
+			t->right->parent = prev;
+
+		}
+		else {
+			oldpos = prev->left;
+			prev->parent = t->parent;
+			delete prev->right;
+			prev->right = t->right;
+			t->right->parent = prev;
+
+
+		}
+		
+		if (t == root) {
+			root = prev;
+		}
+		x->color = prev->color;
+		prev->color = t->color;
+		return oldpos;
+	}
 
 	void perase(T key, Node* t) {
 		if (t == nullptr) return ;
@@ -277,11 +322,27 @@ class RBTree {
 			Node* prev = findMax(t->left);
 			Node* left = t->left, * right = t->right;
 			Node* x = prev->left;
+			
+			Node* oldpos=swap(t, prev);
 
+			//std::cout << root<<'\n';
+			//std::cout << oldpos->parent;
+			balanceDelete(oldpos);
+			//if (oldpos->color == Color::red) {
+			//	oldpos->color = Color::black;
+			//}
+			//else if (oldpos  && oldpos->color == Color::black && oldpos->parent->color == Color::black) {
+			//	balanceDelete(oldpos);
+			//}
+			
+			delete t;
+			/*
 			if (t == prev) {
 				t->right->parent = t->parent;
 				(t->parent->left==t)?t->parent->left = t->right:t->parent->right=t->right;
 
+
+				t->right->color = t->color;
 				delete t->left;
 				delete t;
 				return;
@@ -295,9 +356,10 @@ class RBTree {
 			}//root
 			Node* tmp = prev->parent;
 			prev->parent = t->parent;
+			
 			if(t->parent)
 			(t->parent->left==t)?t->parent->left = prev:t->parent->right=prev;
-
+			
 			if (prev != left) {
 				prev->left = left;
 				left->parent = prev;
@@ -312,12 +374,15 @@ class RBTree {
 			if (prev && prev != root && prev->left && prev->left->color == Color::red) {
 				prev->left->color = Color::black;
 			}
+			//else if (prev->left->color == Color::black && prev->right->color == Color::black) {
+			//	balanceDelete(prev->left);
+			//}
 			else if (prev && prev->left && prev->left->color == Color::black && prev->color == Color::black ) {
 				balanceDelete(t->left);
 			}
 			delete t;
 			
-
+			*/
 
 		}
 		return ;
