@@ -269,6 +269,9 @@ class RBTree {
 	}
 
 	Node* swap(Node* t, Node* prev) {
+		//if (t->key == 1)
+		//	std::cout << t<<'\n' << prev;
+
 		Node* oldpos,*x=prev->left;
 		if(t->parent)
 		(t->parent->left == t) ? t->parent->left = prev : t->parent->right = t;
@@ -276,9 +279,11 @@ class RBTree {
 		
 		if (t == prev) {
 			t->right->parent = t->parent;
+			if(t->parent)
 			(t->parent->left == t) ? t->parent->left = t->right : t->parent->right = t->right;
 			delete t->left;
 			oldpos = t->right;
+			
 		}
 		else if (t->left != prev) {
 			prev->left->parent = prev->parent;
@@ -295,6 +300,8 @@ class RBTree {
 			prev->right = t->right;
 			t->right->parent = prev;
 
+			
+
 		}
 		else {
 			oldpos = prev->left;
@@ -303,12 +310,13 @@ class RBTree {
 			prev->right = t->right;
 			t->right->parent = prev;
 
-
+			
 		}
+		if (t == root && t == prev) {
+			root = prev->right;
+		}
+		else root = prev;
 		
-		if (t == root) {
-			root = prev;
-		}
 		x->color = prev->color;
 		prev->color = t->color;
 		return oldpos;
@@ -323,66 +331,15 @@ class RBTree {
 			Node* left = t->left, * right = t->right;
 			Node* x = prev->left;
 			
+			
+			
 			Node* oldpos=swap(t, prev);
-
-			//std::cout << root<<'\n';
-			//std::cout << oldpos->parent;
-			balanceDelete(oldpos);
-			//if (oldpos->color == Color::red) {
-			//	oldpos->color = Color::black;
-			//}
-			//else if (oldpos  && oldpos->color == Color::black && oldpos->parent->color == Color::black) {
-			//	balanceDelete(oldpos);
-			//}
+			
+			if((S(oldpos)&&S(oldpos)->is_fict==false)||oldpos->is_fict==false)
+				balanceDelete(oldpos);
+			
 			
 			delete t;
-			/*
-			if (t == prev) {
-				t->right->parent = t->parent;
-				(t->parent->left==t)?t->parent->left = t->right:t->parent->right=t->right;
-
-
-				t->right->color = t->color;
-				delete t->left;
-				delete t;
-				return;
-			}
-			if (prev != left) {
-				x->parent = prev->parent;
-				prev->parent->right = x;
-			}
-			if (t->parent == nullptr) { 
-				root = prev;
-			}//root
-			Node* tmp = prev->parent;
-			prev->parent = t->parent;
-			
-			if(t->parent)
-			(t->parent->left==t)?t->parent->left = prev:t->parent->right=prev;
-			
-			if (prev != left) {
-				prev->left = left;
-				left->parent = prev;
-			}
-			prev->right = right; right->parent = prev;
-			prev->color = t->color;
-
-			if (t->parent == nullptr) {
-
-				balanceDelete(tmp->right);
-			}
-			if (prev && prev != root && prev->left && prev->left->color == Color::red) {
-				prev->left->color = Color::black;
-			}
-			//else if (prev->left->color == Color::black && prev->right->color == Color::black) {
-			//	balanceDelete(prev->left);
-			//}
-			else if (prev && prev->left && prev->left->color == Color::black && prev->color == Color::black ) {
-				balanceDelete(t->left);
-			}
-			delete t;
-			
-			*/
 
 		}
 		return ;
