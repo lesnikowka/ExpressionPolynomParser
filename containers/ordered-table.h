@@ -13,6 +13,7 @@ public:
 		iterator() = delete;
 		iterator(const typename std::vector<std::pair<T1, T2>>::iterator& iterator) : _iterator(iterator) {}
 		iterator(const iterator& iterator) : _iterator(iterator._iterator) {}
+
 		iterator& operator=(const iterator& it) {
 			_iterator = it._iterator;
 			return *this;
@@ -21,27 +22,33 @@ public:
 		std::pair<T1, T2>& operator*() {
 			return *_iterator;
 		}
+
 		iterator operator++() {
 			++_iterator;
 			return iterator(_iterator);
 		}
+
 		iterator operator++(int) {
 			iterator result = *this;
 			operator++();
 			return result;
 		}
+
 		iterator operator--() {
 			return iterator(--_iterator);
 		}
+
 		iterator operator--(int) {
 			iterator result = *this;
 			operator--();
 			return result;
 		}
-		bool operator==(const iterator& iterator) {
+
+		bool operator==(const iterator& iterator) const{
 			return _iterator == iterator._iterator;
 		}
-		bool operator!=(const iterator& iterator) {
+
+		bool operator!=(const iterator& iterator) const{
 			return _iterator != iterator._iterator;
 		}
 	};
@@ -56,23 +63,44 @@ private:
 			return p1.first < p2.first;
 		}
 	};
-public:
 
+public:
 	iterator begin() {
 		return iterator(_data.begin());
 	}
 	iterator end() {
 		return iterator(_data.end());
 	}
+
+	OrderedTable() = default;
+	OrderedTable(const OrderedTable& o) = default;
+	OrderedTable(OrderedTable&& o) { _data = std::move(o._data); }
+
+	OrderedTable& operator=(const OrderedTable& o) = default;
+	OrderedTable& operator=(OrderedTable&& o) {
+		_data = std::move(o._data);
+		return *this;
+	}
+
+	bool operator==(const OrderedTable& o) const {
+		return _data == o._data;
+	}
+
+	bool operator!=(const OrderedTable& o) const {
+		return !operator==(o);
+	}
+
 	void insert(const std::pair<T1, T2>& row) {
 		if (find(row.first) == end()) {
 			Comparator comp;
 			_data.insert(std::upper_bound(_data.begin(), _data.end(), row, comp), row);
 		}
 	}
+
 	void emplace(const T1& key, const T2& data) {
 		insert({ key, data });
 	}
+
 	void erase(const T1& key) {
 		if (find(key) != end()) {
 			Comparator comp;
@@ -83,9 +111,11 @@ public:
 			throw std::exception("Out of the bounds");
 		}
 	}
+
 	void erase(iterator it) {
 		_data.erase(it._iterator);
 	}
+
 	iterator find(const T1& key) {
 		Comparator comp;
 		std::pair<T1, T2> pair(key, T2());
