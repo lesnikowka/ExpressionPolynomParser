@@ -315,7 +315,7 @@ class RBTree {
 		if (t == root && t == prev) {
 			root = prev->right;
 		}
-		else root = prev;
+		else if(t==root)root = prev;
 		
 		x->color = prev->color;
 		prev->color = t->color;
@@ -332,9 +332,10 @@ class RBTree {
 			Node* x = prev->left;
 			
 			
-			
+
 			Node* oldpos=swap(t, prev);
 			
+
 			if((S(oldpos)&&S(oldpos)->is_fict==false)||oldpos->is_fict==false)
 				balanceDelete(oldpos);
 			
