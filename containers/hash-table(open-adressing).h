@@ -4,9 +4,9 @@
 #include <vector>
 
 
-const size_t STANDART_CAPACITY = 101;
+const size_t STANDART_CAPACITY = 128;
 const size_t STANDART_STEP = 5;
-const size_t MULTIPLIER = 21;
+const size_t MULTIPLIER = 128;
 
 const double MAXIMUM_OCCUPANCY = 0.7;
 
@@ -100,21 +100,7 @@ private:
 	size_t _capacity;
 	size_t _step;
 	size_t _number_of_elements;
-	
 
-	bool is_simple(size_t number) {
-		int i = 2;
-		for (; i * i <= number; i++) 
-			if (number % i == 0) return false;
-		return true;
-	}
-
-	size_t make_simple(size_t number) {
-		while (!is_simple(number))
-			number--;
-
-		return number;
-	}
 
 	size_t hash(const std::string& s) const {
 		size_t hash_code = 0;
@@ -129,7 +115,7 @@ private:
 		hash_code ^= hash_code >> 11;
 		hash_code += hash_code << 15;
 
-		return hash_code % _capacity;
+		return hash_code & (_capacity - 1);
 	}
 
 	void insert_in_vector(const std::pair<std::string, T>& key_val, size_t index, std::vector<Tuple>& data, size_t capacity, size_t step) {
@@ -151,7 +137,7 @@ private:
 	}
 
 	size_t change_capacity(size_t capacity) {
-		return make_simple(capacity * MULTIPLIER);
+		return capacity * MULTIPLIER;
 	}
 
 	void recomposing() {
@@ -178,9 +164,9 @@ private:
 public:
 
 
-	iterator begin(){
+	iterator begin() {
 		iterator it(&_data, 0, false);
-		
+
 		if (_number_of_elements == 0) {
 			it._is_end = true;
 		}
@@ -218,7 +204,7 @@ public:
 		_number_of_elements = ht._number_of_elements;
 	}
 
-	size_t capacity() const noexcept{ return _capacity; }
+	size_t capacity() const noexcept { return _capacity; }
 	size_t step() const noexcept { return _step; }
 	size_t size() const noexcept { return _number_of_elements; }
 
@@ -255,7 +241,7 @@ public:
 	}
 
 	iterator find(const std::string& key) const {
-		size_t index = hash(key), cropped_index;
+		size_t index = hash(key);
 
 		for (size_t num_of_passed_els = 0; num_of_passed_els <= _capacity; index += _step, num_of_passed_els++) {
 			if (!_data[index].was_used) break;
@@ -264,6 +250,6 @@ public:
 				return iterator(&_data, index, false);
 			}
 		}
-		return iterator(&data, 0, true);
+		return iterator(&_data, 0, true);
 	}
 };
