@@ -18,11 +18,13 @@ project(ui CXX)
 
 set(TARGET_H
   MyForm.h
+  MyForm1.h
   #WindowsFormsResx/Header.h
   )
 
 set(TARGET_SRC
   MyForm.cpp
+  MyForm1.cpp
   #WindowsFormsResx/Source.cpp
   )
 set_source_files_properties(${TARGET_SRC} PROPERTIES COMPILE_FLAGS "/clr")
@@ -32,7 +34,9 @@ set(TARGET_RESX
   )
 
 set(TARGET_LIBRARIES ${SYSLIBS})
+
 add_executable(ui ${TARGET_SRC} ${TARGET_H} ${TARGET_RESX})
+
 if(NOT CMAKE_GENERATOR MATCHES "Visual Studio 1[0-6]")
   # VS 17 2022 and above require a global mark on managed assemblies.
   # CMake adds this automatically when using COMMON_LANGUAGE_RUNTIME,

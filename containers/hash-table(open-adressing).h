@@ -6,7 +6,7 @@
 
 const size_t STANDART_CAPACITY = 128;
 const size_t STANDART_STEP = 5;
-const size_t MULTIPLIER = 128;
+const size_t MULTIPLIER = 8;
 
 const double MAXIMUM_OCCUPANCY = 0.7;
 
@@ -36,27 +36,26 @@ public:
 
 		size_t _index;
 
-		bool _is_end;
-
 	public:
 		iterator() = delete;
-		iterator(std::vector<Tuple>* data, size_t index, bool is_end) : _data(data), _index(index), _is_end(is_end) {}
-		iterator(const iterator& it) : _data(it._data), _index(it._index), _is_end(it._is_end) {}
+		iterator(std::vector<Tuple>* data, size_t index) : _data(data), _index(index) {}
+		iterator(const iterator& it) : _data(it._data), _index(it._index) {}
 		iterator& operator=(const iterator& it) {
 			_data = it._data;
 			_index = it._index;
-			_is_end = it._is_end;
+			return *this;
 		}
 
 		std::pair<std::string, T> operator*() {
-			if (_is_end) throw std::exception("end iterator");
+			if (_index == _data->size()) throw std::exception("end iterator");
 
 			return _data->operator[](_index).key_val;
 		}
 
 		bool operator==(const iterator& it) const {
-			if (it._index == _index && !(it._is_end ^ _is_end) || (it._is_end && _is_end))  return true;
-			return false;
+			if (_data != it._data) throw std::exception("iterators from different tables");
+
+			return (_index == it._index);
 		}
 
 		bool operator!=(const iterator& it) const {
@@ -64,7 +63,7 @@ public:
 		}
 
 		iterator& operator++() {
-			if (_is_end) throw std::exception("end iterator");
+			if (_index == _data->size()) throw std::exception("end iterator");
 
 			size_t index = _index;
 
@@ -73,10 +72,6 @@ public:
 
 			while (index < _data->size() && ((_data->operator[](index).is_deleted || !_data->operator[](index).was_used) || index == _index)) {
 				index++;
-			}
-
-			if (index == _data->size()) {
-				_is_end = true;
 			}
 
 			_index = index;
@@ -120,7 +115,7 @@ private:
 
 	void insert_in_vector(const std::pair<std::string, T>& key_val, size_t index, std::vector<Tuple>& data, size_t capacity, size_t step) {
 
-		for (size_t num_of_passed_els = 0; num_of_passed_els <= capacity; index += step, num_of_passed_els++) {
+		for (size_t num_of_passed_els = 0; num_of_passed_els <= capacity; index = crop_index(index + step), num_of_passed_els++) {
 
 			if (data[index].was_used == false) {
 
@@ -132,8 +127,16 @@ private:
 		}
 	}
 
+	size_t crop_index(size_t index) {
+		return index & (_capacity - 1);
+	}
+
 	size_t change_step(size_t old_capacity, size_t new_capacity, size_t step) {
-		return step * (new_capacity / old_capacity);
+		size_t new_step = step * (new_capacity / old_capacity);
+
+		if (new_step & 1 == 0) new_step--;
+
+		return new_step;
 	}
 
 	size_t change_capacity(size_t capacity) {
@@ -178,7 +181,7 @@ public:
 	}
 
 	iterator end() {
-		return iterator(&_data, 0, true);
+		return iterator(&_data, _data.size(), true);
 	}
 
 
@@ -215,7 +218,7 @@ public:
 	void insert(const std::pair<std::string, T>& key_value) {
 		recomposing();
 
-		size_t hash_code = hash(key_value.first);
+		size_t hash_code = crop_index(hash(key_value.first));
 
 		insert_in_vector(key_value, hash_code, _data, _capacity, _step);
 
@@ -223,9 +226,9 @@ public:
 	}
 
 	void erase(const std::string& key) {
-		size_t index = hash(key), cropped_index;
+		size_t index = crop_index(hash(key));
 
-		for (size_t num_of_passed_els = 0; num_of_passed_els <= _capacity; index += _step, num_of_passed_els++) {
+		for (size_t num_of_passed_els = 0; num_of_passed_els <= _capacity; index = crop_index(index + _step), num_of_passed_els++) {
 
 			if (_data[index].key_val.first == key) {
 
@@ -241,9 +244,9 @@ public:
 	}
 
 	iterator find(const std::string& key) const {
-		size_t index = hash(key);
+		size_t index = crop_index(hash(key));
 
-		for (size_t num_of_passed_els = 0; num_of_passed_els <= _capacity; index += _step, num_of_passed_els++) {
+		for (size_t num_of_passed_els = 0; num_of_passed_els <= _capacity; crop_index(index + _step), num_of_passed_els++) {
 			if (!_data[index].was_used) break;
 
 			if (_data[index].key_val.first == key && !_data[index].is_deleted) {
