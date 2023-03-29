@@ -24,7 +24,6 @@ set(TARGET_H
 
 set(TARGET_SRC
   MyForm.cpp
-  MyForm1.cpp
   #WindowsFormsResx/Source.cpp
   )
 set_source_files_properties(${TARGET_SRC} PROPERTIES COMPILE_FLAGS "/clr")
@@ -37,9 +36,7 @@ set(TARGET_LIBRARIES ${SYSLIBS})
 
 add_executable(ui ${TARGET_SRC} ${TARGET_H} ${TARGET_RESX})
 
-
-target_link_libraries(ui ${MP2_CUSTOM_PROJECT} expressions containers)
-
+target_link_libraries(ui ${TARGET_LIBRARIES})
 
 
 if(NOT CMAKE_GENERATOR MATCHES "Visual Studio 1[0-6]")

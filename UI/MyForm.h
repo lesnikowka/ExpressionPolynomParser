@@ -1,6 +1,7 @@
 #pragma once
 #include "MyForm1.h"
 
+
 namespace Project3 {
 
 	using namespace System;
@@ -270,7 +271,7 @@ private: System::Void label4_Click(System::Object^ sender, System::EventArgs^ e)
 private: System::Void aVLtreeToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
 }
 private: System::Void òåñòèðîâàíèåÊîíòåéíåðîâToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
-	form1->Show();
+	(gcnew MyForm1)->Show();
 }
 };
 }

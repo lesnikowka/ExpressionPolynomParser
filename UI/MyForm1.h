@@ -1,4 +1,7 @@
 #pragma once
+#include "../include/polynom.h"
+#include "../expressions/expression.h"
+
 
 namespace Project3 {
 
@@ -63,6 +66,7 @@ namespace Project3 {
 		}
 #pragma endregion
 	private: System::Void MyForm1_Load(System::Object^ sender, System::EventArgs^ e) {
+		Polynom p("x");
 	}
 	};
 }
