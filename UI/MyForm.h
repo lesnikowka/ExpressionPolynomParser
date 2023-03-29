@@ -1,4 +1,5 @@
 #pragma once
+#include "MyForm1.h"
 
 namespace Project3 {
 
@@ -34,8 +35,8 @@ namespace Project3 {
 				delete components;
 			}
 		}
+	private: MyForm1^ form1;
 	private: System::Windows::Forms::TextBox^ textBox1;
-
 	private: System::Windows::Forms::TextBox^ textBox2;
 	private: System::Windows::Forms::TextBox^ textBox3;
 	private: System::Windows::Forms::TextBox^ textBox4;
@@ -51,6 +52,7 @@ namespace Project3 {
 	private: System::Windows::Forms::ToolStripMenuItem^ неупорядоченнаяТаблицаToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^ хештаблицаметодЦепочекToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^ хештаблицаметодОткрытойАдресацииToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^ тестированиеКонтейнеровToolStripMenuItem;
 
 	protected:
 
@@ -70,6 +72,7 @@ namespace Project3 {
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			this->form1 = gcnew MyForm1;
 			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
 			this->textBox2 = (gcnew System::Windows::Forms::TextBox());
 			this->textBox3 = (gcnew System::Windows::Forms::TextBox());
@@ -86,6 +89,7 @@ namespace Project3 {
 			this->неупорядоченнаяТаблицаToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->хештаблицаметодЦепочекToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->хештаблицаметодОткрытойАдресацииToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->тестированиеКонтейнеровToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->menuStrip1->SuspendLayout();
 			this->SuspendLayout();
 			// 
@@ -157,7 +161,13 @@ namespace Project3 {
 			// 
 			// menuStrip1
 			// 
-			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->aVLtreeToolStripMenuItem });
+			this->menuStrip1->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
+			this->menuStrip1->GripStyle = System::Windows::Forms::ToolStripGripStyle::Visible;
+			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) {
+				this->aVLtreeToolStripMenuItem,
+					this->тестированиеКонтейнеровToolStripMenuItem
+			});
+			this->menuStrip1->LayoutStyle = System::Windows::Forms::ToolStripLayoutStyle::HorizontalStackWithOverflow;
 			this->menuStrip1->Location = System::Drawing::Point(0, 0);
 			this->menuStrip1->Name = L"menuStrip1";
 			this->menuStrip1->Size = System::Drawing::Size(315, 24);
@@ -179,25 +189,25 @@ namespace Project3 {
 			// dToolStripMenuItem
 			// 
 			this->dToolStripMenuItem->Name = L"dToolStripMenuItem";
-			this->dToolStripMenuItem->Size = System::Drawing::Size(306, 22);
+			this->dToolStripMenuItem->Size = System::Drawing::Size(222, 22);
 			this->dToolStripMenuItem->Text = L"AVL дерево";
 			// 
 			// dToolStripMenuItem1
 			// 
 			this->dToolStripMenuItem1->Name = L"dToolStripMenuItem1";
-			this->dToolStripMenuItem1->Size = System::Drawing::Size(306, 22);
+			this->dToolStripMenuItem1->Size = System::Drawing::Size(222, 22);
 			this->dToolStripMenuItem1->Text = L"R-B дерево";
 			// 
 			// упорядоченнаяТаблицаToolStripMenuItem
 			// 
 			this->упорядоченнаяТаблицаToolStripMenuItem->Name = L"упорядоченнаяТаблицаToolStripMenuItem";
-			this->упорядоченнаяТаблицаToolStripMenuItem->Size = System::Drawing::Size(306, 22);
+			this->упорядоченнаяТаблицаToolStripMenuItem->Size = System::Drawing::Size(222, 22);
 			this->упорядоченнаяТаблицаToolStripMenuItem->Text = L"Упорядоченная таблица";
 			// 
 			// неупорядоченнаяТаблицаToolStripMenuItem
 			// 
 			this->неупорядоченнаяТаблицаToolStripMenuItem->Name = L"неупорядоченнаяТаблицаToolStripMenuItem";
-			this->неупорядоченнаяТаблицаToolStripMenuItem->Size = System::Drawing::Size(306, 22);
+			this->неупорядоченнаяТаблицаToolStripMenuItem->Size = System::Drawing::Size(222, 22);
 			this->неупорядоченнаяТаблицаToolStripMenuItem->Text = L"Неупорядоченная таблица";
 			// 
 			// хештаблицаметодЦепочекToolStripMenuItem
@@ -212,10 +222,18 @@ namespace Project3 {
 			this->хештаблицаметодОткрытойАдресацииToolStripMenuItem->Size = System::Drawing::Size(222, 22);
 			this->хештаблицаметодОткрытойАдресацииToolStripMenuItem->Text = L"Хеш-таблица OA";
 			// 
+			// тестированиеКонтейнеровToolStripMenuItem
+			// 
+			this->тестированиеКонтейнеровToolStripMenuItem->Name = L"тестированиеКонтейнеровToolStripMenuItem";
+			this->тестированиеКонтейнеровToolStripMenuItem->Size = System::Drawing::Size(170, 20);
+			this->тестированиеКонтейнеровToolStripMenuItem->Text = L"Тестирование контейнеров";
+			this->тестированиеКонтейнеровToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::тестированиеКонтейнеровToolStripMenuItem_Click);
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
+			this->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
 			this->ClientSize = System::Drawing::Size(315, 261);
 			this->Controls->Add(this->button2);
 			this->Controls->Add(this->label3);
@@ -250,6 +268,9 @@ namespace Project3 {
 private: System::Void label4_Click(System::Object^ sender, System::EventArgs^ e) {
 }
 private: System::Void aVLtreeToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
+}
+private: System::Void тестированиеКонтейнеровToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
+	form1->Show();
 }
 };
 }
