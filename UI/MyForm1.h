@@ -3,7 +3,7 @@
 #include "../expressions/expression.h"
 
 
-namespace Project3 {
+namespace ui {
 
 	using namespace System;
 	using namespace System::ComponentModel;

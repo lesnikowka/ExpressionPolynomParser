@@ -10,11 +10,11 @@ const size_t MULTIPLIER = 8;
 
 const double MAXIMUM_OCCUPANCY = 0.7;
 
-template <typename T>
+template <class Y, class T>
 class HashTableOpenAdressing {
 private:
 	struct Tuple {
-		std::pair<std::string, T> key_val;
+		std::pair<Y, T> key_val;
 
 		bool was_used;
 		bool is_deleted;
@@ -38,7 +38,7 @@ public:
 
 	public:
 		iterator() = delete;
-		iterator(std::vector<Tuple>* data, size_t index) : _data(data), _index(index) {}
+		iterator(typename std::vector<Tuple>* data, size_t index) : _data(data), _index(index) {}
 		iterator(const iterator& it) : _data(it._data), _index(it._index) {}
 		iterator& operator=(const iterator& it) {
 			_data = it._data;
@@ -96,24 +96,10 @@ private:
 	size_t _step;
 	size_t _number_of_elements;
 
+	std::pair<size_t, size_t> shift;
 
-	size_t hash(const std::string& s) const {
-		size_t hash_code = 0;
 
-		for (char c : s) {
-			hash_code += (size_t)c;
-			hash_code += hash_code << 10;
-			hash_code += hash_code >> 6;
-		}
-
-		hash_code += hash_code << 3;
-		hash_code ^= hash_code >> 11;
-		hash_code += hash_code << 15;
-
-		return hash_code & (_capacity - 1);
-	}
-
-	void insert_in_vector(const std::pair<std::string, T>& key_val, size_t index, std::vector<Tuple>& data, size_t capacity, size_t step) {
+	void insert_in_vector(const std::pair<Y, T>& key_val, size_t index, std::vector<Tuple>& data, size_t capacity, size_t step) {
 
 		for (size_t num_of_passed_els = 0; num_of_passed_els <= capacity; index = crop_index(index + step), num_of_passed_els++) {
 
@@ -157,7 +143,7 @@ private:
 
 		for (const auto& row : _data)
 			if (!row.is_deleted && row.was_used) {
-				size_t hash_code = hash(row.key_val.first);
+				size_t hash_code = hash(row.key_val.first, shift);
 				insert_in_vector(row.key_val, hash_code, new_data, new_capacity, new_step);
 			}
 
@@ -168,10 +154,10 @@ public:
 
 
 	iterator begin() {
-		iterator it(&_data, 0, false);
+		iterator it(&_data, 0);
 
 		if (_number_of_elements == 0) {
-			it._is_end = true;
+			it._index = _data.size();
 		}
 		else if (!_data[0].was_used || _data[0].is_deleted) {
 			++it;
@@ -181,17 +167,22 @@ public:
 	}
 
 	iterator end() {
-		return iterator(&_data, _data.size(), true);
+		return iterator(&_data, _data.size());
 	}
 
 
 	HashTableOpenAdressing() : _capacity(STANDART_CAPACITY), _step(STANDART_STEP), _number_of_elements(0) {
 		_data = std::vector<Tuple>(STANDART_CAPACITY);
+		std::srand(std::time(nullptr));
+		shift.first = std::rand() % 100;
+		shift.second = std::rand() % 100;
 	}
 
-	HashTableOpenAdressing(const HashTableOpenAdressing& ht) : _capacity(ht._capacity), _step(ht._step), _data(ht._data), _number_of_elements(ht._number_of_elements) {}
+	HashTableOpenAdressing(const HashTableOpenAdressing& ht) : _capacity(ht._capacity), _step(ht._step), 
+		_data(ht._data), _number_of_elements(ht._number_of_elements), shift(ht.shift) {}
 
-	HashTableOpenAdressing(HashTableOpenAdressing&& ht) : _capacity(ht._capacity), _step(ht._step), _data(std::move(ht._data)), _number_of_elements(ht._number_of_elements) {}
+	HashTableOpenAdressing(HashTableOpenAdressing&& ht) : _capacity(ht._capacity), _step(ht._step), _data(std::move(ht._data)), 
+		_number_of_elements(ht._number_of_elements), shift(ht.shift) {}
 
 	HashTableOpenAdressing& operator=(const HashTableOpenAdressing& ht) {
 		_capacity = ht._capacity;
@@ -211,22 +202,22 @@ public:
 	size_t step() const noexcept { return _step; }
 	size_t size() const noexcept { return _number_of_elements; }
 
-	void emplace(const std::string& key, const T& value) {
+	void emplace(const Y& key, const T& value) {
 		insert(std::make_pair(key, value));
 	}
 
-	void insert(const std::pair<std::string, T>& key_value) {
+	void insert(const std::pair<Y, T>& key_value) {
 		recomposing();
 
-		size_t hash_code = crop_index(hash(key_value.first));
+		size_t hash_code = crop_index(hash(key_value.first, shift));
 
 		insert_in_vector(key_value, hash_code, _data, _capacity, _step);
 
 		_number_of_elements++;
 	}
 
-	void erase(const std::string& key) {
-		size_t index = crop_index(hash(key));
+	void erase(const Y& key) {
+		size_t index = crop_index(hash(key, shift));
 
 		for (size_t num_of_passed_els = 0; num_of_passed_els <= _capacity; index = crop_index(index + _step), num_of_passed_els++) {
 
@@ -243,8 +234,8 @@ public:
 		throw std::exception("element is not found");
 	}
 
-	iterator find(const std::string& key) const {
-		size_t index = crop_index(hash(key));
+	iterator find(const Y& key) const {
+		size_t index = crop_index(hash(key), shift);
 
 		for (size_t num_of_passed_els = 0; num_of_passed_els <= _capacity; crop_index(index + _step), num_of_passed_els++) {
 			if (!_data[index].was_used) break;
@@ -256,3 +247,31 @@ public:
 		return iterator(&_data, 0, true);
 	}
 };
+
+template<class A>
+size_t hash(const A& key, const std::pair<size_t, size_t>& shift) {
+	return key.hash();
+}
+
+
+template<>
+size_t hash<std::string>(const std::string& key, const std::pair<size_t, size_t>& shift) {
+	size_t hash_code = 0;
+
+	for (char c : key) {
+		hash_code += (size_t)c;
+		hash_code += hash_code << 10;
+		hash_code += hash_code >> 6;
+	}
+
+	hash_code += hash_code << 3;
+	hash_code ^= hash_code >> 11;
+	hash_code += hash_code << 15;
+
+	return hash_code * shift.first + shift.second;
+}
+
+//template<>
+//size_t hash<int>(const int& key) {
+//	
+//}

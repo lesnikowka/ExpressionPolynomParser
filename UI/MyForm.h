@@ -2,7 +2,7 @@
 #include "MyForm1.h"
 
 
-namespace Project3 {
+namespace ui {
 
 	using namespace System;
 	using namespace System::ComponentModel;
@@ -36,6 +36,9 @@ namespace Project3 {
 				delete components;
 			}
 		}
+
+	private: System::String^ usedContainerName = L"Тип контейнера";
+
 	private: MyForm1^ form1;
 	private: System::Windows::Forms::TextBox^ textBox1;
 	private: System::Windows::Forms::TextBox^ textBox2;
@@ -44,6 +47,7 @@ namespace Project3 {
 	private: System::Windows::Forms::Label^ label1;
 	private: System::Windows::Forms::Label^ label2;
 	private: System::Windows::Forms::Label^ label3;
+	private: System::Windows::Forms::Label^ label4;
 	private: System::Windows::Forms::Button^ button2;
 	private: System::Windows::Forms::MenuStrip^ menuStrip1;
 	private: System::Windows::Forms::ToolStripMenuItem^ aVLtreeToolStripMenuItem;
@@ -81,6 +85,7 @@ namespace Project3 {
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->label2 = (gcnew System::Windows::Forms::Label());
 			this->label3 = (gcnew System::Windows::Forms::Label());
+			this->label4 = (gcnew System::Windows::Forms::Label());
 			this->button2 = (gcnew System::Windows::Forms::Button());
 			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
 			this->aVLtreeToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -151,6 +156,15 @@ namespace Project3 {
 			this->label3->TabIndex = 7;
 			this->label3->Text = L"Z:";
 			// 
+			// label4
+			// 
+			this->label4->AutoSize = true;
+			this->label4->Location = System::Drawing::Point(10, 100);
+			this->label4->Name = L"label4";
+			this->label4->Size = System::Drawing::Size(17, 13);
+			this->label4->TabIndex = 7;
+			this->label4->Text = L"Result: ";
+			// 
 			// button2
 			// 
 			this->button2->Location = System::Drawing::Point(220, 56);
@@ -184,7 +198,7 @@ namespace Project3 {
 			});
 			this->aVLtreeToolStripMenuItem->Name = L"aVLtreeToolStripMenuItem";
 			this->aVLtreeToolStripMenuItem->Size = System::Drawing::Size(107, 20);
-			this->aVLtreeToolStripMenuItem->Text = L"Тип контейнера";
+			this->aVLtreeToolStripMenuItem->Text = this->usedContainerName;
 			this->aVLtreeToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::aVLtreeToolStripMenuItem_Click);
 			// 
 			// dToolStripMenuItem
@@ -222,6 +236,7 @@ namespace Project3 {
 			this->хештаблицаметодОткрытойАдресацииToolStripMenuItem->Name = L"хештаблицаметодОткрытойАдресацииToolStripMenuItem";
 			this->хештаблицаметодОткрытойАдресацииToolStripMenuItem->Size = System::Drawing::Size(222, 22);
 			this->хештаблицаметодОткрытойАдресацииToolStripMenuItem->Text = L"Хеш-таблица OA";
+			this->хештаблицаметодОткрытойАдресацииToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::хештаблицаметодОткрытойАдресацииToolStripMenuItem_Click);
 			// 
 			// тестированиеКонтейнеровToolStripMenuItem
 			// 
@@ -238,6 +253,7 @@ namespace Project3 {
 			this->ClientSize = System::Drawing::Size(315, 261);
 			this->Controls->Add(this->button2);
 			this->Controls->Add(this->label3);
+			this->Controls->Add(this->label4);
 			this->Controls->Add(this->label2);
 			this->Controls->Add(this->label1);
 			this->Controls->Add(this->textBox4);
@@ -272,6 +288,9 @@ private: System::Void aVLtreeToolStripMenuItem_Click(System::Object^ sender, Sys
 }
 private: System::Void тестированиеКонтейнеровToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
 	(gcnew MyForm1)->Show();
+}
+private: System::Void хештаблицаметодОткрытойАдресацииToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
+	this->aVLtreeToolStripMenuItem->Text = L"Хеш-таблица OA";
 }
 };
 }

@@ -2,7 +2,7 @@
 
 #include <Windows.h>
 
-using namespace Project3;
+using namespace ui;
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     Application::EnableVisualStyles();
