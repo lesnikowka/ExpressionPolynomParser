@@ -58,8 +58,8 @@ class RBTree {
 			if (n->is_fict == false) {
 				ostream << n->key << ":" << n->element
 				<< ((!n->color) ? "(black) " : "(red) ") << "Kids:"
-					<< ((n && n->left) ? n->left->key : 0) << ":"
-					<< ((n && n->right) ? n->right->key : 0);
+					<< ((n&&n->left&&n->left->is_fict==false)?((n && n->left) ? std::to_string(n->left->key) : std::to_string(0)):"Fict") << ":"
+					<< ((n&&n->right&&n->right->is_fict==false)?((n && n->right) ? std::to_string(n->right->key) :std::to_string(0)):"Fict");
 				ostream << "  Parent:" << ((n && n->parent) ? n->parent->key : 0);
 			}
 			return ostream;
