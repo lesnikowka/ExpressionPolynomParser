@@ -366,6 +366,15 @@ public:
 		return iterator(node);
 	}
 
+	Y& operator[](const T& key) {
+		Node* node = find_(key, root);
+		if (!node) {
+			emplace(key, Y());
+			return find_(key, root)->key_val.second;
+		}
+		return node->key_val.second;
+	}
+
 	void out(std::ostream& o, Node* node) const {
 		if (!node) return;
 		out(o, node->left);
