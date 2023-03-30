@@ -38,6 +38,7 @@ namespace ui {
 		}
 
 	private: System::String^ usedContainerName = L"Òèï êîíòåéíåðà";
+	private: int numberOfSelectedContainer = -1;
 
 	private: MyForm1^ form1;
 	private: System::Windows::Forms::TextBox^ textBox1;
@@ -173,6 +174,7 @@ namespace ui {
 			this->button2->TabIndex = 8;
 			this->button2->Text = L"Âû÷èñëèòü";
 			this->button2->UseVisualStyleBackColor = true;
+			this->button2->Click += gcnew System::EventHandler(this, &MyForm::button2_Click);
 			// 
 			// menuStrip1
 			// 
@@ -206,30 +208,35 @@ namespace ui {
 			this->dToolStripMenuItem->Name = L"dToolStripMenuItem";
 			this->dToolStripMenuItem->Size = System::Drawing::Size(222, 22);
 			this->dToolStripMenuItem->Text = L"AVL äåðåâî";
+			this->dToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::dToolStripMenuItem_Click);
 			// 
 			// dToolStripMenuItem1
 			// 
 			this->dToolStripMenuItem1->Name = L"dToolStripMenuItem1";
 			this->dToolStripMenuItem1->Size = System::Drawing::Size(222, 22);
 			this->dToolStripMenuItem1->Text = L"R-B äåðåâî";
+			this->dToolStripMenuItem1->Click += gcnew System::EventHandler(this, &MyForm::dToolStripMenuItem1_Click);
 			// 
 			// óïîðÿäî÷åííàÿÒàáëèöàToolStripMenuItem
 			// 
 			this->óïîðÿäî÷åííàÿÒàáëèöàToolStripMenuItem->Name = L"óïîðÿäî÷åííàÿÒàáëèöàToolStripMenuItem";
 			this->óïîðÿäî÷åííàÿÒàáëèöàToolStripMenuItem->Size = System::Drawing::Size(222, 22);
 			this->óïîðÿäî÷åííàÿÒàáëèöàToolStripMenuItem->Text = L"Óïîðÿäî÷åííàÿ òàáëèöà";
+			this->óïîðÿäî÷åííàÿÒàáëèöàToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::óïîðÿäî÷åííàÿÒàáëèöàToolStripMenuItem_Click);
 			// 
 			// íåóïîðÿäî÷åííàÿÒàáëèöàToolStripMenuItem
 			// 
 			this->íåóïîðÿäî÷åííàÿÒàáëèöàToolStripMenuItem->Name = L"íåóïîðÿäî÷åííàÿÒàáëèöàToolStripMenuItem";
 			this->íåóïîðÿäî÷åííàÿÒàáëèöàToolStripMenuItem->Size = System::Drawing::Size(222, 22);
 			this->íåóïîðÿäî÷åííàÿÒàáëèöàToolStripMenuItem->Text = L"Íåóïîðÿäî÷åííàÿ òàáëèöà";
+			this->íåóïîðÿäî÷åííàÿÒàáëèöàToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::íåóïîðÿäî÷åííàÿÒàáëèöàToolStripMenuItem_Click);
 			// 
 			// õåøòàáëèöàìåòîäÖåïî÷åêToolStripMenuItem
 			// 
 			this->õåøòàáëèöàìåòîäÖåïî÷åêToolStripMenuItem->Name = L"õåøòàáëèöàìåòîäÖåïî÷åêToolStripMenuItem";
 			this->õåøòàáëèöàìåòîäÖåïî÷åêToolStripMenuItem->Size = System::Drawing::Size(222, 22);
 			this->õåøòàáëèöàìåòîäÖåïî÷åêToolStripMenuItem->Text = L"Õåø-òàáëèöà CHAIN";
+			this->õåøòàáëèöàìåòîäÖåïî÷åêToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::õåøòàáëèöàìåòîäÖåïî÷åêToolStripMenuItem_Click);
 			// 
 			// õåøòàáëèöàìåòîäÎòêðûòîéÀäðåñàöèèToolStripMenuItem
 			// 
@@ -275,8 +282,13 @@ namespace ui {
 #pragma endregion
 	private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) {
 	}
-	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
+	private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) {
+		switch (this->numberOfSelectedContainer) {
+		case -1:
+			MessageBox::Show("Íå âûáðàí òèï êîíòåéíåðà", "Îøèáêà!", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+			break;
 
+		}
 	}
 	private: System::Void label1_Click(System::Object^ sender, System::EventArgs^ e) {
 	}
@@ -290,7 +302,34 @@ private: System::Void òåñòèðîâàíèåÊîíòåéíåðîâToolStripMenuItem_Click(System::Obj
 	(gcnew MyForm1)->Show();
 }
 private: System::Void õåøòàáëèöàìåòîäÎòêðûòîéÀäðåñàöèèToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
-	this->aVLtreeToolStripMenuItem->Text = L"Õåø-òàáëèöà OA";
+	this->usedContainerName = L"Õåø-òàáëèöà OA";
+	this->numberOfSelectedContainer = 5;
+	this->aVLtreeToolStripMenuItem->Text = this->usedContainerName;
 }
+private: System::Void õåøòàáëèöàìåòîäÖåïî÷åêToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
+	this->usedContainerName = L"Õåø-òàáëèöà CHAIN";
+	this->numberOfSelectedContainer = 4;
+	this->aVLtreeToolStripMenuItem->Text = this->usedContainerName;
+}
+private: System::Void íåóïîðÿäî÷åííàÿÒàáëèöàToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
+	this->usedContainerName = L"Íåóïîðÿäî÷åííàÿ..";
+	this->numberOfSelectedContainer = 3;
+	this->aVLtreeToolStripMenuItem->Text = this->usedContainerName;
+}
+private: System::Void óïîðÿäî÷åííàÿÒàáëèöàToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
+	this->usedContainerName = L"Óïîðÿäî÷åííàÿ..";
+	this->numberOfSelectedContainer = 2;
+	this->aVLtreeToolStripMenuItem->Text = this->usedContainerName;
+}
+private: System::Void dToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
+	   this->usedContainerName = L"AVL äåðåâî";
+	   this->numberOfSelectedContainer = 0;
+	   this->aVLtreeToolStripMenuItem->Text = this->usedContainerName;
+}
+private: System::Void dToolStripMenuItem1_Click(System::Object^ sender, System::EventArgs^ e) {
+	this->usedContainerName = L"R-B äåðåâî";
+	this->numberOfSelectedContainer = 1;
+	this->aVLtreeToolStripMenuItem->Text = this->usedContainerName;
+}	   
 };
 }

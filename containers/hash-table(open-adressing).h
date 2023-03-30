@@ -3,12 +3,10 @@
 #include <cmath>
 #include <vector>
 
+const std::vector<size_t> SIMPLE_NUMBERS_FOR_CAPACITY = { 101 ,197,397,797,1597,3203,6421,12853,25717,51437,102877,205759,411527,823117,1646237 };
+const std::vector<size_t> STEPS_FOR_LINEAR_PROBING = { 5, 10, 20, 40, 80, 160, 320, 640, 1280, 2560, 5120, 10240, 20480, 40960, 81920 };
 
-const size_t STANDART_CAPACITY = 128;
-const size_t STANDART_STEP = 5;
-const size_t MULTIPLIER = 8;
-
-const double MAXIMUM_OCCUPANCY = 0.7;
+const double MAXIMUM_OCCUPANCY = 0.5;
 
 template <class Y, class T>
 class HashTableOpenAdressing {
@@ -95,6 +93,7 @@ private:
 	size_t _capacity;
 	size_t _step;
 	size_t _number_of_elements;
+	size_t _number_of_repacking;
 
 	std::pair<size_t, size_t> shift;
 
@@ -114,32 +113,21 @@ private:
 	}
 
 	size_t crop_index(size_t index) {
-		return index & (_capacity - 1);
+		return index & _capacity;
 	}
 
-	size_t change_step(size_t old_capacity, size_t new_capacity, size_t step) {
-		size_t new_step = step * (new_capacity / old_capacity);
-
-		if (new_step & 1 == 0) new_step--;
-
-		return new_step;
-	}
-
-	size_t change_capacity(size_t capacity) {
-		return capacity * MULTIPLIER;
+	void change_capacity_and_step() {
+		_number_of_repacking++;
+		_capacity = SIMPLE_NUMBERS_FOR_CAPACITY[_number_of_repacking];
+		_step = STEPS_FOR_LINEAR_PROBING[_number_of_repacking];
 	}
 
 	void recomposing() {
 		if ((double)_number_of_elements / _capacity < MAXIMUM_OCCUPANCY) return;
 
-
-		size_t new_capacity = change_capacity(_capacity);
-		size_t new_step = change_step(_capacity, new_capacity, _step);
+		change_capacity_and_step();
 
 		std::vector<Tuple> new_data(new_capacity);
-
-		_capacity = new_capacity;
-		_step = new_step;
 
 		for (const auto& row : _data)
 			if (!row.is_deleted && row.was_used) {
@@ -171,7 +159,9 @@ public:
 	}
 
 
-	HashTableOpenAdressing() : _capacity(STANDART_CAPACITY), _step(STANDART_STEP), _number_of_elements(0) {
+	HashTableOpenAdressing() : _number_of_elements(0), _number_of_repacking(0) {
+		_capacity = SIMPLE_NUMBERS_FOR_CAPACITY[_number_of_repacking];
+		_step = STEPS_FOR_LINEAR_PROBING[_number_of_repacking];
 		_data = std::vector<Tuple>(STANDART_CAPACITY);
 		std::srand(std::time(nullptr));
 		shift.first = std::rand() % 100;
@@ -179,16 +169,18 @@ public:
 	}
 
 	HashTableOpenAdressing(const HashTableOpenAdressing& ht) : _capacity(ht._capacity), _step(ht._step), 
-		_data(ht._data), _number_of_elements(ht._number_of_elements), shift(ht.shift) {}
+		_data(ht._data), _number_of_elements(ht._number_of_elements), shift(ht.shift), _number_of_repacking(ht._number_of_repacking) {}
 
 	HashTableOpenAdressing(HashTableOpenAdressing&& ht) : _capacity(ht._capacity), _step(ht._step), _data(std::move(ht._data)), 
-		_number_of_elements(ht._number_of_elements), shift(ht.shift) {}
+		_number_of_elements(ht._number_of_elements), shift(ht.shift), _number_of_repacking(ht._number_of_repacking) {}
 
 	HashTableOpenAdressing& operator=(const HashTableOpenAdressing& ht) {
 		_capacity = ht._capacity;
 		_step = ht._step;
 		_data = ht._data;
 		_number_of_elements = ht._number_of_elements;
+		shift = ht.shift;
+		_number_of_repacking = ht._number_of_repacking();
 	}
 
 	HashTableOpenAdressing& operator=(HashTableOpenAdressing&& ht) {
@@ -196,10 +188,11 @@ public:
 		_step = ht._step;
 		_data = std::move(ht._data);
 		_number_of_elements = ht._number_of_elements;
+		shift = ht.shift;
+		_number_of_repacking = ht._number_of_repacking();
 	}
 
 	size_t capacity() const noexcept { return _capacity; }
-	size_t step() const noexcept { return _step; }
 	size_t size() const noexcept { return _number_of_elements; }
 
 	void emplace(const Y& key, const T& value) {
@@ -270,8 +263,3 @@ size_t hash<std::string>(const std::string& key, const std::pair<size_t, size_t>
 
 	return hash_code * shift.first + shift.second;
 }
-
-//template<>
-//size_t hash<int>(const int& key) {
-//	
-//}
