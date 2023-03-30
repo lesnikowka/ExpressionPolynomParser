@@ -1,5 +1,8 @@
+#pragma once
+
 #include<iostream>
 #include<string>
+
 
 template<typename T, typename D>
 class RBTree {
@@ -400,11 +403,12 @@ public:
 		destructor(root);
 	}
 
-	Node* insert(T key, D elem) {
+	void insert(std::pair<T,D> p) {
+		return emplace(p.first,p.second);
+	}
+	void emplace(T key, D elem) {
 		Node* tmp = pinsert(key, elem, root);
 		if (root == nullptr) { root = tmp; root->color = Color::black; }
-
-		return tmp;
 	}
 
 	void erase(T key) {
@@ -414,6 +418,19 @@ public:
 	Node* find(T key) {
 		return pfind(key, root);
 	}
+
+	D& operator[](const T& key) {
+		Node* it = find(key);
+		if (it == nullptr)
+			emplace(key, D());
+		return (*find(key)).element;
+	}
+	D& operator[](T&& key) {
+		Node* it = find(key);
+		if (it == nullptr)emplace(key, D());
+		return (*find(key)).element;
+	}
+
 	int getHeight(T key) {
 		return find(key)->height;
 	}

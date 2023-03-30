@@ -51,8 +51,12 @@ public:
 
 	};
 
-	iterator begin() { return iterator(&table[0]); }
+	iterator begin() {
+		if (table.size() == 0)return iterator();
+		return iterator(&table[0]); 
+	}
 	iterator end(){
+		if (table.size() == 0)return iterator();
 	iterator it(&table[table.size()-1]);
 		it++;
 		return it; }
@@ -63,10 +67,25 @@ public:
 		}
 		return end();
 	}
+	void insert(std::pair<T, D> p) {
+		return emplace(p.first, p.second);
+	}
 	void emplace(T k,D e) {
 		table.push_back(std::make_pair(k,e));
 	};
 	
+	D& operator[](const T& key) {
+		iterator it = find(key);
+		if (it == end())emplace(key, D());
+		return (*find(key)).second;
+	}
+	D& operator[](T&& key) {
+		iterator it = find(key);
+		if (it == end())emplace(key, D());
+		return (*find(key)).second;
+	}
+
+
 	void erase(const T& key) {
 		if (find(key) == end())
 			throw "Index out of range";

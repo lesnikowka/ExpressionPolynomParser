@@ -13,12 +13,6 @@ class HashTableC {
 		pair() = default;
 		pair(T key,D elem):key(key),elem(elem){}
 		pair(const pair& p):key(p.key),elem(p.elem){}
-		bool operator==(const pair& p) {
-			return (key == p.key && elem == p.elem);
-		}
-		bool operator!=(const pair& p) {
-			return !(*this==p);
-		}
 		friend std::ostream& operator<<(std::ostream& ostream, const pair& p) {
 			ostream<< p.key << ":" << p.elem;
 			return ostream;
@@ -105,7 +99,7 @@ public:
 			return !operator==(iter);
 		}
 
-		pair operator*() {
+		pair& operator*() {
 			//if (it == (*table)[index].end())throw("Iterator points to the end");
 			return *it;
 		}
@@ -199,6 +193,21 @@ public:
 		}
 		return it;
 	}
+	D& operator[](const T& key) {
+		iterator it = find(key);
+		if (it == end(it.index))
+			emplace(key, D());
+		return (*find(key)).elem;
+	}
+	D& operator[](T&& key) {
+		iterator it = find(key);
+		if (it == end(it.index))emplace(key, D());
+		return (*find(key)).elem;
+	}
+
+	void insert(std::pair<T, D> p) {
+		return emplace(p.first, p.second);
+	}
 	void emplace(T key,D elem) {
 		int index = hash(key);
 		iterator it = find(key);
@@ -209,6 +218,7 @@ public:
 		if (per_of_fill >= 0.7f) 
 			repack();
 	}
+
 	void erase(T key) {
 		iterator elem = find(key);
 		size_t index = hash(key);
@@ -217,6 +227,7 @@ public:
 		size--;
 		per_of_fill = size / capacity;
 	}
+	
 	int getA() { return a; }
 	int getB() { return b; }
 	size_t getSize() { return size; }
