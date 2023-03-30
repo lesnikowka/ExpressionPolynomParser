@@ -1,12 +1,21 @@
 ﻿#pragma once
-#include<exception>
-#include<vector>
 #include<iostream>
+
+#include<exception>
+
+#include<vector>
 #include<string>
 #include<map>
 #include<stack>
+
 #include"polynom.h"
 
+#include"Red-Black-trees.h"
+#include"AVL-tree.h"
+#include"hash-table(chaining).h"
+#include"hash-table(open-adressing).h"
+#include"ordered-table.h"
+#include"unordered-table.h"
 
 class Expression {
 	std::string source_str, modified_str;
@@ -21,7 +30,7 @@ class Expression {
 	std::vector<std::string>alph_constants = {
 	"pi","e"
 	};
-	std::map <std::string, Polynom> operands;
+	RBTree<std::string, Polynom> operands;
 	std::map <std::string, Polynom> constants = {
 		{"pi",Polynom("3.1415926535897932384626433832795")},
 		{"e",Polynom("2.7182818284590452353602874713527")}
