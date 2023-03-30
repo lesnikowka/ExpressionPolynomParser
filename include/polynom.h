@@ -7,7 +7,7 @@
 #include <iostream>
 
 class Polynom {
-
+	friend class Expression;
 	std::list<Monom> monoms;
 	
 
@@ -92,16 +92,14 @@ class Polynom {
 				start = i;
 			}
 			else if (str[i] == using_operators[0]) {
-				m = Monom();
-				m.cut(str.substr(start, i - start));
+				m = Monom(str.substr(start, i - start));
 				if (m.getCoef() != 0) {
 					monoms.push_back(m);
 				}
 				start = i + 1;
 			}
 			else if (i == str.size()) {
-				m = Monom();
-				m.cut(str.substr(start, i - start));
+				m = Monom(str.substr(start, i - start));
 				if (m.getCoef() != 0) {
 					monoms.push_back(m);
 				}
@@ -120,6 +118,7 @@ public:
 	Polynom(const Monom& m) {
 		monoms.push_back(m);
 	}
+
 	Polynom& operator=(const Polynom& m) { 
 		monoms = m.monoms; 
 		return *this;

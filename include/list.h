@@ -4,7 +4,7 @@
 
 
 template<class T>
-class List {
+class list {
 	struct Node{
 		T elem;
 		Node* next;
@@ -14,7 +14,7 @@ class List {
 
 public:
 	class Iterator {
-		friend List;
+		friend list;
 		Node* ptr_elem;
 	public:
 
@@ -61,9 +61,9 @@ public:
 	}
 
 
-	List() :first(nullptr) {};
+	list() :first(nullptr) {};
 
-	explicit List(const size_t count) {
+	explicit list(const size_t count) {
 		if (count == 0) {
 			first = nullptr;
 		}
@@ -77,7 +77,7 @@ public:
 		}
 	}
 
-	List(List& l) :List(1) {
+	list(list& l) :list(1) {
 		Node* tmp1=first;
 		for (auto it = l.begin(); it != l.end(); it++) {
 			tmp1->elem = *it;
@@ -87,11 +87,11 @@ public:
 		}
 	};
 
-	List(List&& list)noexcept  :first()  {
+	list(list&& list)noexcept  :first()  {
 		std::swap(first,list.first);
 	};
 
-	List(const std::initializer_list<T>& el) :List(el.size()) {
+	list(const std::initializer_list<T>& el) :list(el.size()) {
 		Node* tmp = first;
 		for (auto it:el) {
 			tmp->elem = it;
@@ -99,7 +99,7 @@ public:
 		}
 	}
 
-	~List() {
+	~list() {
 		Node *tmp;
 		if(first)
 		while (first->next) {
@@ -109,7 +109,7 @@ public:
 		}
 	};
 
-	List& operator=(const List& l) {
+	list& operator=(const list& l) {
 		if (this == &l) return *this;
 		Node* tmp1=first;
 		Node* tmp2=l.first;
@@ -139,7 +139,7 @@ public:
 		return *this;
 		
 	};
-	List& operator=(List&& l) {
+	list& operator=(list&& l) {
 		std::swap(first,l.first);
 		return *this;
 	}
@@ -158,7 +158,7 @@ public:
 	bool empty() const { return !first; };
 	size_t size() {
 		size_t size=0;
-		for (List::Iterator it = begin(); it != end(); it++, ++size);
+		for (list::Iterator it = begin(); it != end(); it++, ++size);
 		return size;
 	};
 
@@ -173,13 +173,13 @@ public:
 		first = nullptr;
 	};
 
-	void merge(List& l) {
+	void merge(list& l) {
 		this->sort();
 		l.sort();
 
 	
 	};
-	void merge(List&& l);
+	void merge(list&& l);
 	void sort() {
 		T tmp, max = this->first->elem;
 		Node* j,*i = first;
@@ -257,7 +257,7 @@ public:
 		}
 	}
 
-	friend std::ostream& operator<<(std::ostream& ostr, List& l) {
+	friend std::ostream& operator<<(std::ostream& ostr, list& l) {
 		for (auto it = l.begin(); it != l.end();++it) {
 			ostr << (*it)<<" ";
 		}

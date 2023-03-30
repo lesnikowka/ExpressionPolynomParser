@@ -230,9 +230,9 @@ public:
 		degree.resize(using_alphabet.size(), 0);
 		coef = 0;
 		correctness = isCorrect(str);
-		//if (correctness == false) throw "Wrong monom";
 		if (correctness)
 			cut(str);
+		else if(str.size()!=0) throw "Monom is not correct";
 	};
 
 
