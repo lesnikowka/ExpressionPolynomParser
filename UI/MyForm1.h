@@ -144,8 +144,9 @@ namespace ui {
 			this->Controls->Add(this->textBox2);
 			this->Controls->Add(this->button1);
 			this->Controls->Add(this->textBox1);
-			this->Name = L"MyForm1";
-			this->Text = L"MyForm1";
+			this->Name = L"Тестирование контейнеров";
+			this->Text = L"Тестирование контейнеров";
+			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedSingle;
 			this->Load += gcnew System::EventHandler(this, &MyForm1::MyForm1_Load);
 			this->ResumeLayout(false);
 			this->PerformLayout();

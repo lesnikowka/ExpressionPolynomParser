@@ -44,10 +44,10 @@ public:
 			return *this;
 		}
 
-		std::pair<std::string, T> operator*() {
+		std::pair<Y, T> operator*() {
 			if (_index == _data->size()) throw std::exception("end iterator");
 
-			return _data->operator[](_index).key_val;
+			return (*_data)[_index].key_val;
 		}
 
 		bool operator==(const iterator& it) const {
@@ -65,10 +65,10 @@ public:
 
 			size_t index = _index;
 
-			bool a = _data->operator[](index).was_used;
-			bool b = _data->operator[](index).is_deleted;
+			bool a = (*_data)[index].was_used;
+			bool b = (*_data)[index].is_deleted;
 
-			while (index < _data->size() && ((_data->operator[](index).is_deleted || !_data->operator[](index).was_used) || index == _index)) {
+			while (index < _data->size() && (((*_data)[index].is_deleted || !(*_data)[index].was_used) || index == _index)) {
 				index++;
 			}
 
@@ -98,10 +98,10 @@ private:
 	std::pair<size_t, size_t> shift;
 
 
-	void insert_in_vector(const std::pair<Y, T>& key_val, size_t index, std::vector<Tuple>& data, size_t capacity, size_t step) {
+	void insert_in_vector(const std::pair<Y, T>& key_val, size_t index, std::vector<Tuple>& data) {
 
-		for (size_t num_of_passed_els = 0; num_of_passed_els <= capacity; index = crop_index(index + step), num_of_passed_els++) {
-
+		for (size_t num_of_passed_els = 0; num_of_passed_els <= _capacity; index = crop_index(index + _step), num_of_passed_els++) {
+			if (data[index].was_used && data[index].key_val.first == key_val.first) break;
 			if (data[index].was_used == false) {
 
 				data[index].key_val = key_val;
@@ -112,8 +112,8 @@ private:
 		}
 	}
 
-	size_t crop_index(size_t index) {
-		return index & _capacity;
+	size_t crop_index(size_t index) const{
+		return index % _capacity;
 	}
 
 	void change_capacity_and_step() {
@@ -127,12 +127,11 @@ private:
 
 		change_capacity_and_step();
 
-		std::vector<Tuple> new_data(new_capacity);
+		std::vector<Tuple> new_data(_capacity);
 
 		for (const auto& row : _data)
 			if (!row.is_deleted && row.was_used) {
-				size_t hash_code = hash(row.key_val.first, shift);
-				insert_in_vector(row.key_val, hash_code, new_data, new_capacity, new_step);
+				insert_in_vector(row.key_val, crop_index(hash(row.key_val.first, shift)), new_data);
 			}
 
 		_data = std::move(new_data);
@@ -162,7 +161,7 @@ public:
 	HashTableOpenAdressing() : _number_of_elements(0), _number_of_repacking(0) {
 		_capacity = SIMPLE_NUMBERS_FOR_CAPACITY[_number_of_repacking];
 		_step = STEPS_FOR_LINEAR_PROBING[_number_of_repacking];
-		_data = std::vector<Tuple>(STANDART_CAPACITY);
+		_data = std::vector<Tuple>(_capacity);
 		std::srand(std::time(nullptr));
 		shift.first = std::rand() % 100;
 		shift.second = std::rand() % 100;
@@ -202,9 +201,7 @@ public:
 	void insert(const std::pair<Y, T>& key_value) {
 		recomposing();
 
-		size_t hash_code = crop_index(hash(key_value.first, shift));
-
-		insert_in_vector(key_value, hash_code, _data, _capacity, _step);
+		insert_in_vector(key_value, crop_index(hash(key_value.first, shift)), _data);
 
 		_number_of_elements++;
 	}
@@ -227,17 +224,17 @@ public:
 		throw std::exception("element is not found");
 	}
 
-	iterator find(const Y& key) const {
-		size_t index = crop_index(hash(key), shift);
+	iterator find(const Y& key) {
+		size_t index = crop_index(hash(key, shift));
 
-		for (size_t num_of_passed_els = 0; num_of_passed_els <= _capacity; crop_index(index + _step), num_of_passed_els++) {
+		for (size_t num_of_passed_els = 0; num_of_passed_els <= _capacity; index = crop_index(index + _step), num_of_passed_els++) {
 			if (!_data[index].was_used) break;
 
 			if (_data[index].key_val.first == key && !_data[index].is_deleted) {
-				return iterator(&_data, index, false);
+				return iterator(&_data, index);
 			}
 		}
-		return iterator(&_data, 0, true);
+		return iterator(&_data, _data.size());
 	}
 };
 

@@ -19,7 +19,7 @@ public:
 			return *this;
 		}
 
-		std::pair<T1, T2>& operator*() {
+		std::pair<T1, T2> operator*() {
 			return *_iterator;
 		}
 
@@ -125,5 +125,17 @@ public:
 			return end();
 		}
 		return iterator(it);
+	}
+
+	T2& operator[](const T1& key) {
+		Comparator comp;
+		std::pair<T1, T2> pair(key, T2());
+		auto it = std::lower_bound(_data.begin(), _data.end(), pair, comp);
+
+		if (it == _data.end()) {
+			emplace(key, T2());
+			it = std::lower_bound(_data.begin(), _data.end(), pair, comp);
+		}
+		return (*it).second;
 	}
 };

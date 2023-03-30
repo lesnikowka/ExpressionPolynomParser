@@ -49,6 +49,7 @@ namespace ui {
 	private: System::Windows::Forms::Label^ label2;
 	private: System::Windows::Forms::Label^ label3;
 	private: System::Windows::Forms::Label^ label4;
+	private: System::Windows::Forms::Label^ label5;
 	private: System::Windows::Forms::Button^ button2;
 	private: System::Windows::Forms::MenuStrip^ menuStrip1;
 	private: System::Windows::Forms::ToolStripMenuItem^ aVLtreeToolStripMenuItem;
@@ -87,6 +88,7 @@ namespace ui {
 			this->label2 = (gcnew System::Windows::Forms::Label());
 			this->label3 = (gcnew System::Windows::Forms::Label());
 			this->label4 = (gcnew System::Windows::Forms::Label());
+			this->label5 = (gcnew System::Windows::Forms::Label());
 			this->button2 = (gcnew System::Windows::Forms::Button());
 			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
 			this->aVLtreeToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -107,26 +109,29 @@ namespace ui {
 			this->textBox1->Size = System::Drawing::Size(293, 20);
 			this->textBox1->TabIndex = 0;
 			// 
-			// textBox2
+			// textBox2  X
 			// 
 			this->textBox2->Location = System::Drawing::Point(33, 57);
 			this->textBox2->Name = L"textBox2";
 			this->textBox2->Size = System::Drawing::Size(40, 20);
 			this->textBox2->TabIndex = 2;
+			this->textBox2->Text = "1";
 			this->textBox2->TextChanged += gcnew System::EventHandler(this, &MyForm::textBox2_TextChanged);
 			// 
-			// textBox3
+			// textBox3  Y
 			// 
 			this->textBox3->Location = System::Drawing::Point(100, 57);
 			this->textBox3->Name = L"textBox3";
 			this->textBox3->Size = System::Drawing::Size(40, 20);
+			this->textBox3->Text = "1";
 			this->textBox3->TabIndex = 3;
 			// 
-			// textBox4
+			// textBox4  Z
 			// 
 			this->textBox4->Location = System::Drawing::Point(170, 57);
 			this->textBox4->Name = L"textBox4";
 			this->textBox4->Size = System::Drawing::Size(40, 20);
+			this->textBox4->Text = "1";
 			this->textBox4->TabIndex = 4;
 			// 
 			// label1
@@ -164,7 +169,16 @@ namespace ui {
 			this->label4->Name = L"label4";
 			this->label4->Size = System::Drawing::Size(17, 13);
 			this->label4->TabIndex = 7;
-			this->label4->Text = L"Result: ";
+			this->label4->Text = L"Result polynom: ";
+			// 
+			// label5
+			// 
+			this->label5->AutoSize = true;
+			this->label5->Location = System::Drawing::Point(10, 120);
+			this->label5->Name = L"label4";
+			this->label5->Size = System::Drawing::Size(17, 13);
+			this->label5->TabIndex = 7;
+			this->label5->Text = L"Result: ";
 			// 
 			// button2
 			// 
@@ -263,6 +277,7 @@ namespace ui {
 			this->Controls->Add(this->label4);
 			this->Controls->Add(this->label2);
 			this->Controls->Add(this->label1);
+			this->Controls->Add(this->label5);
 			this->Controls->Add(this->textBox4);
 			this->Controls->Add(this->textBox3);
 			this->Controls->Add(this->textBox2);
