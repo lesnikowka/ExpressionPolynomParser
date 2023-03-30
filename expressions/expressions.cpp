@@ -1,3 +1,4 @@
+/*
 #include"expression.h"
 
 #include<vector>
@@ -339,6 +340,7 @@ Expression& Expression::operator=(std::string str) {
 	
 	std::string token1, token2;
 	bool flag = true;
+
 	for (int i = 0; i < str.size(); i++) {
 		if (str[i] == '=') {
 			flag = false;
@@ -350,8 +352,13 @@ Expression& Expression::operator=(std::string str) {
 	}
 
 	if (token2.size() != 0) {
-		variables_list.push_back(token1);
-		operands[token1] = Polynom(token2);
+		if (in(token2, variables_list)) {
+			operands[token1] = operands[token2];
+		}
+		else {
+			variables_list.push_back(token1);
+			operands[token1] = Polynom(token2);
+		}
 		calculate();
 	}
 	else {
@@ -378,3 +385,5 @@ std::ostream& operator<<(std::ostream& ostream, const Expression& exp) {
 	else if (exp.source_str != "")ostream << "Expression is not correct";
 	return ostream;
 }
+
+*/
