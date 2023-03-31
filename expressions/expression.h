@@ -25,7 +25,6 @@ class Expression {
 		alph_opening_brackets ="({[",
 		alph_closing_brackets=")}]",
 		alph_separator=".";
-	std::vector<float> dot;
 	std::vector<std::string> postfix_form,variables_list;
 	std::vector<std::string>alph_constants = {
 	"pi","e"
@@ -56,7 +55,7 @@ class Expression {
 	Expression& operator=(std::string str);
 
 public:
-	Expression() :is_correct(false), res(Polynom("0")) { dot.resize(res.using_alphabet.size()); };
+	Expression() :is_correct(false), res(Polynom("0")) { };
 	Expression(std::string str);
 	std::string getSourceString() {
 		return source_str;
@@ -72,9 +71,6 @@ public:
 	std::string getAcceptableSeparators() { return alph_separator; }
 	std::vector<std::string> getPostfixForm() { return postfix_form; }
 
-	std::vector<float>& writeVal() {
-		return dot;
-	}
 
 	Expression& operator=(Expression& exp);
 	Expression& addExp(std::string str) {
@@ -389,7 +385,6 @@ void Expression::calculate() {
 }
 
 Expression::Expression(std::string str) {
-	dot.resize(res.using_alphabet.size());
 	source_str = str;
 
 	is_correct = this->expressionIsCorrect();

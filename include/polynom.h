@@ -7,7 +7,6 @@
 #include <iostream>
 
 class Polynom {
-	friend class Expression;
 	std::list<Monom> monoms;
 	
 
