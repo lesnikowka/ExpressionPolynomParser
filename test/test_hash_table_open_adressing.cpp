@@ -60,10 +60,8 @@ TEST_F(HT_fixture, iterators_are_working) {
 	for (auto i : ht1) {
 		EXPECT_FALSE(std::find(v1.begin(), v1.end(), i) == v1.end());
 	}
-<<<<<<< HEAD
 }
-=======
-}
+
 
 
 TEST_F(HT_fixture, throw_if_erase_element_that_was_not_emplaced) {
@@ -122,4 +120,3 @@ TEST_F(HT_fixture, operator_square_brackets_can_add_element) {
 		EXPECT_FALSE(std::find(v1.begin(), v1.end(), i) == v1.end());
 	}
 }
->>>>>>> db440079384259f7120f3190c0f3f1661ef22fb0

@@ -10,6 +10,7 @@
 
 #include"polynom.h"
 
+
 template<typename T>
 class Expression {
 	enum class statesE {
@@ -24,21 +25,20 @@ class Expression {
 		ERROR
 	};
 
-
+	
 	std::string source_str, modified_str;
-	std::string alph_nums = "0123456789", 
-		alph_letters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
+	std::string alph_nums = "0123456789",
+		alph_letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
 		alph_operations = "-+/*",
-		alph_opening_brackets ="({[",
-		alph_closing_brackets=")}]",
-		alph_separator=".";
-	std::vector<std::string> postfix_form,variables_list;
+		alph_opening_brackets = "({[",
+		alph_closing_brackets = ")}]",
+		alph_separator = ".";
+	std::vector<std::string> postfix_form, variables_list;
 	std::vector<std::string>alph_constants = {
 	"pi","e"
 	};
+	T operands;
 
-	T<std::string, Polynom> operands;
-	
 	std::map <std::string, Polynom> constants = {
 		{"pi",Polynom("3.1415926535897932384626433832795")},
 		{"e",Polynom("2.7182818284590452353602874713527")}
@@ -52,7 +52,7 @@ class Expression {
 		{'*',2},
 		{'/',2},
 	};
-	
+
 	Polynom res;
 	bool is_correct;
 
@@ -347,8 +347,48 @@ class Expression {
 		str = tmp;
 	}
 
-	Expression& operator=(std::string str);
+	Expression& Expression::operator=(std::string str) {
+		delete_spaces(str);
 
+		std::string token1, token2;
+		bool flag = true;
+
+		for (int i = 0; i < str.size(); i++) {
+			if (str[i] == '=') {
+				flag = false;
+				continue;
+			}
+			if (flag)
+				token1 += str[i];
+			else token2 += str[i];
+		}
+
+		if (token2.size() != 0) {
+			if (in(token2, variables_list)) {
+				operands[token1] = operands[token2];
+			}
+			else {
+				if (isVariable(token1) == false) throw std::exception("Variable is not correct");
+				variables_list.push_back(token1);
+				operands[token1] = Polynom(token2);
+			}
+			calculate();
+		}
+		else {
+			Expression tmp2;
+			tmp2.source_str = token1;
+			tmp2.is_correct = tmp2.expressionIsCorrect();
+			if (tmp2.is_correct)
+				tmp2.cut();
+			else if (tmp2.source_str.size() != 0) throw std::exception("Expression is not correct");
+			if (tmp2.source_str != "")
+				*this = tmp2;
+			calculate();
+		}
+
+
+		return *this;
+	}
 public:
 	Expression() :is_correct(false), res(Polynom("0")) { };
 	Expression(std::string str) {
@@ -365,7 +405,19 @@ public:
 	std::string getSourceString() {
 		return source_str;
 	}
-	
+
+	Expression& operator=(Expression& exp) {
+		if (this == &exp) return *this;
+		source_str = exp.source_str;
+
+		for (int i = variables_list.size(); i < exp.variables_list.size(); i++)
+			variables_list.push_back(exp.variables_list[i]);// need to append but not to make copy
+
+		postfix_form = exp.postfix_form;
+		is_correct = exp.is_correct;
+		res = exp.res;
+		return *this;
+	}
 
 	Polynom getResult() { return res; };
 	bool isCorrect() { return is_correct; }
