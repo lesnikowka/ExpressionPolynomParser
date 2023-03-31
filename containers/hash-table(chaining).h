@@ -165,7 +165,10 @@ public:
 		if (index == -1)index = capacity - 1;
 		return iterator(table[index].end(),index,&table);
 	}
-
+	template<typename T>
+	int hash(const T& key) {
+		return key.hash();
+	}
 	int hash(std::string key)
 	{
 		int res = 0;

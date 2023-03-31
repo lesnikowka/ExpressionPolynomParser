@@ -3,6 +3,7 @@
 #include <cmath>
 #include <vector>
 
+
 const std::vector<size_t> SIMPLE_NUMBERS_FOR_CAPACITY = { 101 ,197,397,797,1597,3203,6421,12853,25717,51437,102877,205759,411527,823117,1646237 };
 const std::vector<size_t> STEPS_FOR_LINEAR_PROBING = { 5, 10, 20, 40, 80, 160, 320, 640, 1280, 2560, 5120, 10240, 20480, 40960, 81920 };
 
@@ -254,27 +255,29 @@ public:
 
 		return _data[index].key_val.second;
 	}
-};
 
-template<class A>
-size_t hash(const A& key, const std::pair<size_t, size_t>& shift) {
-	return key.hash();
-}
-
-
-template<>
-size_t hash<std::string>(const std::string& key, const std::pair<size_t, size_t>& shift) {
-	size_t hash_code = 0;
-
-	for (char c : key) {
-		hash_code += (size_t)c;
-		hash_code += hash_code << 10;
-		hash_code += hash_code >> 6;
+	template<class A>
+	size_t hash(const A& key, const std::pair<size_t, size_t>& shift) {
+		return key.hash();
 	}
 
-	hash_code += hash_code << 3;
-	hash_code ^= hash_code >> 11;
-	hash_code += hash_code << 15;
 
-	return hash_code * shift.first + shift.second;
-}
+	template<>
+	size_t hash<std::string>(const std::string& key, const std::pair<size_t, size_t>& shift) {
+		size_t hash_code = 0;
+
+		for (char c : key) {
+			hash_code += (size_t)c;
+			hash_code += hash_code << 10;
+			hash_code += hash_code >> 6;
+		}
+
+		hash_code += hash_code << 3;
+		hash_code ^= hash_code >> 11;
+		hash_code += hash_code << 15;
+
+		return hash_code * shift.first + shift.second;
+	}
+
+};
+

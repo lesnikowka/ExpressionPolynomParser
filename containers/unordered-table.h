@@ -1,3 +1,5 @@
+#pragma once
+
 #include<vector>
 #include<initializer_list>
 #include<ostream>
