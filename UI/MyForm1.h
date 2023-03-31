@@ -194,7 +194,6 @@ namespace ui {
 		return result;
 	}
 	private: System::String^ toSystemString(std::string s) {
-		std::reverse(s.begin(), s.end());
 		System::String^ result = msclr::interop::marshal_as<String^>(s);
 
 		return result;
@@ -225,27 +224,27 @@ namespace ui {
 	private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) {
 		this->richTextBox1->Text = "";
 
-		this->richTextBox1->Text += "Неупорядоченная таблица:\r\n";
+		this->richTextBox1->Text += "\r\nНеупорядоченная таблица:\r\n";
 		for (auto i : *(this->unorderedTable)) {
 			this->richTextBox1->Text += toSystemString(i.first) + ": " + toSystemString(i.second.str()) + "\r\n";
 		}
-		this->richTextBox1->Text += "Упорядоченная таблица:\r\n";
+		this->richTextBox1->Text += "\r\nУпорядоченная таблица:\r\n";
 		for (auto i : *(this->orderedTable)) {
 			this->richTextBox1->Text += toSystemString(i.first) + ": " + toSystemString(i.second.str()) + "\r\n";
 		}
-		this->richTextBox1->Text += "AVL дерево:\r\n";
+		this->richTextBox1->Text += "\r\nAVL дерево:\r\n";
 		for (auto i : *(this->avlTree)) {
 			this->richTextBox1->Text += toSystemString(i.first) + ": " + toSystemString(i.second.str()) + "\r\n";
 		}
-		//this->richTextBox1->Text += "R-B дерево:\r\n";
+		//this->richTextBox1->Text += "\r\nR-B дерево:\r\n";
 		//for (auto i : *(this->rbTree)) {
 		//	this->richTextBox1->Text += toSystemString(i.first) + ": " + toSystemString(i.second.str()) + "\r\n";
 		//}
-		//this->richTextBox1->Text += "Хеш таблица с разрешением коллизий методом цепочек:\r\n";
+		//this->richTextBox1->Text += "\r\nХеш таблица с разрешением коллизий методом цепочек:\r\n";
 		//for (auto i : *(this->hashTableC)) {
 		//	this->richTextBox1->Text += toSystemString(i.key) + ": " + toSystemString(i.elem.str()) + "\r\n";
 		//}
-		this->richTextBox1->Text += "Хеш таблица с разрешением коллизий методом открытой адресации:\r\n";
+		this->richTextBox1->Text += "\r\nХеш таблица с разрешением коллизий методом открытой адресации:\r\n";
 		for (auto i : *(this->hashTableOA)) {
 			this->richTextBox1->Text += toSystemString(i.first) + ": " + toSystemString(i.second.str()) + "\r\n";
 		}

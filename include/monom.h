@@ -360,7 +360,7 @@ public:
 		  for (int i = 0; i < degree.size(); i++)
 			  tmp += degree[i];
 		  if (tmp == 0) {
-			  result += coef;
+			  result += std::to_string(coef);
 		  }
 		  else {
 			  if (coef == -1) result += "-";

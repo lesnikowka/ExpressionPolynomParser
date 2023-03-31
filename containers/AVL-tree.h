@@ -68,6 +68,12 @@ public:
 			}
 			return *this;
 		}
+
+		iterator operator++(int) {
+			iterator tmp = *this;
+			operator++();
+			return tmp;
+		}
 	};
 
 private:
