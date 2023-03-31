@@ -2,10 +2,11 @@
 
 #include<iostream>
 #include<string>
-
+#include<stack>
 
 template<typename T, typename D>
 class RBTree {
+	friend class iterator;
 	enum Color {
 		black=false,
 		red=true,
@@ -23,7 +24,7 @@ class RBTree {
 		Node() {
 			left = nullptr;
 			right = nullptr;
-
+			is_fict = true;
 			parent = nullptr;
 
 			height = 0;
@@ -40,8 +41,10 @@ class RBTree {
 			height = 0;
 		};
 		Node(const Node& n) :
+			color(n.color),
 			is_fict(n.is_fict),
-			key(key), element(n.element), 
+			key(n.key), 
+			element(n.element), 
 			left(n.left), right(n.right), 
 			parent(n.parent),
 			height(n.height),black_height(n.black_height) {};
@@ -63,7 +66,7 @@ class RBTree {
 				ostream << n->key << ":" << n->element
 					<< ((!n->color) ? "(black) " : "(red) ") << "Kids:";
 				if (n && n->left && n->left->is_fict == false) {
-					ostream << n->left->key << ":" << n->left->element;
+					ostream << n->left->key << ":" << n->left->element<<" | ";
 				}
 				else if (n->left->is_fict) {
 					ostream << "Fict:";
@@ -74,17 +77,14 @@ class RBTree {
 				else if (n->right->is_fict) {
 					ostream << "Fict";
 				}
+				if(n->parent)
+				ostream << " Parent:" << n->parent->key;
 			}
 			return ostream;
 		}
 
 	};
-	class iterator {
-		Node* node;
-		
-	public:
-
-	};
+	
 	Node* root;
 
 	void destructor(Node* t) {
@@ -203,7 +203,8 @@ class RBTree {
 			t->element = elem;
 			t->parent = pt;
 			t->is_fict = false;
-			t->color = Color::red;
+			if (t == root)t->color = Color::black;
+			else t->color = Color::red;
 
 			createFict(t);
 
@@ -409,6 +410,79 @@ class RBTree {
 		return ostream;
 	}
 public:
+	class iterator {
+		std::stack<Node*> history;
+		bool finish;
+	public:
+		iterator() { finish = true; }
+		iterator(Node* node) { history.push(node); finish = false; }
+		Node& operator*() {
+			return *(history.top());
+		}
+		iterator& operator=(const iterator& it) {
+			history = it.history;
+			return *this;
+		}
+		iterator operator++() {
+			bool flag=false;
+			if (finish) return iterator();
+			Node* top = history.top(),*parent;
+			if (top->key == 9) {
+				std::cout << ' ';
+			}
+			if (top->left->is_fict == false) {
+				history.push(top->left);
+			}
+			else if (top->right->is_fict == false) {
+				history.push(top->right);
+			}
+			else {
+
+				do {
+					top = history.top();
+					history.pop();
+					if (history.empty())parent = nullptr;
+					else parent = history.top();
+					
+					flag = true;
+				} while (parent&&parent->right==top);
+				if (parent == nullptr) {
+					finish = true;
+					return *this;
+				}
+				
+				while (parent->right->is_fict){
+						top = history.top();
+						history.pop();
+						parent = history.top();
+				} 
+				
+				history.push(parent->right);
+			}
+			return *this;
+		}
+		bool operator!=(const iterator& it) {
+			return !operator==(it);
+		}
+		bool operator==(const iterator& it) {
+			if (history.empty() && it.history.empty())return true;
+			else if (history.empty() == false || it.history.empty()==false) return false;
+			return history.top() == it.history.top();
+		}
+		iterator operator++(int){
+			iterator tmp;
+			operator++();
+			return tmp;
+		}
+	};
+	iterator begin() {
+		return iterator(root);
+	}
+	iterator end() {
+		return iterator();
+	}
+
+
 	RBTree() { root = new Node(); root->is_fict = true; }
 	RBTree(T key, D elem) {
 		height = 0;
@@ -424,6 +498,8 @@ public:
 	}
 	void emplace(T key, D elem) {
 		Node* tmp = pinsert(key, elem, root);
+		if (tmp == root) { 
+			root->color = Color::black; }
 	}
 
 	void erase(T key) {
