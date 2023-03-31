@@ -236,6 +236,23 @@ public:
 		}
 		return iterator(&_data, _data.size());
 	}
+
+	T& operator[](const Y& key) {
+		size_t index = crop_index(hash(key, shift));
+		
+		for (size_t num_of_passed_els = 0; num_of_passed_els <= _capacity; index = crop_index(index + _step), num_of_passed_els++) {
+			if (!_data[index].was_used) {
+				_data[index].key_val = { key, T() };
+				_data[index].was_used = true;
+				break;
+			}
+			if (_data[index].key_val.first == key && !_data[index].is_deleted) {
+				break;
+			}
+		}
+
+		return _data[index].key_val.second;
+	}
 };
 
 template<class A>
