@@ -56,17 +56,33 @@ class RBTree {
 			is_fict = n.is_fict;
 			return *this;
 		}
+		
 		friend std::ostream& operator<<(std::ostream& ostream, const Node* n) {
 			if (n == nullptr) return ostream << "Empty";
 			if (n->is_fict == false) {
 				ostream << n->key << ":" << n->element
-				<< ((!n->color) ? "(black) " : "(red) ") << "Kids:"
-					<< ((n&&n->left&&n->left->is_fict==false)?((n && n->left) ? std::to_string(n->left->key) : std::to_string(0)):"Fict") << ":"
-					<< ((n&&n->right&&n->right->is_fict==false)?((n && n->right) ? std::to_string(n->right->key) :std::to_string(0)):"Fict");
-				ostream << "  Parent:" << ((n && n->parent) ? n->parent->key : 0);
+					<< ((!n->color) ? "(black) " : "(red) ") << "Kids:";
+				if (n && n->left && n->left->is_fict == false) {
+					ostream << n->left->key << ":" << n->left->element;
+				}
+				else if (n->left->is_fict) {
+					ostream << "Fict:";
+				}
+				if (n && n->right && n->right->is_fict == false) {
+					ostream << n->right->key << ":" << n->right->element;
+				}
+				else if (n->right->is_fict) {
+					ostream << "Fict";
+				}
 			}
 			return ostream;
 		}
+
+	};
+	class iterator {
+		Node* node;
+		
+	public:
 
 	};
 	Node* root;
@@ -230,7 +246,7 @@ class RBTree {
 		return t;
 	}
 	Node* pfind(T key,Node* t) {
-		if (t == nullptr)return t;
+		if (t->is_fict)return nullptr;
 		if (key > t->key) return pfind(key, t->right);
 		if (key < t->key) return pfind(key, t->left);
 		return t;
@@ -408,7 +424,6 @@ public:
 	}
 	void emplace(T key, D elem) {
 		Node* tmp = pinsert(key, elem, root);
-		if (root == nullptr) { root = tmp; root->color = Color::black; }
 	}
 
 	void erase(T key) {
