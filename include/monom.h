@@ -354,6 +354,26 @@ public:
 		return (!isSimilar(m) && operator>=(m));
 	};
 	
+	  std::string str() const{
+		  int tmp = 0;
+		  std::string result;
+		  for (int i = 0; i < degree.size(); i++)
+			  tmp += degree[i];
+		  if (tmp == 0) {
+			  result += coef;
+		  }
+		  else {
+			  if (coef == -1) result += "-";
+			  for (int i = 0; i < using_alphabet.size(); i++) {
+				  if (degree[i] != 0) {
+					  result += using_alphabet[i];
+					  if (degree[i] != 1)
+						  result += "^" + std::to_string(degree[i]);
+				  }
+			  }
+		  }
+		  return result;
+	}
 
 	friend std::istream& operator>>(std::istream& istream, Monom& m) {
 		std::string str;
@@ -361,27 +381,8 @@ public:
 		m = Monom(str);
 		return istream;
 	};
-	friend std::ostream& operator<<(std::ostream& ostream,const Monom& m) {
-		int tmp=0;
-		for (int i = 0; i < m.degree.size(); i++)
-			tmp += m.degree[i];
-		if (m.coef == -1 && tmp!=0) {
-			ostream << "-";
-		}
-		if (m.coef != 1 && m.coef != -1) {
-			ostream << m.coef;
-		}
-		
-		if (tmp == 0) return ostream<<m.coef;
-		else
-		for (int i = 0; i < m.using_alphabet.size(); i++) {
-			
-			if (m.degree[i] > 1)
-				ostream << m.using_alphabet[i] << "^" << m.degree[i];
-			else if (m.degree[i] == 1)
-				ostream << m.using_alphabet[i];
-		}
-		
+	friend std::ostream& operator<<(std::ostream& ostream, const Monom& m) {
+		ostream << m.str();
 		return ostream;
 	};
 
