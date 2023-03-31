@@ -8,8 +8,7 @@
 #include<map>
 #include<stack>
 
-#include"../include/polynom.h"
-
+#include"polynom.h"
 
 template<typename T>
 class Expression {
