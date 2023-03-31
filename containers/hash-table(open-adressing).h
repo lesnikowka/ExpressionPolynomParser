@@ -244,6 +244,7 @@ public:
 			if (!_data[index].was_used) {
 				_data[index].key_val = { key, T() };
 				_data[index].was_used = true;
+				_number_of_elements++;
 				break;
 			}
 			if (_data[index].key_val.first == key && !_data[index].is_deleted) {
