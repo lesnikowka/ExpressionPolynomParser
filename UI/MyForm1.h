@@ -1,6 +1,6 @@
 #pragma once
-#include "../include/polynom.h"
-#include "../expressions/expression.h"
+#include "polynom.h"
+#include "expression.h"
 
 
 namespace ui {
