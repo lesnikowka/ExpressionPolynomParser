@@ -41,6 +41,13 @@ add_executable(ui ${TARGET_SRC} ${TARGET_H} ${TARGET_RESX})
 target_link_libraries(ui ${TARGET_LIBRARIES})
 
 
+
+target_include_directories(ui PUBLIC ${MP2_INCLUDE})
+target_include_directories(ui PUBLIC ../include)
+target_include_directories(ui PUBLIC ../containers)
+target_include_directories(ui PUBLIC ../expressions)
+
+
 if(NOT CMAKE_GENERATOR MATCHES "Visual Studio 1[0-6]")
   # VS 17 2022 and above require a global mark on managed assemblies.
   # CMake adds this automatically when using COMMON_LANGUAGE_RUNTIME,

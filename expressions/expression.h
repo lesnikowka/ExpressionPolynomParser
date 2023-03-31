@@ -8,13 +8,13 @@
 #include<map>
 #include<stack>
 
-#include"../include/polynom.h"
-#include"../containers/Red-Black-trees.h"
-#include"../containers/AVL-tree.h"
-#include"../containers/hash-table(chaining).h"
-#include"../containers/hash-table(open-adressing).h"
-#include"../containers/ordered-table.h"
-#include"../containers/unordered-table.h"
+#include"polynom.h"
+#include"Red-Black-trees.h"
+#include"AVL-tree.h"
+#include"hash-table(chaining).h"
+#include"hash-table(open-adressing).h"
+#include"ordered-table.h"
+#include"unordered-table.h"
 
 
 class Expression {
