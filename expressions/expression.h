@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include<iostream>
 
 #include<exception>
@@ -25,7 +25,7 @@ class Expression {
 		ERROR
 	};
 
-
+	
 	std::string source_str, modified_str;
 	std::string alph_nums = "0123456789",
 		alph_letters = "abcdefghijklmnopqrstuvwABCDEFGHIJKLMNOPQRSTUVW",

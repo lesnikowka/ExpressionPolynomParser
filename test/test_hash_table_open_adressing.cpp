@@ -1,4 +1,6 @@
 #include "gtest/gtest.h"
+
+
 #include "hash-table(open-adressing).h"
 
 
@@ -59,6 +61,7 @@ TEST_F(HT_fixture, iterators_are_working) {
 		EXPECT_FALSE(std::find(v1.begin(), v1.end(), i) == v1.end());
 	}
 }
+
 
 
 TEST_F(HT_fixture, throw_if_erase_element_that_was_not_emplaced) {

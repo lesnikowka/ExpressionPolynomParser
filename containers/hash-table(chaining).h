@@ -26,7 +26,7 @@ class HashTableC {
 
 	//settings for hash()
 	int a, b,c;
-	std::vector<int> simp_nums = {13,53,151, 503,1553,5101,2764437,1000000007};
+	std::vector<int> simp_nums = { 13,53,151, 503,1553, 5101, 2764437 };//, 1000000007};
 	int p = 1000000007;
 	
 	//counter of elements
@@ -92,15 +92,15 @@ public:
 			this->m = iter.m;
 			return *this;
 		}
-		bool operator==(const iterator& iter) {
+		bool operator==(const iterator& iter) const {
 			return (index == iter.index &&it == (iter.it));
 		}
-		bool operator!=(const iterator& iter) {
+		bool operator!=(const iterator& iter) const{
 			return !operator==(iter);
 		}
 
 		pair& operator*() {
-			//if (it == (*table)[index].end())throw("Iterator points to the end");
+			if (it == (*table)[index].end())throw("Iterator points to the end");
 			return *it;
 		}
 		
@@ -158,7 +158,10 @@ public:
 		capacity = new_capacity;
 	}
 
-	iterator begin(size_t index=0) {
+	iterator begin(size_t index = 0) {
+		while (index<(capacity-1)&&table[index].size()==0) {
+			index++;
+		}
 		return iterator(table[index].begin(),index,&table);
 	}
 	iterator end(size_t index=-1) {
@@ -178,7 +181,9 @@ public:
 		return res%capacity;
 	}
 	int hash(int key) {
-		return ((a*key+b)%p) % c;
+		int h = ((a * key + b) % p) % c;
+		if (h < 0)h +=c;
+		return h;
 	}
 	void getNewCoef(size_t capacity) {
 
@@ -190,10 +195,12 @@ public:
 	iterator find(T key) {
 		size_t index = hash(key);
 		iterator it = begin(index);
+		int start_index = it.index;
 
-		while (it != end(it.index) && (*it).key != key) {
+		while (it.index==start_index&&it != end(it.index) && (*it).key != key) {
 			it++;
 		}
+		if (it.index != start_index)return end();
 		return it;
 	}
 	D& operator[](const T& key) {
@@ -214,7 +221,7 @@ public:
 	void emplace(T key,D elem) {
 		int index = hash(key);
 		iterator it = find(key);
-		if (it != end(it.index)) return;
+		if (it != end()) return;
 		table[index].push_front(pair(key,elem));
 		size++;
 		per_of_fill = (float)size / (float)capacity;
@@ -225,7 +232,7 @@ public:
 	void erase(T key) {
 		iterator elem = find(key);
 		size_t index = hash(key);
-		if (elem == end(index)) throw "Element not founded";
+		if (elem == end()) throw "Element not founded";
 		table[index].erase(elem.it);
 		size--;
 		per_of_fill = size / capacity;
