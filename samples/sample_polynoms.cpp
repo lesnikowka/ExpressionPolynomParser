@@ -7,13 +7,12 @@
 #include"hash-table(open-adressing).h"
 int main()
 {
-	Monom a("2xyz");
-	std::cout << a<<'\n';
-
-	Expression<RBTree<std::string,Polynom>> e;
-	e.addExp("a=xyz");
-	e.addExp("a");
-	e.addExp("a*2");
-	std::cout << e;
+	//RBTree<std::string, Polynom> t;
+	//t.emplace("tmp1",Polynom("xyz"));
+	//t.emplace("tmp2",Polynom("xyz"));
+	//std::cout<<t;
+	Expression<RBTree<std::string, Polynom>> a;
+	a.addExp("a===2");
+	a.addExp("a");
 	return 0;
 }

@@ -8,6 +8,7 @@ template<typename T, typename D>
 class RBTree {
 	friend class iterator;
 	enum Color {
+
 		black = false,
 		red = true,
 
@@ -93,13 +94,13 @@ class RBTree {
 
 	Node* copy(Node* n) {
 		if (!n)return nullptr;
+
 		Node* cur_node = new Node(n->first, n->second, (n->color) ? Color::black : Color::red, n->is_fict, n->parent);
 		cur_node->left = copy(n->left);
 		cur_node->right = copy(n->right);
 		return cur_node;
 	}
 	void Tdestructor(Node* t) {
-
 		if (!t) return;
 		if (t->left)Tdestructor(t->left);
 		if (t->right)Tdestructor(t->right);
@@ -506,6 +507,7 @@ public:
 		height = 0;
 		root = new Node(first, elem);
 	}
+
 	RBTree(const RBTree& t) { root = copy(t.root); }
 	~RBTree() {
 		Tdestructor(root);

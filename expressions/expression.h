@@ -356,6 +356,7 @@ class Expression {
 
 		for (int i = 0; i < str.size(); i++) {
 			if (str[i] == '=') {
+				if (flag == false)throw std::exception("Expression is not correct");
 				flag = false;
 				continue;
 			}
