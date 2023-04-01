@@ -92,10 +92,10 @@ public:
 			this->m = iter.m;
 			return *this;
 		}
-		bool operator==(const iterator& iter) {
+		bool operator==(const iterator& iter) const {
 			return (index == iter.index &&it == (iter.it));
 		}
-		bool operator!=(const iterator& iter) {
+		bool operator!=(const iterator& iter) const{
 			return !operator==(iter);
 		}
 
@@ -181,7 +181,9 @@ public:
 		return res%capacity;
 	}
 	int hash(int key) {
-		return ((a*key+b)%p) % c;
+		int h = ((a * key + b) % p) % c;
+		if (h < 0)h +=c;
+		return h;
 	}
 	void getNewCoef(size_t capacity) {
 
@@ -198,7 +200,7 @@ public:
 		while (it.index==start_index&&it != end(it.index) && (*it).key != key) {
 			it++;
 		}
-		if (it.index != start_index)return end(it.index);
+		if (it.index != start_index)return end();
 		return it;
 	}
 	D& operator[](const T& key) {
@@ -219,7 +221,7 @@ public:
 	void emplace(T key,D elem) {
 		int index = hash(key);
 		iterator it = find(key);
-		if (it != end(it.index)) return;
+		if (it != end()) return;
 		table[index].push_front(pair(key,elem));
 		size++;
 		per_of_fill = (float)size / (float)capacity;
@@ -230,7 +232,7 @@ public:
 	void erase(T key) {
 		iterator elem = find(key);
 		size_t index = hash(key);
-		if (elem == end(index)) throw "Element not founded";
+		if (elem == end()) throw "Element not founded";
 		table[index].erase(elem.it);
 		size--;
 		per_of_fill = size / capacity;
