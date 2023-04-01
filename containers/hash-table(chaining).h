@@ -8,13 +8,13 @@ template<typename T, typename D>
 class HashTableC {
 	friend class iterator;
 	struct pair {
-		T key;
-		D elem;
+		T first;
+		D second;
 		pair() = default;
-		pair(T key,D elem):key(key),elem(elem){}
-		pair(const pair& p):key(p.key),elem(p.elem){}
+		pair(T first,D second):first(first),second(second){}
+		pair(const pair& p):first(p.first),second(p.second){}
 		friend std::ostream& operator<<(std::ostream& ostream, const pair& p) {
-			ostream<< p.key << ":" << p.elem;
+			ostream<< p.first << ":" << p.second;
 			return ostream;
 		}
 	};
@@ -29,7 +29,7 @@ class HashTableC {
 	std::vector<int> simp_nums = { 13,53,151, 503,1553, 5101, 2764437 };//, 1000000007};
 	int p = 1000000007;
 	
-	//counter of elements
+	//counter of seconds
 	int size;
 
 	float per_of_fill;
@@ -150,7 +150,7 @@ public:
 		std::vector<std::list<pair>> new_table; new_table.resize(new_capacity);
 		for (iterator it = begin(); it != end(); it++) {
 			if (it != end(it.index)) {
-				index = hash((*it).key);
+				index = hash((*it).first);
 				new_table[index].push_front(*it);
 			}
 		}
@@ -169,19 +169,19 @@ public:
 		return iterator(table[index].end(),index,&table);
 	}
 	template<typename T>
-	int hash(const T& key) {
-		return key.hash();
+	int hash(const T& first) {
+		return first.hash();
 	}
-	int hash(std::string key)
+	int hash(std::string first)
 	{
 		int res = 0;
-		for (int i = 0; i < key.size();i++) {
-			res += (int)key[i]*pow(p,i);
+		for (int i = 0; i < first.size();i++) {
+			res += (int)first[i]*pow(p,i);
 		}
 		return res%capacity;
 	}
-	int hash(int key) {
-		int h = ((a * key + b) % p) % c;
+	int hash(int first) {
+		int h = ((a * first + b) % p) % c;
 		if (h < 0)h +=c;
 		return h;
 	}
@@ -192,48 +192,48 @@ public:
 		c = capacity;
 	}
 
-	iterator find(T key) {
-		size_t index = hash(key);
+	iterator find(T first) {
+		size_t index = hash(first);
 		iterator it = begin(index);
 		int start_index = it.index;
 
-		while (it.index==start_index&&it != end(it.index) && (*it).key != key) {
+		while (it.index==start_index&&it != end(it.index) && (*it).first != first) {
 			it++;
 		}
 		if (it.index != start_index)return end();
 		return it;
 	}
-	D& operator[](const T& key) {
-		iterator it = find(key);
+	D& operator[](const T& first) {
+		iterator it = find(first);
 		if (it == end(it.index))
-			emplace(key, D());
-		return (*find(key)).elem;
+			emplace(first, D());
+		return (*find(first)).second;
 	}
-	D& operator[](T&& key) {
-		iterator it = find(key);
-		if (it == end(it.index))emplace(key, D());
-		return (*find(key)).elem;
+	D& operator[](T&& first) {
+		iterator it = find(first);
+		if (it == end(it.index))emplace(first, D());
+		return (*find(first)).second;
 	}
 
 	void insert(std::pair<T, D> p) {
 		return emplace(p.first, p.second);
 	}
-	void emplace(T key,D elem) {
-		int index = hash(key);
-		iterator it = find(key);
+	void emplace(T first,D second) {
+		int index = hash(first);
+		iterator it = find(first);
 		if (it != end()) return;
-		table[index].push_front(pair(key,elem));
+		table[index].push_front(pair(first,second));
 		size++;
 		per_of_fill = (float)size / (float)capacity;
 		if (per_of_fill >= 0.7f) 
 			repack();
 	}
 
-	void erase(T key) {
-		iterator elem = find(key);
-		size_t index = hash(key);
-		if (elem == end()) throw "Element not founded";
-		table[index].erase(elem.it);
+	void erase(T first) {
+		iterator second = find(first);
+		size_t index = hash(first);
+		if (second == end()) throw "second not founded";
+		table[index].erase(second.it);
 		size--;
 		per_of_fill = size / capacity;
 	}
@@ -248,7 +248,7 @@ public:
 		for (auto col : n.table) {
 			flag = false;
 			for (auto row : col) {
-				ostream<< row.key << ":" << row.elem<<' ';
+				ostream<< row.first << ":" << row.second<<' ';
 				flag = true;
 			}
 			if(flag)
