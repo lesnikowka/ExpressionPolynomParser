@@ -26,7 +26,7 @@ class HashTableC {
 
 	//settings for hash()
 	int a, b,c;
-	std::vector<int> simp_nums = { 13,53,151, 503,1553 };//, 5101, 2764437, 1000000007};
+	std::vector<int> simp_nums = { 13,53,151, 503,1553, 5101, 2764437 };//, 1000000007};
 	int p = 1000000007;
 	
 	//counter of elements
