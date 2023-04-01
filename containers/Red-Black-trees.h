@@ -358,14 +358,6 @@ class RBTree {
 		if (t->first > first) perase(first, t->left);
 		else if (t->first < first) perase(first, t->right);
 		else {
-			if (t == root) {
-				delete t->left;
-				delete t->right;
-				delete t;
-				root = new Node();
-				root->is_fict = true;
-				return;
-			}
 			Node* prev = findMax(t->left);
 			Node* left = t->left, * right = t->right;
 			Node* x = prev->left;
