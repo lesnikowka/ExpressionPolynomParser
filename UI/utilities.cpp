@@ -20,6 +20,24 @@ namespace ui {
 		return result;
 	}
 
+	std::string commasToPoints(std::string& s) {
+		std::string result;
+		for (auto i : s) {
+			if (i == ',') result += ".";
+			else result += i;
+		}
+		return result;
+	}
+
+	std::string pointsToCommas(std::string& s) {
+		std::string result;
+		for (auto i : s) {
+			if (i == '.') result += ",";
+			else result += i;
+		}
+		return result;
+	}
+
 	//template<class T>
 	//Polynom getPolynom(std::string& s) {
 	//	Expression<T> ex(s);

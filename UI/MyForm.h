@@ -14,6 +14,9 @@ namespace ui {
 	//template<class T>
 	//Polynom getPolynom(std::string& s);
 
+	std::string commasToPoints(std::string& s);
+	std::string pointsToCommas(std::string& s);
+
 	/// <summary>
 	/// Summary for MyForm
 	/// </summary>
@@ -62,11 +65,13 @@ namespace ui {
 	private: System::Windows::Forms::TextBox^ textBox3;
 	private: System::Windows::Forms::TextBox^ textBox4;
 	private: System::Windows::Forms::TextBox^ textBox5;
+	private: System::Windows::Forms::TextBox^ textBox6;
 	private: System::Windows::Forms::Label^ label1;
 	private: System::Windows::Forms::Label^ label2;
 	private: System::Windows::Forms::Label^ label3;
 	private: System::Windows::Forms::Label^ label4;
 	private: System::Windows::Forms::Label^ label5;
+	private: System::Windows::Forms::Label^ label6;
 	private: System::Windows::Forms::Button^ button2;
 	private: System::Windows::Forms::MenuStrip^ menuStrip1;
 	private: System::Windows::Forms::ToolStripMenuItem^ aVLtreeToolStripMenuItem;
@@ -109,11 +114,13 @@ namespace ui {
 			this->textBox3 = (gcnew System::Windows::Forms::TextBox());
 			this->textBox4 = (gcnew System::Windows::Forms::TextBox());
 			this->textBox5 = (gcnew System::Windows::Forms::TextBox());
+			this->textBox6 = (gcnew System::Windows::Forms::TextBox());
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->label2 = (gcnew System::Windows::Forms::Label());
 			this->label3 = (gcnew System::Windows::Forms::Label());
 			this->label4 = (gcnew System::Windows::Forms::Label());
 			this->label5 = (gcnew System::Windows::Forms::Label());
+			this->label6 = (gcnew System::Windows::Forms::Label());
 			this->button2 = (gcnew System::Windows::Forms::Button());
 			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
 			this->aVLtreeToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -165,12 +172,21 @@ namespace ui {
 			// textBox5
 			// 
 			this->textBox5->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9));
-			this->textBox5->Location = System::Drawing::Point(97, 98);
+			this->textBox5->Location = System::Drawing::Point(70, 118);
 			this->textBox5->Name = L"textBox5";
 			this->textBox5->Size = System::Drawing::Size(200, 20);
 			this->textBox5->ReadOnly = true;
 			this->textBox5->TabIndex = 9;
 			this->textBox5->BorderStyle = System::Windows::Forms::BorderStyle::None;
+
+			this->textBox6->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9));
+			this->textBox6->Location = System::Drawing::Point(128, 98);
+			this->textBox6->Name = L"textBox5";
+			this->textBox6->Size = System::Drawing::Size(200, 25);
+			this->textBox6->ReadOnly = true;
+			this->textBox6->TabIndex = 9;
+			this->textBox6->BorderStyle = System::Windows::Forms::BorderStyle::None;
+			this->textBox6->Text = "";
 			// 
 			// label1
 			// 
@@ -202,21 +218,29 @@ namespace ui {
 			// label4
 			// 
 			this->label4->AutoSize = true;
-			this->label4->Location = System::Drawing::Point(10, 100);
+			this->label4->Location = System::Drawing::Point(10, 120);
 			this->label4->Name = L"label4";
 			this->label4->Size = System::Drawing::Size(17, 13);
 			this->label4->TabIndex = 7;
 			this->label1->MaximumSize = System::Drawing::Size(10, 0);
-			this->label4->Text = L"Result polynom: ";
+			this->label4->Text = L"Полином: ";
 			// 
 			// label5
 			// 
 			this->label5->AutoSize = true;
-			this->label5->Location = System::Drawing::Point(10, 120);
+			this->label5->Location = System::Drawing::Point(10, 140);
 			this->label5->Name = L"label4";
 			this->label5->Size = System::Drawing::Size(17, 13);
 			this->label5->TabIndex = 7;
-			this->label5->Text = L"Result: ";
+			this->label5->Text = L"Подстановка: ";
+
+
+			this->label6->AutoSize = true;
+			this->label6->Location = System::Drawing::Point(10, 100);
+			this->label6->Name = L"label4";
+			this->label6->Size = System::Drawing::Size(17, 13);
+			this->label6->TabIndex = 7;
+			this->label6->Text = L"Текущее выражение: ";
 			// 
 			// button2
 			// 
@@ -316,8 +340,10 @@ namespace ui {
 			this->Controls->Add(this->label2);
 			this->Controls->Add(this->label1);
 			this->Controls->Add(this->label5);
+			this->Controls->Add(this->label6);
 			this->Controls->Add(this->textBox4);
 			this->Controls->Add(this->textBox5);
+			this->Controls->Add(this->textBox6);
 			this->Controls->Add(this->textBox3);
 			this->Controls->Add(this->textBox2);
 			this->Controls->Add(this->textBox1);
@@ -339,9 +365,9 @@ namespace ui {
 		std::vector<double> xyz(3);
 
 		try {
-			xyz[0] = System::Convert::ToDouble(this->textBox2->Text);
-			xyz[1] = System::Convert::ToDouble(this->textBox3->Text);
-			xyz[2] = System::Convert::ToDouble(this->textBox4->Text);
+			xyz[0] = std::stod(commasToPoints(toString(this->textBox2->Text)));
+			xyz[1] = std::stod(commasToPoints(toString(this->textBox3->Text)));
+			xyz[2] = std::stod(commasToPoints(toString(this->textBox4->Text)));
 		}
 		catch (Exception^ ex) {
 			MessageBox::Show("Некорректные значения x, y или z", "Ошибка!", MessageBoxButtons::OK, MessageBoxIcon::Warning);
@@ -350,27 +376,27 @@ namespace ui {
 		switch (this->numberOfSelectedContainer) {
 		case 0:
 			this->textBox5->Text = toSystemString(exAvlTree->getResult().str());
-			this->label5->Text = L"Result: " + Convert::ToString(exAvlTree->getResult().calculate(xyz));
+			this->label5->Text = L"Подстановка: " + Convert::ToString(exAvlTree->getResult().calculate(xyz));
 			break;
 		case 1:
 			this->textBox5->Text = toSystemString(exRbTree->getResult().str());
-			this->label5->Text = L"Result: " + Convert::ToString(exRbTree->getResult().calculate(xyz));
+			this->label5->Text = L"Подстановка: " + Convert::ToString(exRbTree->getResult().calculate(xyz));
 			break;
 		case 2:
 			this->textBox5->Text = toSystemString(exOrderedTable->getResult().str());
-			this->label5->Text = L"Result: " + Convert::ToString(exOrderedTable->getResult().calculate(xyz));
+			this->label5->Text = L"Подстановка: " + Convert::ToString(exOrderedTable->getResult().calculate(xyz));
 			break;
 		case 3:
 			this->textBox5->Text =toSystemString(exUnorderedTable->getResult().str());
-			this->label5->Text = L"Result: " + Convert::ToString(exUnorderedTable->getResult().calculate(xyz));
+			this->label5->Text = L"Подстановка: " + Convert::ToString(exUnorderedTable->getResult().calculate(xyz));
 			break;
 		case 4:
 			this->textBox5->Text = toSystemString(exHashTableC->getResult().str());
-			this->label5->Text = L"Result: " + Convert::ToString(exHashTableC->getResult().calculate(xyz));
+			this->label5->Text = L"Подстановка: " + Convert::ToString(exHashTableC->getResult().calculate(xyz));
 			break;
 		case 5:
 			this->textBox5->Text = toSystemString(exHashTableOA->getResult().str());
-			this->label5->Text = L"Result: " + Convert::ToString(exHashTableOA->getResult().calculate(xyz));
+			this->label5->Text = L"Подстановка: " + Convert::ToString(exHashTableOA->getResult().calculate(xyz));
 			break;
 		}
 
@@ -391,7 +417,7 @@ namespace ui {
 		this->exOrderedTable = newExOrderedTable;
 
 		this->textBox5->Text = "";
-		this->label5->Text = "Result: ";
+		this->label5->Text = "Подстановка: ";
 	}
 
 	private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) {
@@ -438,7 +464,7 @@ private: System::Void dToolStripMenuItem1_Click(System::Object^ sender, System::
 }	   
 private: System::Void textBox1_KeyPress(System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e) {
 	if (e->KeyChar == '\r') {
-		std::string tmp = toString(this->textBox1->Text);
+		std::string tmp = commasToPoints(toString(this->textBox1->Text));
 		try {
 				this->exAvlTree->addExp(tmp);
 				this->exRbTree->addExp(tmp);
@@ -446,6 +472,25 @@ private: System::Void textBox1_KeyPress(System::Object^ sender, System::Windows:
 				this->exUnorderedTable->addExp(tmp);
 				this->exHashTableC->addExp(tmp);
 				this->exHashTableOA->addExp(tmp);
+
+				std::string tmp;
+
+				switch (this->numberOfSelectedContainer) {
+				case 0:
+					tmp = this->exAvlTree->getSourceString();
+				case 1:
+					tmp = this->exRbTree->getSourceString();
+				case 2:
+					tmp = this->exOrderedTable->getSourceString();
+				case 3:
+					tmp = this->exUnorderedTable->getSourceString();
+				case 4:
+					tmp = this->exHashTableC->getSourceString();
+				case 5:
+					tmp = this->exHashTableOA->getSourceString();
+				}
+
+				this->textBox6->Text = toSystemString(tmp);
 
 				printResult();
 		}

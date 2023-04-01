@@ -228,14 +228,14 @@ namespace ui {
 		for (auto i : *(this->avlTree)) {
 			this->richTextBox1->Text += toSystemString(i.first) + ": " + toSystemString(i.second.str()) + "\r\n";
 		}
-		//this->richTextBox1->Text += "\r\nR-B дерево:\r\n";
-		//for (auto i : *(this->rbTree)) {
-		//	this->richTextBox1->Text += toSystemString(i.first) + ": " + toSystemString(i.second.str()) + "\r\n";
-		//}
-		//this->richTextBox1->Text += "\r\nХеш таблица с разрешением коллизий методом цепочек:\r\n";
-		//for (auto i : *(this->hashTableC)) {
-		//	this->richTextBox1->Text += toSystemString(i.key) + ": " + toSystemString(i.elem.str()) + "\r\n";
-		//}
+		this->richTextBox1->Text += "\r\nR-B дерево:\r\n";
+		for (auto i : *(this->rbTree)) {
+			this->richTextBox1->Text += toSystemString(i.first) + ": " + toSystemString(i.second.str()) + "\r\n";
+		}
+		this->richTextBox1->Text += "\r\nХеш таблица с разрешением коллизий методом цепочек:\r\n";
+		for (auto i : *(this->hashTableC)) {
+			this->richTextBox1->Text += toSystemString(i.first) + ": " + toSystemString(i.second.str()) + "\r\n";
+		}
 		this->richTextBox1->Text += "\r\nХеш таблица с разрешением коллизий методом открытой адресации:\r\n";
 		for (auto i : *(this->hashTableOA)) {
 			this->richTextBox1->Text += toSystemString(i.first) + ": " + toSystemString(i.second.str()) + "\r\n";
