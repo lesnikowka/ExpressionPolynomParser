@@ -425,9 +425,9 @@ public:
 		std::stack<Node*> history;
 		bool finish;
 	public:
-		iterator() { finish = true; }
+		iterator() { finish = true;}
 		iterator(Node* node) {
-			if (node)
+			if (node&&!node->is_fict)
 			history.push(node); 
 			finish = false; 
 		}
