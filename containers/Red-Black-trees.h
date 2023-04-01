@@ -362,7 +362,8 @@ class RBTree {
 				delete t->left;
 				delete t->right;
 				delete t;
-				root = nullptr;
+				root = new Node();
+				root->is_fict = true;
 				return;
 			}
 			Node* prev = findMax(t->left);
