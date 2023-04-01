@@ -30,7 +30,6 @@ TYPED_TEST(Expression_Typed, can_create_monom) {
 	a.addExp("a=xyz");
 	EXPECT_EQ(p, a.getResult());
 }
-
 TYPED_TEST(Expression_Typed, can_create_polynom) {
 	auto a = this->n;
 	Polynom p("xyz+xz+x^2");
