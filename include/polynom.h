@@ -325,6 +325,8 @@ public:
 			result += e.str();
 		}
 
+		if (result.size() == 0) result += "0";
+
 		return result;
 	}
 

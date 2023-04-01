@@ -11,6 +11,9 @@ namespace ui {
 	using namespace System::Data;
 	using namespace System::Drawing;
 
+	//template<class T>
+	//Polynom getPolynom(std::string& s);
+
 	/// <summary>
 	/// Summary for MyForm
 	/// </summary>
@@ -35,10 +38,23 @@ namespace ui {
 			{
 				delete components;
 			}
+			delete this->exUnorderedTable;
+			delete this->exOrderedTable;
+			delete this->exAvlTree;
+			delete this->exRbTree;
+			delete this->exHashTableC;
+			delete this->exHashTableOA;
 		}
 
+	private: Expression<UnorderedTable<std::string, Polynom>>* exUnorderedTable;
+	private: Expression<OrderedTable<std::string, Polynom>>* exOrderedTable;
+	private: Expression<AVLTree<std::string, Polynom>>* exAvlTree;
+	private: Expression<RBTree<std::string, Polynom>>* exRbTree;
+	private: Expression<HashTableC<std::string, Polynom>>* exHashTableC;
+	private: Expression<HashTableOpenAdressing<std::string, Polynom>>* exHashTableOA;
+
 	private: System::String^ usedContainerName = L"Тип контейнера";
-	private: int numberOfSelectedContainer = -1;
+	private: int numberOfSelectedContainer = 0;
 
 	private: MyForm1^ form1;
 	private: System::Windows::Forms::TextBox^ textBox1;
@@ -79,6 +95,13 @@ namespace ui {
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			this->exAvlTree = new Expression<AVLTree<std::string, Polynom>>;
+			this->exRbTree = new Expression<RBTree<std::string, Polynom>>;
+			this->exHashTableC = new Expression<HashTableC<std::string, Polynom>>;
+			this->exHashTableOA = new Expression<HashTableOpenAdressing<std::string, Polynom>>;
+			this->exOrderedTable = new Expression<OrderedTable<std::string, Polynom>>;
+			this->exUnorderedTable = new Expression<UnorderedTable<std::string, Polynom>>;
+
 			this->form1 = gcnew MyForm1;
 			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
 			this->textBox2 = (gcnew System::Windows::Forms::TextBox());
@@ -108,6 +131,7 @@ namespace ui {
 			this->textBox1->Name = L"textBox1";
 			this->textBox1->Size = System::Drawing::Size(293, 20);
 			this->textBox1->TabIndex = 0;
+			this->textBox1->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &MyForm::textBox1_KeyPress);
 			// 
 			// textBox2  X
 			// 
@@ -186,7 +210,7 @@ namespace ui {
 			this->button2->Name = L"button2";
 			this->button2->Size = System::Drawing::Size(83, 22);
 			this->button2->TabIndex = 8;
-			this->button2->Text = L"Вычислить";
+			this->button2->Text = L"Очистить";
 			this->button2->UseVisualStyleBackColor = true;
 			this->button2->Click += gcnew System::EventHandler(this, &MyForm::button2_Click);
 			// 
@@ -295,15 +319,67 @@ namespace ui {
 
 		}
 #pragma endregion
+	
+	private: System::Void printResult() {
+		std::vector<double> xyz(3);
+
+		try {
+			xyz[0] = System::Convert::ToDouble(this->textBox2->Text);
+			xyz[1] = System::Convert::ToDouble(this->textBox3->Text);
+			xyz[2] = System::Convert::ToDouble(this->textBox4->Text);
+		}
+		catch (Exception^ ex) {
+			MessageBox::Show("Некорректные значения x, y или z", "Ошибка!", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+		}
+
+		switch (this->numberOfSelectedContainer) {
+		case 0:
+			this->label4->Text = L"Result polynom: " + toSystemString(exAvlTree->getResult().str());
+			this->label5->Text = L"Result: " + Convert::ToString(exAvlTree->getResult().calculate(xyz));
+			break;
+		case 1:
+			this->label4->Text = L"Result polynom: " + toSystemString(exRbTree->getResult().str());
+			this->label5->Text = L"Result: " + Convert::ToString(exRbTree->getResult().calculate(xyz));
+			break;
+		case 2:
+			this->label4->Text = L"Result polynom: " + toSystemString(exOrderedTable->getResult().str());
+			this->label5->Text = L"Result: " + Convert::ToString(exOrderedTable->getResult().calculate(xyz));
+			break;
+		case 3:
+			this->label4->Text = L"Result polynom: " + toSystemString(exUnorderedTable->getResult().str());
+			this->label5->Text = L"Result: " + Convert::ToString(exUnorderedTable->getResult().calculate(xyz));
+			break;
+		case 4:
+			this->label4->Text = L"Result polynom: " + toSystemString(exHashTableC->getResult().str());
+			this->label5->Text = L"Result: " + Convert::ToString(exHashTableC->getResult().calculate(xyz));
+			break;
+		case 5:
+			this->label4->Text = L"Result polynom: " + toSystemString(exHashTableOA->getResult().str());
+			this->label5->Text = L"Result: " + Convert::ToString(exHashTableOA->getResult().calculate(xyz));
+			break;
+		}
+
+	}
+	private: System::Void reset() {
+		Expression<AVLTree<std::string, Polynom>>* newExAvlTree = new Expression<AVLTree<std::string, Polynom>>;
+		Expression<RBTree<std::string, Polynom>>* newExRbTree = new Expression<RBTree<std::string, Polynom>>;
+		Expression<HashTableC<std::string, Polynom>>* newExHashTableC = new Expression<HashTableC<std::string, Polynom>>;
+		Expression<HashTableOpenAdressing<std::string, Polynom>>* newExHashTableOA = new Expression<HashTableOpenAdressing<std::string, Polynom>>;
+		Expression<OrderedTable<std::string, Polynom>>* newExOrderedTable = new Expression<OrderedTable<std::string, Polynom>>;
+		Expression<UnorderedTable<std::string, Polynom>>* newExUnorderedTable = new Expression<UnorderedTable<std::string, Polynom>>;
+
+		this->exAvlTree = newExAvlTree;
+		this->exHashTableC = newExHashTableC;
+		this->exHashTableOA = newExHashTableOA;
+		this->exRbTree = newExRbTree;
+		this->exUnorderedTable = newExUnorderedTable;
+		this->exOrderedTable = newExOrderedTable;
+	}
+
 	private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) {
 	}
 	private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) {
-		switch (this->numberOfSelectedContainer) {
-		case -1:
-			MessageBox::Show("Не выбран тип контейнера", "Ошибка!", MessageBoxButtons::OK, MessageBoxIcon::Warning);
-			break;
-
-		}
+		reset();
 	}
 	private: System::Void label1_Click(System::Object^ sender, System::EventArgs^ e) {
 	}
@@ -346,5 +422,25 @@ private: System::Void dToolStripMenuItem1_Click(System::Object^ sender, System::
 	this->numberOfSelectedContainer = 1;
 	this->aVLtreeToolStripMenuItem->Text = this->usedContainerName;
 }	   
+private: System::Void textBox1_KeyPress(System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e) {
+	if (e->KeyChar == '\r') {
+		std::string tmp = toString(this->textBox1->Text);
+		try {
+				this->exAvlTree->addExp(tmp);
+				this->exRbTree->addExp(tmp);
+				this->exOrderedTable->addExp(tmp);
+				this->exUnorderedTable->addExp(tmp);
+				this->exHashTableC->addExp(tmp);
+				this->exHashTableOA->addExp(tmp);
+
+				printResult();
+		}
+		catch (Exception^ ex) {
+			MessageBox::Show("Некорректное выражение", "Ошибка!", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+		}
+		this->textBox1->Text = "";
+	}
+
+}
 };
 }

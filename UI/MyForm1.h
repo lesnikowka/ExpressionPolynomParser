@@ -10,6 +10,7 @@
 #include <msclr/marshal_cppstd.h>
 #include <string>
 
+
 namespace ui {
 
 	using namespace System;
@@ -18,6 +19,10 @@ namespace ui {
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
+
+
+	std::string toString(System::String^ s);
+	System::String^ toSystemString(std::string s);
 
 	/// <summary>
 	/// Сводка для MyForm1
@@ -184,20 +189,7 @@ namespace ui {
 
 		}
 #pragma endregion
-	private: std::string toString(System::String^ s) {
-		std::string result;
 
-		for (size_t i = 0; i < s->Length; i++) {
-			result += static_cast<IConvertible^>(s->Substring(i, 1))->ToChar(System::Globalization::CultureInfo::CurrentCulture);
-		}
-
-		return result;
-	}
-	private: System::String^ toSystemString(std::string s) {
-		System::String^ result = msclr::interop::marshal_as<String^>(s);
-
-		return result;
-	}
 
 	private: System::Void MyForm1_Load(System::Object^ sender, System::EventArgs^ e) {
 	}
