@@ -427,9 +427,7 @@ public:
 			bool flag=false;
 			if (finish) return iterator();
 			Node* top = history.top(),*parent;
-			if (top->key == 9) {
-				std::cout << ' ';
-			}
+
 			if (top->left->is_fict == false) {
 				history.push(top->left);
 			}
@@ -441,21 +439,25 @@ public:
 				do {
 					top = history.top();
 					history.pop();
-					if (history.empty())parent = nullptr;
-					else parent = history.top();
+					if (history.empty())
+						parent = nullptr;
+					else 
+						parent = history.top();
 					
 					flag = true;
 				} while (parent&&parent->right==top);
+				while (parent&&parent->right->is_fict){
+						top = history.top();
+						history.pop();
+						if (history.empty())
+							parent = nullptr;
+						else
+							parent = history.top();
+				} 
 				if (parent == nullptr) {
 					finish = true;
 					return *this;
 				}
-				
-				while (parent->right->is_fict){
-						top = history.top();
-						history.pop();
-						parent = history.top();
-				} 
 				
 				history.push(parent->right);
 			}
