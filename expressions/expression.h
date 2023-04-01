@@ -28,7 +28,7 @@ class Expression {
 	
 	std::string source_str, modified_str;
 	std::string alph_nums = "0123456789",
-		alph_letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
+		alph_letters = "abcdefghijklmnopqrstuvwABCDEFGHIJKLMNOPQRSTUVW",
 		alph_operations = "-+/*",
 		alph_opening_brackets = "({[",
 		alph_closing_brackets = ")}]",
