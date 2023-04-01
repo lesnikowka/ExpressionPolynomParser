@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include<iostream>
 
 #include<exception>
@@ -447,17 +447,3 @@ public:
 		return ostream;
 	}
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-

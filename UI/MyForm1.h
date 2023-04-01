@@ -1,6 +1,14 @@
 #pragma once
 #include "polynom.h"
 #include "expression.h"
+#include "AVL-tree.h"
+#include "hash-table(chaining).h"
+#include "hash-table(open-adressing).h"
+#include  "Red-Black-trees.h"
+#include "ordered-table.h"
+#include "unordered-table.h"
+#include <msclr/marshal_cppstd.h>
+#include <string>
 
 
 namespace ui {
@@ -11,6 +19,10 @@ namespace ui {
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
+
+
+	std::string toString(System::String^ s);
+	System::String^ toSystemString(std::string s);
 
 	/// <summary>
 	/// Сводка для MyForm1
@@ -36,7 +48,22 @@ namespace ui {
 			{
 				delete components;
 			}
+
+			delete unorderedTable;
+			delete orderedTable;
+			delete avlTree;
+			delete rbTree;
+			delete hashTableC;
+			delete hashTableOA;
 		}
+
+	private: UnorderedTable<std::string, Polynom>* unorderedTable;
+	private: OrderedTable<std::string, Polynom>* orderedTable;
+	private: AVLTree<std::string, Polynom>* avlTree;
+	private: RBTree<std::string, Polynom>* rbTree;
+	private: HashTableC<std::string, Polynom>* hashTableC;
+	private: HashTableOpenAdressing<std::string, Polynom>* hashTableOA;
+
 	private: System::Windows::Forms::TextBox^ textBox1;
 	protected:
 	private: System::Windows::Forms::Button^ button1;
@@ -59,6 +86,13 @@ namespace ui {
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			this->unorderedTable = new UnorderedTable<std::string, Polynom>;
+			this->orderedTable = new OrderedTable<std::string, Polynom>;
+			this->avlTree = new AVLTree<std::string, Polynom>;
+			this->rbTree = new RBTree<std::string, Polynom>;
+			this->hashTableC = new HashTableC<std::string, Polynom>;
+			this->hashTableOA = new HashTableOpenAdressing<std::string, Polynom>;
+
 			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
 			this->button1 = (gcnew System::Windows::Forms::Button());
 			this->textBox2 = (gcnew System::Windows::Forms::TextBox());
@@ -68,12 +102,13 @@ namespace ui {
 			this->richTextBox1 = (gcnew System::Windows::Forms::RichTextBox());
 			this->SuspendLayout();
 			// 
-			// textBox1
+			// textBox1  NAME
 			// 
 			this->textBox1->Location = System::Drawing::Point(53, 10);
 			this->textBox1->Name = L"textBox1";
 			this->textBox1->Size = System::Drawing::Size(118, 20);
 			this->textBox1->TabIndex = 0;
+			this->textBox1->Text = "";
 			// 
 			// button1
 			// 
@@ -85,12 +120,13 @@ namespace ui {
 			this->button1->UseVisualStyleBackColor = true;
 			this->button1->Click += gcnew System::EventHandler(this, &MyForm1::button1_Click);
 			// 
-			// textBox2
+			// textBox2 POLYNOM
 			// 
 			this->textBox2->Location = System::Drawing::Point(239, 10);
 			this->textBox2->Name = L"textBox2";
 			this->textBox2->Size = System::Drawing::Size(169, 20);
 			this->textBox2->TabIndex = 3;
+			this->textBox2->Text = "";
 			// 
 			// label1
 			// 
@@ -153,11 +189,57 @@ namespace ui {
 
 		}
 #pragma endregion
+
+
 	private: System::Void MyForm1_Load(System::Object^ sender, System::EventArgs^ e) {
 	}
 	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
+		std::string name = toString(this->textBox1->Text);
+		std::string polynom = toString(this->textBox2->Text);
+
+
+		try {
+			Polynom p(polynom);
+
+			this->unorderedTable->emplace(name, p);
+			this->orderedTable->emplace(name, p);
+			this->avlTree->emplace(name, p);
+			this->rbTree->emplace(name, p);
+			this->hashTableC->emplace(name, p);
+			this->hashTableOA->emplace(name, p);
+
+		}
+		catch (System::Exception^ ex) {
+			MessageBox::Show("Некорректный полином", "Ошибка!", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+		}
 	}
 	private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) {
+		this->richTextBox1->Text = "";
+
+		this->richTextBox1->Text += "\r\nНеупорядоченная таблица:\r\n";
+		for (auto i : *(this->unorderedTable)) {
+			this->richTextBox1->Text += toSystemString(i.first) + ": " + toSystemString(i.second.str()) + "\r\n";
+		}
+		this->richTextBox1->Text += "\r\nУпорядоченная таблица:\r\n";
+		for (auto i : *(this->orderedTable)) {
+			this->richTextBox1->Text += toSystemString(i.first) + ": " + toSystemString(i.second.str()) + "\r\n";
+		}
+		this->richTextBox1->Text += "\r\nAVL дерево:\r\n";
+		for (auto i : *(this->avlTree)) {
+			this->richTextBox1->Text += toSystemString(i.first) + ": " + toSystemString(i.second.str()) + "\r\n";
+		}
+		//this->richTextBox1->Text += "\r\nR-B дерево:\r\n";
+		//for (auto i : *(this->rbTree)) {
+		//	this->richTextBox1->Text += toSystemString(i.first) + ": " + toSystemString(i.second.str()) + "\r\n";
+		//}
+		//this->richTextBox1->Text += "\r\nХеш таблица с разрешением коллизий методом цепочек:\r\n";
+		//for (auto i : *(this->hashTableC)) {
+		//	this->richTextBox1->Text += toSystemString(i.key) + ": " + toSystemString(i.elem.str()) + "\r\n";
+		//}
+		this->richTextBox1->Text += "\r\nХеш таблица с разрешением коллизий методом открытой адресации:\r\n";
+		for (auto i : *(this->hashTableOA)) {
+			this->richTextBox1->Text += toSystemString(i.first) + ": " + toSystemString(i.second.str()) + "\r\n";
+		}
 	}
 	private: System::Void richTextBox1_TextChanged(System::Object^ sender, System::EventArgs^ e) {
 	}

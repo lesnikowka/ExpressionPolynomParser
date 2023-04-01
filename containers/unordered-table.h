@@ -75,8 +75,9 @@ public:
 		return emplace(p.first, p.second);
 	}
 	void emplace(T k,D e) {
-		if (find(k) != end()) return;
-		table.push_back(std::make_pair(k,e));
+		if (find(k) == end()) {
+			table.push_back(std::make_pair(k, e));
+		}
 	};
 	
 	D& operator[](const T& key) {

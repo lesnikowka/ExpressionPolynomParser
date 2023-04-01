@@ -24,6 +24,7 @@ set(TARGET_H
 
 set(TARGET_SRC
   MyForm.cpp
+  utilities.cpp
   #WindowsFormsResx/Source.cpp
   )
 set_source_files_properties(${TARGET_SRC} PROPERTIES COMPILE_FLAGS "/clr")
