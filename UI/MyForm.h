@@ -61,6 +61,7 @@ namespace ui {
 	private: System::Windows::Forms::TextBox^ textBox2;
 	private: System::Windows::Forms::TextBox^ textBox3;
 	private: System::Windows::Forms::TextBox^ textBox4;
+	private: System::Windows::Forms::TextBox^ textBox5;
 	private: System::Windows::Forms::Label^ label1;
 	private: System::Windows::Forms::Label^ label2;
 	private: System::Windows::Forms::Label^ label3;
@@ -107,6 +108,7 @@ namespace ui {
 			this->textBox2 = (gcnew System::Windows::Forms::TextBox());
 			this->textBox3 = (gcnew System::Windows::Forms::TextBox());
 			this->textBox4 = (gcnew System::Windows::Forms::TextBox());
+			this->textBox5 = (gcnew System::Windows::Forms::TextBox());
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->label2 = (gcnew System::Windows::Forms::Label());
 			this->label3 = (gcnew System::Windows::Forms::Label());
@@ -160,15 +162,24 @@ namespace ui {
 			this->textBox4->TabIndex = 4;
 			this->textBox4->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &MyForm::textBox4_KeyPress);
 			// 
+			// textBox5
+			// 
+			this->textBox5->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9));
+			this->textBox5->Location = System::Drawing::Point(97, 98);
+			this->textBox5->Name = L"textBox5";
+			this->textBox5->Size = System::Drawing::Size(200, 20);
+			this->textBox5->ReadOnly = true;
+			this->textBox5->TabIndex = 9;
+			this->textBox5->BorderStyle = System::Windows::Forms::BorderStyle::None;
+			// 
 			// label1
 			// 
 			this->label1->AutoSize = true;
 			this->label1->Location = System::Drawing::Point(10, 60);
 			this->label1->Name = L"label1";
 			this->label1->Size = System::Drawing::Size(17, 13);
-			this->label1->TabIndex = 5;
-			this->label1->Text = L"X:";
-			this->label1->Click += gcnew System::EventHandler(this, &MyForm::label1_Click);
+			this->label1->TabIndex = 7;
+			this->label1->Text = L"X";
 			// 
 			// label2
 			// 
@@ -176,8 +187,8 @@ namespace ui {
 			this->label2->Location = System::Drawing::Point(80, 60);
 			this->label2->Name = L"label2";
 			this->label2->Size = System::Drawing::Size(17, 13);
-			this->label2->TabIndex = 6;
-			this->label2->Text = L"Y:";
+			this->label2->TabIndex = 7;
+			this->label2->Text = L"Y";
 			// 
 			// label3
 			// 
@@ -186,7 +197,7 @@ namespace ui {
 			this->label3->Name = L"label3";
 			this->label3->Size = System::Drawing::Size(17, 13);
 			this->label3->TabIndex = 7;
-			this->label3->Text = L"Z:";
+			this->label3->Text = L"Z";
 			// 
 			// label4
 			// 
@@ -306,6 +317,7 @@ namespace ui {
 			this->Controls->Add(this->label1);
 			this->Controls->Add(this->label5);
 			this->Controls->Add(this->textBox4);
+			this->Controls->Add(this->textBox5);
 			this->Controls->Add(this->textBox3);
 			this->Controls->Add(this->textBox2);
 			this->Controls->Add(this->textBox1);
@@ -337,27 +349,27 @@ namespace ui {
 
 		switch (this->numberOfSelectedContainer) {
 		case 0:
-			this->label4->Text = L"Result polynom: " + toSystemString(exAvlTree->getResult().str());
+			this->textBox5->Text = toSystemString(exAvlTree->getResult().str());
 			this->label5->Text = L"Result: " + Convert::ToString(exAvlTree->getResult().calculate(xyz));
 			break;
 		case 1:
-			this->label4->Text = L"Result polynom: " + toSystemString(exRbTree->getResult().str());
+			this->textBox5->Text = toSystemString(exRbTree->getResult().str());
 			this->label5->Text = L"Result: " + Convert::ToString(exRbTree->getResult().calculate(xyz));
 			break;
 		case 2:
-			this->label4->Text = L"Result polynom: " + toSystemString(exOrderedTable->getResult().str());
+			this->textBox5->Text = toSystemString(exOrderedTable->getResult().str());
 			this->label5->Text = L"Result: " + Convert::ToString(exOrderedTable->getResult().calculate(xyz));
 			break;
 		case 3:
-			this->label4->Text = L"Result polynom: " + toSystemString(exUnorderedTable->getResult().str());
+			this->textBox5->Text =toSystemString(exUnorderedTable->getResult().str());
 			this->label5->Text = L"Result: " + Convert::ToString(exUnorderedTable->getResult().calculate(xyz));
 			break;
 		case 4:
-			this->label4->Text = L"Result polynom: " + toSystemString(exHashTableC->getResult().str());
+			this->textBox5->Text = toSystemString(exHashTableC->getResult().str());
 			this->label5->Text = L"Result: " + Convert::ToString(exHashTableC->getResult().calculate(xyz));
 			break;
 		case 5:
-			this->label4->Text = L"Result polynom: " + toSystemString(exHashTableOA->getResult().str());
+			this->textBox5->Text = toSystemString(exHashTableOA->getResult().str());
 			this->label5->Text = L"Result: " + Convert::ToString(exHashTableOA->getResult().calculate(xyz));
 			break;
 		}
@@ -377,14 +389,15 @@ namespace ui {
 		this->exRbTree = newExRbTree;
 		this->exUnorderedTable = newExUnorderedTable;
 		this->exOrderedTable = newExOrderedTable;
+
+		this->textBox5->Text = "";
+		this->label5->Text = "Result: ";
 	}
 
 	private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) {
 	}
 	private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) {
 		reset();
-	}
-	private: System::Void label1_Click(System::Object^ sender, System::EventArgs^ e) {
 	}
 private: System::Void label4_Click(System::Object^ sender, System::EventArgs^ e) {
 }
