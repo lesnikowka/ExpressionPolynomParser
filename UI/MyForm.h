@@ -14,6 +14,9 @@ namespace ui {
 	//template<class T>
 	//Polynom getPolynom(std::string& s);
 
+	std::string commasToPoints(std::string& s);
+	std::string pointsToCommas(std::string& s);
+
 	/// <summary>
 	/// Summary for MyForm
 	/// </summary>
@@ -62,11 +65,13 @@ namespace ui {
 	private: System::Windows::Forms::TextBox^ textBox3;
 	private: System::Windows::Forms::TextBox^ textBox4;
 	private: System::Windows::Forms::TextBox^ textBox5;
+	private: System::Windows::Forms::TextBox^ textBox6;
 	private: System::Windows::Forms::Label^ label1;
 	private: System::Windows::Forms::Label^ label2;
 	private: System::Windows::Forms::Label^ label3;
 	private: System::Windows::Forms::Label^ label4;
 	private: System::Windows::Forms::Label^ label5;
+	private: System::Windows::Forms::Label^ label6;
 	private: System::Windows::Forms::Button^ button2;
 	private: System::Windows::Forms::MenuStrip^ menuStrip1;
 	private: System::Windows::Forms::ToolStripMenuItem^ aVLtreeToolStripMenuItem;
@@ -109,11 +114,13 @@ namespace ui {
 			this->textBox3 = (gcnew System::Windows::Forms::TextBox());
 			this->textBox4 = (gcnew System::Windows::Forms::TextBox());
 			this->textBox5 = (gcnew System::Windows::Forms::TextBox());
+			this->textBox6 = (gcnew System::Windows::Forms::TextBox());
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->label2 = (gcnew System::Windows::Forms::Label());
 			this->label3 = (gcnew System::Windows::Forms::Label());
 			this->label4 = (gcnew System::Windows::Forms::Label());
 			this->label5 = (gcnew System::Windows::Forms::Label());
+			this->label6 = (gcnew System::Windows::Forms::Label());
 			this->button2 = (gcnew System::Windows::Forms::Button());
 			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
 			this->aVLtreeToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -165,12 +172,23 @@ namespace ui {
 			// textBox5
 			// 
 			this->textBox5->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9));
-			this->textBox5->Location = System::Drawing::Point(97, 98);
+			this->textBox5->Location = System::Drawing::Point(70, 118);
 			this->textBox5->Name = L"textBox5";
 			this->textBox5->Size = System::Drawing::Size(200, 20);
 			this->textBox5->ReadOnly = true;
 			this->textBox5->TabIndex = 9;
 			this->textBox5->BorderStyle = System::Windows::Forms::BorderStyle::None;
+			// 
+			// textBox6
+			// 
+			this->textBox6->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9));
+			this->textBox6->Location = System::Drawing::Point(128, 98);
+			this->textBox6->Name = L"textBox5";
+			this->textBox6->Size = System::Drawing::Size(200, 25);
+			this->textBox6->ReadOnly = true;
+			this->textBox6->TabIndex = 9;
+			this->textBox6->BorderStyle = System::Windows::Forms::BorderStyle::None;
+			this->textBox6->Text = "";
 			// 
 			// label1
 			// 
@@ -202,21 +220,30 @@ namespace ui {
 			// label4
 			// 
 			this->label4->AutoSize = true;
-			this->label4->Location = System::Drawing::Point(10, 100);
+			this->label4->Location = System::Drawing::Point(10, 120);
 			this->label4->Name = L"label4";
 			this->label4->Size = System::Drawing::Size(17, 13);
 			this->label4->TabIndex = 7;
 			this->label1->MaximumSize = System::Drawing::Size(10, 0);
-			this->label4->Text = L"Result polynom: ";
+			this->label4->Text = L"Ïîëèíîì: ";
 			// 
 			// label5
 			// 
 			this->label5->AutoSize = true;
-			this->label5->Location = System::Drawing::Point(10, 120);
+			this->label5->Location = System::Drawing::Point(10, 140);
 			this->label5->Name = L"label4";
 			this->label5->Size = System::Drawing::Size(17, 13);
 			this->label5->TabIndex = 7;
-			this->label5->Text = L"Result: ";
+			this->label5->Text = L"Ïîäñòàíîâêà: ";
+			// 
+			// label6
+			//
+			this->label6->AutoSize = true;
+			this->label6->Location = System::Drawing::Point(10, 100);
+			this->label6->Name = L"label4";
+			this->label6->Size = System::Drawing::Size(17, 13);
+			this->label6->TabIndex = 7;
+			this->label6->Text = L"Òåêóùåå âûðàæåíèå: ";
 			// 
 			// button2
 			// 
@@ -253,7 +280,6 @@ namespace ui {
 			this->aVLtreeToolStripMenuItem->Name = L"aVLtreeToolStripMenuItem";
 			this->aVLtreeToolStripMenuItem->Size = System::Drawing::Size(107, 20);
 			this->aVLtreeToolStripMenuItem->Text = this->usedContainerName;
-			this->aVLtreeToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::aVLtreeToolStripMenuItem_Click);
 			// 
 			// dToolStripMenuItem
 			// 
@@ -316,8 +342,10 @@ namespace ui {
 			this->Controls->Add(this->label2);
 			this->Controls->Add(this->label1);
 			this->Controls->Add(this->label5);
+			this->Controls->Add(this->label6);
 			this->Controls->Add(this->textBox4);
 			this->Controls->Add(this->textBox5);
+			this->Controls->Add(this->textBox6);
 			this->Controls->Add(this->textBox3);
 			this->Controls->Add(this->textBox2);
 			this->Controls->Add(this->textBox1);
@@ -326,86 +354,20 @@ namespace ui {
 			this->MainMenuStrip = this->menuStrip1;
 			this->Name = L"MyForm";
 			this->Text = L"Polynomial Ñalculation";
-			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
 			this->menuStrip1->ResumeLayout(false);
 			this->menuStrip1->PerformLayout();
 			this->ResumeLayout(false);
 			this->PerformLayout();
-
 		}
 #pragma endregion
 	
-	private: System::Void printResult() {
-		std::vector<double> xyz(3);
+private: System::Void printResult();
+private: System::Void reset();
+System::Void MyForm::addExpression();
 
-		try {
-			xyz[0] = System::Convert::ToDouble(this->textBox2->Text);
-			xyz[1] = System::Convert::ToDouble(this->textBox3->Text);
-			xyz[2] = System::Convert::ToDouble(this->textBox4->Text);
-		}
-		catch (Exception^ ex) {
-			MessageBox::Show("Íåêîððåêòíûå çíà÷åíèÿ x, y èëè z", "Îøèáêà!", MessageBoxButtons::OK, MessageBoxIcon::Warning);
-		}
+private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) { reset(); }
 
-		switch (this->numberOfSelectedContainer) {
-		case 0:
-			this->textBox5->Text = toSystemString(exAvlTree->getResult().str());
-			this->label5->Text = L"Result: " + Convert::ToString(exAvlTree->getResult().calculate(xyz));
-			break;
-		case 1:
-			this->textBox5->Text = toSystemString(exRbTree->getResult().str());
-			this->label5->Text = L"Result: " + Convert::ToString(exRbTree->getResult().calculate(xyz));
-			break;
-		case 2:
-			this->textBox5->Text = toSystemString(exOrderedTable->getResult().str());
-			this->label5->Text = L"Result: " + Convert::ToString(exOrderedTable->getResult().calculate(xyz));
-			break;
-		case 3:
-			this->textBox5->Text =toSystemString(exUnorderedTable->getResult().str());
-			this->label5->Text = L"Result: " + Convert::ToString(exUnorderedTable->getResult().calculate(xyz));
-			break;
-		case 4:
-			this->textBox5->Text = toSystemString(exHashTableC->getResult().str());
-			this->label5->Text = L"Result: " + Convert::ToString(exHashTableC->getResult().calculate(xyz));
-			break;
-		case 5:
-			this->textBox5->Text = toSystemString(exHashTableOA->getResult().str());
-			this->label5->Text = L"Result: " + Convert::ToString(exHashTableOA->getResult().calculate(xyz));
-			break;
-		}
-
-	}
-	private: System::Void reset() {
-		Expression<AVLTree<std::string, Polynom>>* newExAvlTree = new Expression<AVLTree<std::string, Polynom>>;
-		Expression<RBTree<std::string, Polynom>>* newExRbTree = new Expression<RBTree<std::string, Polynom>>;
-		Expression<HashTableC<std::string, Polynom>>* newExHashTableC = new Expression<HashTableC<std::string, Polynom>>;
-		Expression<HashTableOpenAdressing<std::string, Polynom>>* newExHashTableOA = new Expression<HashTableOpenAdressing<std::string, Polynom>>;
-		Expression<OrderedTable<std::string, Polynom>>* newExOrderedTable = new Expression<OrderedTable<std::string, Polynom>>;
-		Expression<UnorderedTable<std::string, Polynom>>* newExUnorderedTable = new Expression<UnorderedTable<std::string, Polynom>>;
-
-		this->exAvlTree = newExAvlTree;
-		this->exHashTableC = newExHashTableC;
-		this->exHashTableOA = newExHashTableOA;
-		this->exRbTree = newExRbTree;
-		this->exUnorderedTable = newExUnorderedTable;
-		this->exOrderedTable = newExOrderedTable;
-
-		this->textBox5->Text = "";
-		this->label5->Text = "Result: ";
-	}
-
-	private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) {
-	}
-	private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) {
-		reset();
-	}
-private: System::Void label4_Click(System::Object^ sender, System::EventArgs^ e) {
-}
-private: System::Void aVLtreeToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
-}
-private: System::Void òåñòèðîâàíèåÊîíòåéíåðîâToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
-	(gcnew MyForm1)->Show();
-}
+private: System::Void òåñòèðîâàíèåÊîíòåéíåðîâToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) { (gcnew MyForm1)->Show(); }
 private: System::Void õåøòàáëèöàìåòîäÎòêðûòîéÀäðåñàöèèToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
 	this->usedContainerName = L"Õåø-òàáëèöà OA";
 	this->numberOfSelectedContainer = 5;
@@ -427,9 +389,9 @@ private: System::Void óïîðÿäî÷åííàÿÒàáëèöàToolStripMenuItem_Click(System::Object
 	this->aVLtreeToolStripMenuItem->Text = this->usedContainerName;
 }
 private: System::Void dToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
-	   this->usedContainerName = L"AVL äåðåâî";
-	   this->numberOfSelectedContainer = 0;
-	   this->aVLtreeToolStripMenuItem->Text = this->usedContainerName;
+	this->usedContainerName = L"AVL äåðåâî";
+	this->numberOfSelectedContainer = 0;
+	this->aVLtreeToolStripMenuItem->Text = this->usedContainerName;
 }
 private: System::Void dToolStripMenuItem1_Click(System::Object^ sender, System::EventArgs^ e) {
 	this->usedContainerName = L"R-B äåðåâî";
@@ -437,40 +399,17 @@ private: System::Void dToolStripMenuItem1_Click(System::Object^ sender, System::
 	this->aVLtreeToolStripMenuItem->Text = this->usedContainerName;
 }	   
 private: System::Void textBox1_KeyPress(System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e) {
-	if (e->KeyChar == '\r') {
-		std::string tmp = toString(this->textBox1->Text);
-		try {
-				this->exAvlTree->addExp(tmp);
-				this->exRbTree->addExp(tmp);
-				this->exOrderedTable->addExp(tmp);
-				this->exUnorderedTable->addExp(tmp);
-				this->exHashTableC->addExp(tmp);
-				this->exHashTableOA->addExp(tmp);
-
-				printResult();
-		}
-		catch (Exception^ ex) {
-			MessageBox::Show("Íåêîððåêòíîå âûðàæåíèå", "Îøèáêà!", MessageBoxButtons::OK, MessageBoxIcon::Warning);
-		}
-		this->textBox1->Text = "";
-	}
-
+	if(e->KeyChar == '\r') addExpression();
 }
 
 private: System::Void textBox2_KeyPress(System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e) {
-	if (e->KeyChar == '\r') {
-		printResult();
-	}
+	if (e->KeyChar == '\r') printResult();
 }
 private: System::Void textBox3_KeyPress(System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e) {
-	if (e->KeyChar == '\r') {
-		printResult();
-	}
+	if (e->KeyChar == '\r') printResult();
 }
 private: System::Void textBox4_KeyPress(System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e) {
-	if (e->KeyChar == '\r') {
-		printResult();
-	}
+	if (e->KeyChar == '\r') printResult();
 }
 };
 }
