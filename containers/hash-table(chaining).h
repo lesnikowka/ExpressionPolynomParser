@@ -26,7 +26,7 @@ class HashTableC {
 
 	//settings for hash()
 	int a, b,c;
-	std::vector<int> simp_nums = {13,53,151, 503,1553,5101,2764437,1000000007};
+	std::vector<int> simp_nums = { 13,53,151, 503,1553 };//, 5101, 2764437, 1000000007};
 	int p = 1000000007;
 	
 	//counter of elements
@@ -100,7 +100,7 @@ public:
 		}
 
 		pair& operator*() {
-			//if (it == (*table)[index].end())throw("Iterator points to the end");
+			if (it == (*table)[index].end())throw("Iterator points to the end");
 			return *it;
 		}
 		
@@ -158,7 +158,10 @@ public:
 		capacity = new_capacity;
 	}
 
-	iterator begin(size_t index=0) {
+	iterator begin(size_t index = 0) {
+		while (index<(capacity-1)&&table[index].size()==0) {
+			index++;
+		}
 		return iterator(table[index].begin(),index,&table);
 	}
 	iterator end(size_t index=-1) {
@@ -190,10 +193,12 @@ public:
 	iterator find(T key) {
 		size_t index = hash(key);
 		iterator it = begin(index);
+		int start_index = it.index;
 
-		while (it != end(it.index) && (*it).key != key) {
+		while (it.index==start_index&&it != end(it.index) && (*it).key != key) {
 			it++;
 		}
+		if (it.index != start_index)return end(it.index);
 		return it;
 	}
 	D& operator[](const T& key) {
