@@ -178,7 +178,6 @@ namespace ui {
 			this->richTextBox1->Size = System::Drawing::Size(480, 236);
 			this->richTextBox1->TabIndex = 7;
 			this->richTextBox1->Text = L"";
-			this->richTextBox1->TextChanged += gcnew System::EventHandler(this, &MyForm1::richTextBox1_TextChanged);
 			// 
 			// MyForm1
 			// 
@@ -222,10 +221,6 @@ namespace ui {
 private: System::Void button3_Click(System::Object^ sender, System::EventArgs^ e) {
 	deletePolynom();
 }
-
-private: System::Void richTextBox1_TextChanged(System::Object^ sender, System::EventArgs^ e) {
-}
-
 private: System::Void textBox2_KeyPress(System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e) {
 	if (e->KeyChar == '\r') {
 		addPolynom();

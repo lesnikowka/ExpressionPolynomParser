@@ -79,6 +79,8 @@ public:
 private:
 	Node* root = nullptr;
 
+	size_t _size;
+
 	Node* insert_(const T& key, const Y& value, Node* node) {
 		if (!node) {
 			return new Node(key, value);
@@ -290,32 +292,44 @@ public:
 	}
 	AVLTree(const AVLTree& tree) {
 		root = copy(tree.root);
+		_size = tree._size;
 	}
 	AVLTree(AVLTree&& tree) {
 		root = tree.root;
 		tree.root = nullptr;
+		_size = tree._size;
+		tree._size = 0;
 	}
 	AVLTree& operator=(const AVLTree& tree) {
 		delete_tree(root);
 		copy(tree.root);
+
+		_size = tree._size;
 
 		return *this;
 	}
 	AVLTree& operator=(AVLTree&& tree) {
 		std::swap(root, tree.root);
 
+		std::swap(_size, tree._size);
+
 		return *this;
 	}
+
+	size_t size() { return _size; }
 
 	int height() {
 		if (!root) return 0;
 		return root->height;
 	}
+
 	void emplace(const T& key, const Y& value) {
 		if (!root) {
+			_size++;
 			root = new Node(key, value);
 		}
 		else if (find(key) == end()) {
+			_size++;
 			root = insert_(key, value, root);
 		}
 	}
@@ -325,6 +339,7 @@ public:
 	void erase(const T& key) {
 		if (find(key) == end()) throw std::exception("element was not founded");
 		else {
+			_size--;
 			root = erase_(key, root);
 		}
 

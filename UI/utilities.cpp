@@ -38,9 +38,6 @@ namespace ui {
 		std::string name = toString(this->textBox1->Text);
 		std::string polynom = toString(this->textBox2->Text);
 
-		this->textBox1->Text = "";
-		this->textBox2->Text = "";
-
 		if (name.size() && polynom.size()) {
 			try {
 				Polynom p(polynom);
@@ -94,12 +91,12 @@ namespace ui {
 System::Void MyForm1::deletePolynom() {
 	this->textBox2->Text = "";
 
-	if ((orderedTable->size())) {
+	if (orderedTable->size()&&unorderedTable->size()&&hashTableC->getSize()&&hashTableOA->size()) {
 		try {
 			this->unorderedTable->erase(toString(textBox1->Text));
 			this->orderedTable->erase(toString(textBox1->Text));
 			this->avlTree->erase(toString(textBox1->Text));
-			//this->rbTree->erase(toString(textBox1->Text));
+			this->rbTree->erase(toString(textBox1->Text));
 			this->hashTableC->erase(toString(textBox1->Text));
 			this->hashTableOA->erase(toString(textBox1->Text));
 		}
@@ -110,5 +107,102 @@ System::Void MyForm1::deletePolynom() {
 	else {
 		MessageBox::Show("Контейнеры уже пусты!", "Ошибка!", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 	}
+}
+
+System::Void MyForm::printResult() {
+	std::vector<double> xyz(3);
+
+	try {
+		xyz[0] = std::stod(commasToPoints(toString(this->textBox2->Text)));
+		xyz[1] = std::stod(commasToPoints(toString(this->textBox3->Text)));
+		xyz[2] = std::stod(commasToPoints(toString(this->textBox4->Text)));
+	}
+	catch (Exception^ ex) {
+		MessageBox::Show("Некорректные значения x, y или z", "Ошибка!", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+	}
+
+	switch (this->numberOfSelectedContainer) {
+	case 0:
+		this->textBox5->Text = toSystemString(exAvlTree->getResult().str());
+		this->label5->Text = L"Подстановка: " + Convert::ToString(exAvlTree->getResult().calculate(xyz));
+		break;
+	case 1:
+		this->textBox5->Text = toSystemString(exRbTree->getResult().str());
+		this->label5->Text = L"Подстановка: " + Convert::ToString(exRbTree->getResult().calculate(xyz));
+		break;
+	case 2:
+		this->textBox5->Text = toSystemString(exOrderedTable->getResult().str());
+		this->label5->Text = L"Подстановка: " + Convert::ToString(exOrderedTable->getResult().calculate(xyz));
+		break;
+	case 3:
+		this->textBox5->Text = toSystemString(exUnorderedTable->getResult().str());
+		this->label5->Text = L"Подстановка: " + Convert::ToString(exUnorderedTable->getResult().calculate(xyz));
+		break;
+	case 4:
+		this->textBox5->Text = toSystemString(exHashTableC->getResult().str());
+		this->label5->Text = L"Подстановка: " + Convert::ToString(exHashTableC->getResult().calculate(xyz));
+		break;
+	case 5:
+		this->textBox5->Text = toSystemString(exHashTableOA->getResult().str());
+		this->label5->Text = L"Подстановка: " + Convert::ToString(exHashTableOA->getResult().calculate(xyz));
+		break;
+	}
+}
+System::Void MyForm::reset() {
+		Expression<AVLTree<std::string, Polynom>>* newExAvlTree = new Expression<AVLTree<std::string, Polynom>>;
+		Expression<RBTree<std::string, Polynom>>* newExRbTree = new Expression<RBTree<std::string, Polynom>>;
+		Expression<HashTableC<std::string, Polynom>>* newExHashTableC = new Expression<HashTableC<std::string, Polynom>>;
+		Expression<HashTableOpenAdressing<std::string, Polynom>>* newExHashTableOA = new Expression<HashTableOpenAdressing<std::string, Polynom>>;
+		Expression<OrderedTable<std::string, Polynom>>* newExOrderedTable = new Expression<OrderedTable<std::string, Polynom>>;
+		Expression<UnorderedTable<std::string, Polynom>>* newExUnorderedTable = new Expression<UnorderedTable<std::string, Polynom>>;
+
+		this->exAvlTree = newExAvlTree;
+		this->exHashTableC = newExHashTableC;
+		this->exHashTableOA = newExHashTableOA;
+		this->exRbTree = newExRbTree;
+		this->exUnorderedTable = newExUnorderedTable;
+		this->exOrderedTable = newExOrderedTable;
+
+		this->textBox5->Text = "";
+		this->textBox6->Text = "";
+		this->label5->Text = "Подстановка: ";
+	}
+
+System::Void MyForm::addExpression() {
+	std::string tmp = commasToPoints(toString(this->textBox1->Text));
+	try {
+		this->exAvlTree->addExp(tmp);
+		this->exRbTree->addExp(tmp);
+		this->exOrderedTable->addExp(tmp);
+		this->exUnorderedTable->addExp(tmp);
+		this->exHashTableC->addExp(tmp);
+		this->exHashTableOA->addExp(tmp);
+
+		std::string tmp2;
+
+		switch (this->numberOfSelectedContainer) {
+		case 0:
+			tmp2 = this->exAvlTree->getSourceString();
+		case 1:
+			tmp2 = this->exRbTree->getSourceString();
+		case 2:
+			tmp2 = this->exOrderedTable->getSourceString();
+		case 3:
+			tmp2 = this->exUnorderedTable->getSourceString();
+		case 4:
+			tmp2 = this->exHashTableC->getSourceString();
+		case 5:
+			tmp2 = this->exHashTableOA->getSourceString();
+		}
+
+		this->textBox6->Text = toSystemString(tmp2);
+
+		printResult();
+	}
+	catch (Exception^ ex) {
+		MessageBox::Show("Некорректное выражение", "Ошибка!", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+	}
+	this->textBox1->Text = "";
+	
 }
 }

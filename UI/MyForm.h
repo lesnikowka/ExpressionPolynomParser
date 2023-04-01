@@ -178,7 +178,9 @@ namespace ui {
 			this->textBox5->ReadOnly = true;
 			this->textBox5->TabIndex = 9;
 			this->textBox5->BorderStyle = System::Windows::Forms::BorderStyle::None;
-
+			// 
+			// textBox6
+			// 
 			this->textBox6->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9));
 			this->textBox6->Location = System::Drawing::Point(128, 98);
 			this->textBox6->Name = L"textBox5";
@@ -233,8 +235,9 @@ namespace ui {
 			this->label5->Size = System::Drawing::Size(17, 13);
 			this->label5->TabIndex = 7;
 			this->label5->Text = L"Подстановка: ";
-
-
+			// 
+			// label6
+			//
 			this->label6->AutoSize = true;
 			this->label6->Location = System::Drawing::Point(10, 100);
 			this->label6->Name = L"label4";
@@ -277,7 +280,6 @@ namespace ui {
 			this->aVLtreeToolStripMenuItem->Name = L"aVLtreeToolStripMenuItem";
 			this->aVLtreeToolStripMenuItem->Size = System::Drawing::Size(107, 20);
 			this->aVLtreeToolStripMenuItem->Text = this->usedContainerName;
-			this->aVLtreeToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::aVLtreeToolStripMenuItem_Click);
 			// 
 			// dToolStripMenuItem
 			// 
@@ -352,87 +354,20 @@ namespace ui {
 			this->MainMenuStrip = this->menuStrip1;
 			this->Name = L"MyForm";
 			this->Text = L"Polynomial Сalculation";
-			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
 			this->menuStrip1->ResumeLayout(false);
 			this->menuStrip1->PerformLayout();
 			this->ResumeLayout(false);
 			this->PerformLayout();
-
 		}
 #pragma endregion
 	
-	private: System::Void printResult() {
-		std::vector<double> xyz(3);
+private: System::Void printResult();
+private: System::Void reset();
+System::Void MyForm::addExpression();
 
-		try {
-			xyz[0] = std::stod(commasToPoints(toString(this->textBox2->Text)));
-			xyz[1] = std::stod(commasToPoints(toString(this->textBox3->Text)));
-			xyz[2] = std::stod(commasToPoints(toString(this->textBox4->Text)));
-		}
-		catch (Exception^ ex) {
-			MessageBox::Show("Некорректные значения x, y или z", "Ошибка!", MessageBoxButtons::OK, MessageBoxIcon::Warning);
-		}
+private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) { reset(); }
 
-		switch (this->numberOfSelectedContainer) {
-		case 0:
-			this->textBox5->Text = toSystemString(exAvlTree->getResult().str());
-			this->label5->Text = L"Подстановка: " + Convert::ToString(exAvlTree->getResult().calculate(xyz));
-			break;
-		case 1:
-			this->textBox5->Text = toSystemString(exRbTree->getResult().str());
-			this->label5->Text = L"Подстановка: " + Convert::ToString(exRbTree->getResult().calculate(xyz));
-			break;
-		case 2:
-			this->textBox5->Text = toSystemString(exOrderedTable->getResult().str());
-			this->label5->Text = L"Подстановка: " + Convert::ToString(exOrderedTable->getResult().calculate(xyz));
-			break;
-		case 3:
-			this->textBox5->Text =toSystemString(exUnorderedTable->getResult().str());
-			this->label5->Text = L"Подстановка: " + Convert::ToString(exUnorderedTable->getResult().calculate(xyz));
-			break;
-		case 4:
-			this->textBox5->Text = toSystemString(exHashTableC->getResult().str());
-			this->label5->Text = L"Подстановка: " + Convert::ToString(exHashTableC->getResult().calculate(xyz));
-			break;
-		case 5:
-			this->textBox5->Text = toSystemString(exHashTableOA->getResult().str());
-			this->label5->Text = L"Подстановка: " + Convert::ToString(exHashTableOA->getResult().calculate(xyz));
-			break;
-		}
-
-	}
-	private: System::Void reset() {
-		Expression<AVLTree<std::string, Polynom>>* newExAvlTree = new Expression<AVLTree<std::string, Polynom>>;
-		Expression<RBTree<std::string, Polynom>>* newExRbTree = new Expression<RBTree<std::string, Polynom>>;
-		Expression<HashTableC<std::string, Polynom>>* newExHashTableC = new Expression<HashTableC<std::string, Polynom>>;
-		Expression<HashTableOpenAdressing<std::string, Polynom>>* newExHashTableOA = new Expression<HashTableOpenAdressing<std::string, Polynom>>;
-		Expression<OrderedTable<std::string, Polynom>>* newExOrderedTable = new Expression<OrderedTable<std::string, Polynom>>;
-		Expression<UnorderedTable<std::string, Polynom>>* newExUnorderedTable = new Expression<UnorderedTable<std::string, Polynom>>;
-
-		this->exAvlTree = newExAvlTree;
-		this->exHashTableC = newExHashTableC;
-		this->exHashTableOA = newExHashTableOA;
-		this->exRbTree = newExRbTree;
-		this->exUnorderedTable = newExUnorderedTable;
-		this->exOrderedTable = newExOrderedTable;
-
-		this->textBox5->Text = "";
-		this->textBox6->Text = "";
-		this->label5->Text = "Подстановка: ";
-	}
-
-	private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) {
-	}
-	private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) {
-		reset();
-	}
-private: System::Void label4_Click(System::Object^ sender, System::EventArgs^ e) {
-}
-private: System::Void aVLtreeToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
-}
-private: System::Void тестированиеКонтейнеровToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
-	(gcnew MyForm1)->Show();
-}
+private: System::Void тестированиеКонтейнеровToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) { (gcnew MyForm1)->Show(); }
 private: System::Void хештаблицаметодОткрытойАдресацииToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
 	this->usedContainerName = L"Хеш-таблица OA";
 	this->numberOfSelectedContainer = 5;
@@ -454,9 +389,9 @@ private: System::Void упорядоченнаяТаблицаToolStripMenuItem_Click(System::Object
 	this->aVLtreeToolStripMenuItem->Text = this->usedContainerName;
 }
 private: System::Void dToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
-	   this->usedContainerName = L"AVL дерево";
-	   this->numberOfSelectedContainer = 0;
-	   this->aVLtreeToolStripMenuItem->Text = this->usedContainerName;
+	this->usedContainerName = L"AVL дерево";
+	this->numberOfSelectedContainer = 0;
+	this->aVLtreeToolStripMenuItem->Text = this->usedContainerName;
 }
 private: System::Void dToolStripMenuItem1_Click(System::Object^ sender, System::EventArgs^ e) {
 	this->usedContainerName = L"R-B дерево";
@@ -464,59 +399,17 @@ private: System::Void dToolStripMenuItem1_Click(System::Object^ sender, System::
 	this->aVLtreeToolStripMenuItem->Text = this->usedContainerName;
 }	   
 private: System::Void textBox1_KeyPress(System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e) {
-	if (e->KeyChar == '\r') {
-		std::string tmp = commasToPoints(toString(this->textBox1->Text));
-		try {
-				this->exAvlTree->addExp(tmp);
-				this->exRbTree->addExp(tmp);
-				this->exOrderedTable->addExp(tmp);
-				this->exUnorderedTable->addExp(tmp);
-				this->exHashTableC->addExp(tmp);
-				this->exHashTableOA->addExp(tmp);
-
-				std::string tmp;
-
-				switch (this->numberOfSelectedContainer) {
-				case 0:
-					tmp = this->exAvlTree->getSourceString();
-				case 1:
-					tmp = this->exRbTree->getSourceString();
-				case 2:
-					tmp = this->exOrderedTable->getSourceString();
-				case 3:
-					tmp = this->exUnorderedTable->getSourceString();
-				case 4:
-					tmp = this->exHashTableC->getSourceString();
-				case 5:
-					tmp = this->exHashTableOA->getSourceString();
-				}
-
-				this->textBox6->Text = toSystemString(tmp);
-
-				printResult();
-		}
-		catch (Exception^ ex) {
-			MessageBox::Show("Некорректное выражение", "Ошибка!", MessageBoxButtons::OK, MessageBoxIcon::Warning);
-		}
-		this->textBox1->Text = "";
-	}
-
+	if(e->KeyChar == '\r') addExpression();
 }
 
 private: System::Void textBox2_KeyPress(System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e) {
-	if (e->KeyChar == '\r') {
-		printResult();
-	}
+	if (e->KeyChar == '\r') printResult();
 }
 private: System::Void textBox3_KeyPress(System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e) {
-	if (e->KeyChar == '\r') {
-		printResult();
-	}
+	if (e->KeyChar == '\r') printResult();
 }
 private: System::Void textBox4_KeyPress(System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e) {
-	if (e->KeyChar == '\r') {
-		printResult();
-	}
+	if (e->KeyChar == '\r') printResult();
 }
 };
 }
