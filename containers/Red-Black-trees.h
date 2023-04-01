@@ -10,6 +10,7 @@ class RBTree {
 	enum Color {
 		black=false,
 		red=true,
+
 	};
 	struct Node {
 		Node* left;
@@ -49,17 +50,20 @@ class RBTree {
 			parent(n.parent),
 			height(n.height),black_height(n.black_height) {};
 		Node& operator=(const Node& n) {
+			root = n.root;
+
 			first = n.first;
 			second = n.second;
+			
 			left = n.left;
 			right = n.right;
+			
 			parent = n.parent;
 			height = n.height;
 			black_height = n.black_height;
 			is_fict = n.is_fict;
 			return *this;
 		}
-		
 		friend std::ostream& operator<<(std::ostream& ostream, const Node* n) {
 			if (n == nullptr) return ostream << "Empty";
 			if (n->is_fict == false) {
@@ -87,11 +91,18 @@ class RBTree {
 	
 	Node* root;
 
-	void destructor(Node* t) {
-		if (t == nullptr) return;
-		if (t->left)destructor(t->left);
-		if (t->right)destructor(t->right);
-
+	Node* copy(Node* n) {
+		if (!n)return nullptr;
+		Node* cur_node = new Node(n->first, n->second, (n->color)?Color::black:Color::red, n->is_fict, n->parent);
+		cur_node->left = copy(n->left);
+		cur_node->right = copy(n->right);
+		return cur_node;
+	}
+	void Tdestructor(Node* t) {
+		
+		if (!t) return;
+		if (t->left)Tdestructor(t->left);
+		if (t->right)Tdestructor(t->right);
 		delete t;
 	}
 
@@ -347,6 +358,13 @@ class RBTree {
 		if (t->first > first) perase(first, t->left);
 		else if (t->first < first) perase(first, t->right);
 		else {
+			if (t == root) {
+				delete t->left;
+				delete t->right;
+				delete t;
+				root = nullptr;
+				return;
+			}
 			Node* prev = findMax(t->left);
 			Node* left = t->left, * right = t->right;
 			Node* x = prev->left;
@@ -415,7 +433,11 @@ public:
 		bool finish;
 	public:
 		iterator() { finish = true; }
-		iterator(Node* node) { history.push(node); finish = false; }
+		iterator(Node* node) {
+			if (node)
+			history.push(node); 
+			finish = false; 
+		}
 		Node& operator*() {
 			return *(history.top());
 		}
@@ -490,9 +512,10 @@ public:
 		height = 0;
 		root = new Node(first, elem);
 	}
-	RBTree(const RBTree& t) { root = t.root; height = 0; }
+	RBTree(const RBTree& t) { root = copy(t.root);}
 	~RBTree() {
-		destructor(root);
+		Tdestructor(root);
+
 	}
 
 	void insert(std::pair<T,D> p) {
