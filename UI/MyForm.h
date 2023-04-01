@@ -140,7 +140,7 @@ namespace ui {
 			this->textBox2->Size = System::Drawing::Size(40, 20);
 			this->textBox2->TabIndex = 2;
 			this->textBox2->Text = "1";
-			this->textBox2->TextChanged += gcnew System::EventHandler(this, &MyForm::textBox2_TextChanged);
+			this->textBox2->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &MyForm::textBox2_KeyPress);
 			// 
 			// textBox3  Y
 			// 
@@ -149,6 +149,7 @@ namespace ui {
 			this->textBox3->Size = System::Drawing::Size(40, 20);
 			this->textBox3->Text = "1";
 			this->textBox3->TabIndex = 3;
+			this->textBox3->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &MyForm::textBox3_KeyPress);
 			// 
 			// textBox4  Z
 			// 
@@ -157,6 +158,7 @@ namespace ui {
 			this->textBox4->Size = System::Drawing::Size(40, 20);
 			this->textBox4->Text = "1";
 			this->textBox4->TabIndex = 4;
+			this->textBox4->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &MyForm::textBox4_KeyPress);
 			// 
 			// label1
 			// 
@@ -193,6 +195,7 @@ namespace ui {
 			this->label4->Name = L"label4";
 			this->label4->Size = System::Drawing::Size(17, 13);
 			this->label4->TabIndex = 7;
+			this->label1->MaximumSize = System::Drawing::Size(10, 0);
 			this->label4->Text = L"Result polynom: ";
 			// 
 			// label5
@@ -383,8 +386,6 @@ namespace ui {
 	}
 	private: System::Void label1_Click(System::Object^ sender, System::EventArgs^ e) {
 	}
-	private: System::Void textBox2_TextChanged(System::Object^ sender, System::EventArgs^ e) {
-	}
 private: System::Void label4_Click(System::Object^ sender, System::EventArgs^ e) {
 }
 private: System::Void aVLtreeToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -441,6 +442,22 @@ private: System::Void textBox1_KeyPress(System::Object^ sender, System::Windows:
 		this->textBox1->Text = "";
 	}
 
+}
+
+private: System::Void textBox2_KeyPress(System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e) {
+	if (e->KeyChar == '\r') {
+		printResult();
+	}
+}
+private: System::Void textBox3_KeyPress(System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e) {
+	if (e->KeyChar == '\r') {
+		printResult();
+	}
+}
+private: System::Void textBox4_KeyPress(System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e) {
+	if (e->KeyChar == '\r') {
+		printResult();
+	}
 }
 };
 }
