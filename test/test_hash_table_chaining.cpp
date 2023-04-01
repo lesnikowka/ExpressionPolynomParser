@@ -34,12 +34,35 @@ TEST(HashTable_Chaining, emplace_work_correctly) {
 	}
 }
 
-class HashTable_Chaining :public ::testing::Test {
+class HashTable_Chaining_F :public ::testing::Test {
 protected:
 	HashTableC<int, int> ht;
 public:
-	HashTable_Chaining() {
+	HashTable_Chaining_F() {
 		for (int i = -100; i < 100; i++)
 			ht.emplace(i, i);
 	}
 };
+
+TEST_F(HashTable_Chaining_F, find_work) {
+	EXPECT_NO_THROW(ht.find(2));
+	EXPECT_NO_THROW(ht.find(-105));
+}
+
+TEST_F(HashTable_Chaining_F, find_work_correctly) {
+	for (int i = -100; i < 100; i++) {
+		EXPECT_EQ((*(ht.find(i))).key, i);
+		EXPECT_EQ((*(ht.find(i))).elem,i);
+	}
+	for (int i = 101; i < 111; i++) {
+		EXPECT_EQ(ht.find(i),ht.end());
+	}
+
+}
+
+TEST_F(HashTable_Chaining_F, erase_work_with_existing_key) {
+	ASSERT_NO_THROW(ht.erase(0));
+}
+TEST_F(HashTable_Chaining_F, erase_work_with_non_existing_key) {
+	ASSERT_ANY_THROW(ht.erase(1000));
+}
