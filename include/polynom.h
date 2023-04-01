@@ -313,22 +313,33 @@ public:
 		return !operator==(p);
 	}
 
+	std::string str() const {
+		bool begin = true;
+		std::string result;
+
+		for (auto& e : monoms) {
+			if (e.getCoef() > 0 && !begin)
+				result += "+";
+			begin = false;
+
+			result += e.str();
+		}
+
+		if (result.size() == 0) result += "0";
+
+		return result;
+	}
+
 	friend std::istream& operator>>(std::istream& istream, Polynom& p) {
 		p.monoms.clear();
 		std::string str;
 		istream >> str;
 		p.cut(str);
+
 		return istream;
 	}
 	friend std::ostream& operator<<(std::ostream& ostream, Polynom p) { 
-		bool begin = true;
-		for (auto& e : p.monoms) {
-			if (e.getCoef() > 0 && !begin) 
-				ostream << "+";
-			begin = false;
-
-			ostream << e;
-		}
+		ostream << p.str();
 
 		return ostream;
 	}
