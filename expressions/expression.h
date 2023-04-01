@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include<iostream>
 
 #include<exception>
@@ -255,7 +255,8 @@ class Expression {
 			if (in(token, alph_constants))
 				operands.insert({ token,constants[token] });
 			else {
-				operands.insert({ token, (contains(token[0],alph_letters)) ? Polynom("0") : Polynom(token) });
+				operands.insert({ token, (contains(token[0],alph_letters)) ? Polynom("0") : 
+					Polynom(token) });
 				variables_list.push_back(token);
 			}
 		}
@@ -412,6 +413,9 @@ public:
 
 		for (int i = variables_list.size(); i < exp.variables_list.size(); i++)
 			variables_list.push_back(exp.variables_list[i]);// need to append but not to make copy
+		for (auto it : exp.operands) {
+			operands.emplace(it.first,it.second);
+		}
 
 		postfix_form = exp.postfix_form;
 		is_correct = exp.is_correct;
