@@ -67,6 +67,7 @@ namespace ui {
 	private: System::Windows::Forms::TextBox^ textBox1;
 	protected:
 	private: System::Windows::Forms::Button^ button1;
+	private: System::Windows::Forms::Button^ button3;
 	private: System::Windows::Forms::TextBox^ textBox2;
 	private: System::Windows::Forms::Label^ label1;
 	private: System::Windows::Forms::Label^ label2;
@@ -99,6 +100,7 @@ namespace ui {
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->label2 = (gcnew System::Windows::Forms::Label());
 			this->button2 = (gcnew System::Windows::Forms::Button());
+			this->button3 = (gcnew System::Windows::Forms::Button());
 			this->richTextBox1 = (gcnew System::Windows::Forms::RichTextBox());
 			this->SuspendLayout();
 			// 
@@ -109,6 +111,7 @@ namespace ui {
 			this->textBox1->Size = System::Drawing::Size(118, 20);
 			this->textBox1->TabIndex = 0;
 			this->textBox1->Text = "";
+			this->textBox1->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &MyForm1::textBox1_KeyPress);
 			// 
 			// button1
 			// 
@@ -119,6 +122,14 @@ namespace ui {
 			this->button1->Text = L"Добавить";
 			this->button1->UseVisualStyleBackColor = true;
 			this->button1->Click += gcnew System::EventHandler(this, &MyForm1::button1_Click);
+
+			this->button3->Location = System::Drawing::Point(424, 44);
+			this->button3->Name = L"button1";
+			this->button3->Size = System::Drawing::Size(75, 23);
+			this->button3->TabIndex = 2;
+			this->button3->Text = L"Удалить";
+			this->button3->UseVisualStyleBackColor = true;
+			this->button3->Click += gcnew System::EventHandler(this, &MyForm1::button3_Click);
 			// 
 			// textBox2 POLYNOM
 			// 
@@ -127,6 +138,7 @@ namespace ui {
 			this->textBox2->Size = System::Drawing::Size(169, 20);
 			this->textBox2->TabIndex = 3;
 			this->textBox2->Text = "";
+			this->textBox2->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &MyForm1::textBox2_KeyPress);
 			// 
 			// label1
 			// 
@@ -150,7 +162,7 @@ namespace ui {
 			// 
 			this->button2->Location = System::Drawing::Point(15, 44);
 			this->button2->Name = L"button2";
-			this->button2->Size = System::Drawing::Size(484, 23);
+			this->button2->Size = System::Drawing::Size(394, 23);
 			this->button2->TabIndex = 6;
 			this->button2->Text = L"Вывести все полиномы:";
 			this->button2->UseVisualStyleBackColor = true;
@@ -179,6 +191,7 @@ namespace ui {
 			this->Controls->Add(this->label1);
 			this->Controls->Add(this->textBox2);
 			this->Controls->Add(this->button1);
+			this->Controls->Add(this->button3);
 			this->Controls->Add(this->textBox1);
 			this->Name = L"Тестирование контейнеров";
 			this->Text = L"Тестирование контейнеров";
@@ -190,58 +203,38 @@ namespace ui {
 		}
 #pragma endregion
 
+	private: System::Void addPolynom();
+
+	private: System::Void printPolynoms();
+
+	private: System::Void deletePolynom();
 
 	private: System::Void MyForm1_Load(System::Object^ sender, System::EventArgs^ e) {
 	}
 	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
-		std::string name = toString(this->textBox1->Text);
-		std::string polynom = toString(this->textBox2->Text);
-
-
-		try {
-			Polynom p(polynom);
-
-			this->unorderedTable->emplace(name, p);
-			this->orderedTable->emplace(name, p);
-			this->avlTree->emplace(name, p);
-			this->rbTree->emplace(name, p);
-			this->hashTableC->emplace(name, p);
-			this->hashTableOA->emplace(name, p);
-
-		}
-		catch (System::Exception^ ex) {
-			MessageBox::Show("Некорректный полином", "Ошибка!", MessageBoxButtons::OK, MessageBoxIcon::Warning);
-		}
+		addPolynom();
 	}
 	private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) {
-		this->richTextBox1->Text = "";
+		printPolynoms();
+	}
 
-		this->richTextBox1->Text += "\r\nНеупорядоченная таблица:\r\n";
-		for (auto i : *(this->unorderedTable)) {
-			this->richTextBox1->Text += toSystemString(i.first) + ": " + toSystemString(i.second.str()) + "\r\n";
-		}
-		this->richTextBox1->Text += "\r\nУпорядоченная таблица:\r\n";
-		for (auto i : *(this->orderedTable)) {
-			this->richTextBox1->Text += toSystemString(i.first) + ": " + toSystemString(i.second.str()) + "\r\n";
-		}
-		this->richTextBox1->Text += "\r\nAVL дерево:\r\n";
-		for (auto i : *(this->avlTree)) {
-			this->richTextBox1->Text += toSystemString(i.first) + ": " + toSystemString(i.second.str()) + "\r\n";
-		}
-		this->richTextBox1->Text += "\r\nR-B дерево:\r\n";
-		for (auto i : *(this->rbTree)) {
-			this->richTextBox1->Text += toSystemString(i.first) + ": " + toSystemString(i.second.str()) + "\r\n";
-		}
-		this->richTextBox1->Text += "\r\nХеш таблица с разрешением коллизий методом цепочек:\r\n";
-		for (auto i : *(this->hashTableC)) {
-			this->richTextBox1->Text += toSystemString(i.first) + ": " + toSystemString(i.second.str()) + "\r\n";
-		}
-		this->richTextBox1->Text += "\r\nХеш таблица с разрешением коллизий методом открытой адресации:\r\n";
-		for (auto i : *(this->hashTableOA)) {
-			this->richTextBox1->Text += toSystemString(i.first) + ": " + toSystemString(i.second.str()) + "\r\n";
-		}
+
+private: System::Void button3_Click(System::Object^ sender, System::EventArgs^ e) {
+	deletePolynom();
+}
+
+private: System::Void richTextBox1_TextChanged(System::Object^ sender, System::EventArgs^ e) {
+}
+
+private: System::Void textBox2_KeyPress(System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e) {
+	if (e->KeyChar == '\r') {
+		addPolynom();
 	}
-	private: System::Void richTextBox1_TextChanged(System::Object^ sender, System::EventArgs^ e) {
+}
+private: System::Void textBox1_KeyPress(System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e) {
+	if (e->KeyChar == '\r') {
+		addPolynom();
 	}
-	};
+}
+};
 }

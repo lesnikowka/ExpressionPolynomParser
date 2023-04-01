@@ -353,6 +353,12 @@ public:
 	  bool operator>(const Monom& m)const  noexcept {
 		return (!isSimilar(m) && operator>=(m));
 	};
+
+	  std::string eraseExcessZeroes(const std::string& s) const{
+		  int lenght = s.size();
+		  for (int i = s.size() - 1; i && (s[i] == '0' || s[i] == '.'); i--) lenght--;
+		  return s.substr(0, lenght);
+	  }
 	
 	  std::string str() const{
 		  int tmp = 0;
@@ -360,11 +366,11 @@ public:
 		  for (int i = 0; i < degree.size(); i++)
 			  tmp += degree[i];
 		  if (tmp == 0) {
-			  result += std::to_string(coef);
+			  result += eraseExcessZeroes(std::to_string(coef));
 		  }
 		  else {
 			  if (coef == -1) result += "-";
-			  else if (coef != 1) result+=std::to_string(coef);
+			  else if (coef != 1) result+= eraseExcessZeroes(std::to_string(coef));
 			  for (int i = 0; i < using_alphabet.size(); i++) {
 				  if (degree[i] != 0) {
 					  result += using_alphabet[i];

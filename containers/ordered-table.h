@@ -90,6 +90,8 @@ public:
 		return !operator==(o);
 	}
 
+	size_t size() { return _data.size(); }
+
 	void insert(const std::pair<T1, T2>& row) {
 		if (find(row.first) == end()) {
 			Comparator comp;

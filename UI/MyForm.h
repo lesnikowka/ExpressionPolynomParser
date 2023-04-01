@@ -417,6 +417,7 @@ namespace ui {
 		this->exOrderedTable = newExOrderedTable;
 
 		this->textBox5->Text = "";
+		this->textBox6->Text = "";
 		this->label5->Text = "Подстановка: ";
 	}
 
