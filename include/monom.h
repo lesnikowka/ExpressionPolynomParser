@@ -364,6 +364,7 @@ public:
 		  }
 		  else {
 			  if (coef == -1) result += "-";
+			  else if (coef != 1) result+=std::to_string(coef);
 			  for (int i = 0; i < using_alphabet.size(); i++) {
 				  if (degree[i] != 0) {
 					  result += using_alphabet[i];

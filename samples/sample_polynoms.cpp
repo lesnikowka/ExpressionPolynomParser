@@ -7,10 +7,13 @@
 #include"hash-table(open-adressing).h"
 int main()
 {
-	HashTableC<int, int> ht;
-	for(int i=0;i<9;i++)
-	ht.emplace(i, i);
-	ht.erase(1000);
-	std::cout << ht;
+	Monom a("2xyz");
+	std::cout << a<<'\n';
+
+	Expression<RBTree<std::string,Polynom>> e;
+	e.addExp("a=xyz");
+	e.addExp("a");
+	e.addExp("a*2");
+	std::cout << e;
 	return 0;
 }
