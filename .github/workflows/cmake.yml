@@ -1,6 +1,13 @@
-name: cpp-cmake-template
+name: CMake
+
 on:
   push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  BUILD_TYPE: Release
 concurrency:
   group: "${{ github.ref }}"
   cancel-in-progress: true
