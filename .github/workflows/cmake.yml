@@ -23,7 +23,6 @@ jobs:
       env:
         ENV_DIR: '${{ github.workspace }}'
       with:
-        cmakeListsTxtPath: '${{ github.workspace }}/ProjectFolder/CMakeLists.txt'
         buildWithCMakeArgs: '-- -v'
         buildDirectory: '${{ github.workspace }}/build/'
     - name: run tests
