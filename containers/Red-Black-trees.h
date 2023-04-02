@@ -119,7 +119,7 @@ class RBTree {
 		t->right->parent = t;
 	}
 
-	//HORROR
+	
 	void balanceInsert(Node* t) {
 		if (!t) return;
 		if (t->parent == nullptr) { t->color = Color::black; return; }
@@ -154,46 +154,111 @@ class RBTree {
 			rotateLeft(g);
 		}
 	}
+	//HORROR
 	void balanceDelete(Node* t) {
-		if (!t->parent) return;
+		
+
 		Node* s = S(t), * p = P(t);
+		bool red = Color::red, black = Color::black;
+		if (t->parent == nullptr) { return; }
+		if (s->color == red) {
+			p->color = red;
+			s->color = black;
+			if (t == p->left)rotateLeft(p);
+			else rotateRight(p);
+		}
+		if (s->color == black && p->color == black && s->left->color == black && s->right->color == black) {
+			s->color = red;
+			balanceDelete(p);
+			return;
+		}
+		if (s->color==black && p->color==red&& s->left->color==black && s->right->color==black) {
+			s->color = red;
+			p->color = black;
+			return;
+		}
+		if (t == p->left) {
+			if (s->left->color == red && s->right->color == black) {
+				s->color = red;
+				s->left->color = black;
+				rotateRight(s);
+			}
+			s->color = p->color;
+			p->color = black;
+			s->right->color = black;
+			rotateLeft(p);
+		}
+		else if (t == p->right) {
+			if (s->right->color == red && s->left->color == black) {
+				s->color = red;
+				s->right->color = black;
+				rotateLeft(s);
+			}
+			s->color = p->color;
+			p->color = black;
+			s->left->color = black;
+			rotateRight(p);
+		}
+		
+		return;
+		/*
+		//1
+		if (!t->parent) return;
+		//2
 		if (s && s->color == Color::red) {
 			p->color = Color::red;
-			p->color = Color::black;
-			if (t == p->left)
-				rotateLeft(p);
-			else
-				rotateRight(p);
+			s->color = Color::black;
+			if (t == p->left) {
+				if(p->right->is_fict==false)
+					rotateLeft(p);
+				s = S(t); p = P(t);
+			}
+			else {
+				if(p->left->is_fict==false)
+					rotateRight(p);
+				s = S(t); p = P(t);
+			}
 		}
+		
+		
 
-		else if (s && s->color == Color::black && p && p->color == Color::black && s->left && s->left->color == Color::black && s->right && s->right->color == Color::black) {
+		//3
+		 if (s && s->color == Color::black && p && p->color == Color::black && s->left && s->left->color == Color::black && s->right && s->right->color == Color::black) {
 			s->color = Color::red;
 			balanceDelete(p);
 			return;
 		}
+		//4
 		else if (s && s->color == Color::black && p && p->color == red && s->left && s->left->color == Color::black && s->right && s->right->color == Color::black) {
 			s->color = Color::red;
-			s->color = Color::black;
+			p->color = Color::black;
 			return;
 		}
+		//5.1
 		else if (t == p->left) {
 			if (s && s->left && s->left->color == Color::red && s->right && s->right->color == Color::black) {
 				s->color = Color::red;
 				s->left->color = Color::black;
-				rotateRight(s);
+				if(s->left->is_fict==false)
+					rotateRight(s);
+				s = S(t); p = P(t);
 			}
 			if (s)s->color = p->color;
 			p->color = Color::black;
 			if (s && s->right)
 				s->right->color = Color::black;
-			rotateLeft(p);
+			if(p->right->is_fict==false)
+				rotateLeft(p);
+			s = S(t); p = P(t);
 		}
-
+		//5.2
 		else if (t == p->right) {
 			if (s && s->right && s->right->color == Color::red && s->left && s->left->color == Color::black) {
 				s->color = Color::red;
 				s->right->color = Color::black;
-				rotateLeft(s);
+				if (s->right->is_fict == false)
+					rotateLeft(s);
+				s = S(t); p = P(t);
 			}
 
 			if (s)s->color = p->color;
@@ -201,9 +266,11 @@ class RBTree {
 			if (s && s->left)
 				s->left->color = Color::black;
 
-			rotateRight(p);
-
+			if (p->left->is_fict == false)
+				rotateRight(p);
+			s = S(t); p = P(t);
 		}
+		 */
 	}
 	//HORROR
 
@@ -253,7 +320,7 @@ class RBTree {
 
 
 	void rotateLeft(Node* t) {
-		if (!t)return;
+		if (t->is_fict)return;
 		Node* new_t = t->right;
 		t->right = new_t->left;
 		if (new_t->left) new_t->left->parent = t;
@@ -267,23 +334,18 @@ class RBTree {
 		t->parent = new_t;
 	}
 	void rotateRight(Node* t) {
-		if (!t)return;
+		if (t->is_fict)return;
 		Node* new_t = t->left;
-
-		t->left = (new_t->right) ? new_t->right : new Node();
-		if (new_t->right)
-			new_t->right->parent = t;
+		t->left = new_t->right;
+		if (new_t->right) new_t->right->parent = t;
 		new_t->parent = t->parent;
 		if (!new_t->parent)root = new_t;
-
 		if (t->parent) {
-			if (t->parent->right == t) t->parent->right = new_t;
+			if (t->parent->right== t) t->parent->right= new_t;
 			else t->parent->left = new_t;
 		}
 		new_t->right = t;
 		t->parent = new_t;
-
-
 	}
 
 	Node* swap(Node* t, Node* prev) {
@@ -335,8 +397,8 @@ class RBTree {
 		}
 		else if (t == root)root = prev;
 
-		x->color = prev->color;
-		prev->color = t->color;
+		//x->color = prev->color;
+		//prev->color = t->color;
 		return oldpos;
 	}
 
@@ -358,10 +420,15 @@ class RBTree {
 
 
 			Node* oldpos = swap(t, prev);
+			
+			//if (oldpos->color==Color::red&&(S(oldpos) && S(oldpos)->is_fict == false) || oldpos->is_fict == false)
+			//	balanceDelete(oldpos);
+			if (oldpos->color == Color::red) { oldpos->color = Color::black; }
+			else if (oldpos->parent&&oldpos->color == Color::black && oldpos->parent->color == Color::black) { balanceDelete(oldpos); }
+			
+			if (t == root)
+				t->color = Color::black;
 
-
-			if ((S(oldpos) && S(oldpos)->is_fict == false) || oldpos->is_fict == false)
-				balanceDelete(oldpos);
 
 			_size--;
 			delete t;
@@ -527,21 +594,18 @@ public:
 	iterator find(T first) {
 		return iterator(pfind(first, root));
 	}
+	size_t getBlackHeight(iterator it) {
+		return getBlackHeight(&(*it));
+	}
 	size_t getBlackHeight(Node* t) {
-		int hl=0, hr=0,bhl=0,bhr=0;
-		if (t->left) {
-			hl = t->left->height;
-			if (t->left->color == Color::black)
-				bhl = t->left->black_height;
-		}
-		if (t->right) {
-			hr = t->right->height;
-			if (t->right->color == Color::black)
-				bhr = t->right->black_height;
-		}
-		t->height = ((hl>hr) ? hl: hr)+1;
-		t->black_height = ((bhl > bhr) ? bhl : bhr)+1;
-		
+		size_t bhr=0, bhl=0;
+		if (!t) return 0;
+		if (t->left)bhl = getBlackHeight(t->left);
+		if (t->right)bhr = getBlackHeight(t->right);
+		size_t h = ((bhr > bhl) ? bhr : bhl);
+		if (t->color == Color::black&&t->is_fict==false) h++;
+		return h;
+
 	}
 	D& operator[](const T& first) {
 		iterator it = find(first);
@@ -555,12 +619,50 @@ public:
 		return (*find(first)).second;
 	}
 
-	int getHeight(T first) {
-		return find(first)->height;
+	//FOR TESTS |
+	//FOR TESTS |
+	//FOR TESTS V
+
+	bool property_ColorsAreCorrect(iterator it) {
+		if (it == end())return 1;
+
+		return property_ColorsAreCorrect(&(*it));
 	}
-	int getBlackHeight(T first) {
-		return find(first)->black_height;
+	bool property_ColorsAreCorrect(Node* t) {
+		bool flag=true;
+		if (t->is_fict) return true;
+		if (t == root && t->color == Color::red) return false;
+
+		if (t->color == Color::red && (t->left->color == Color::red || t->right->color == Color::red)) return false;
+
+		if (t->left && t->right)flag = (property_ColorsAreCorrect(t->left) && property_ColorsAreCorrect(t->right));
+
+		return flag;
 	}
+	bool property_BlackHeightsSimilar(iterator it) {
+		if (it == end())return 1;
+		return property_BlackHeightsSimilar(&(*it));
+	}
+	bool property_BlackHeightsSimilar(Node* t) {
+		bool flag = true;
+
+		if (getBlackHeight(t->left)!=getBlackHeight(t->right)) return false;
+
+		if (t->left && t->right)flag = (property_BlackHeightsSimilar(t->left)&&property_BlackHeightsSimilar(t->right));
+		
+		return flag;
+	}
+	bool property_ALL(iterator it) {
+		if (it == end())return 1;
+		return property_ALL(&(*it));
+	}
+	bool property_ALL(Node* t) {
+		return property_BlackHeightsSimilar(t) && property_ColorsAreCorrect(t);
+	}
+	//FOR TESTS ^
+	//FOR TESTS |
+	//FOR TESTS |
+
 	bool getColor(Node* t) {
 		return t->color;
 	}

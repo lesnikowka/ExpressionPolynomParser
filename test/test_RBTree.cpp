@@ -112,8 +112,8 @@ public:
 	}
 };
 
-TEST_F(F_RBTree, property_BLACK_HEIGHT_is_executed) {
-	
-}
+//TEST_F(F_RBTree, property_BLACK_HEIGHT_is_executed) {
+//	
+//}
 
 
