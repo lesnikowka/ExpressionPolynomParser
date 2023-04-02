@@ -12,6 +12,7 @@ class RBTree {
 		black = false,
 		red = true,
 
+
 	};
 	struct Node {
 		Node* left;
@@ -91,6 +92,7 @@ class RBTree {
 	};
 
 	Node* root;
+	size_t _size;
 
 	Node* copy(Node* n) {
 		if (!n)return nullptr;
@@ -217,7 +219,7 @@ class RBTree {
 			t->is_fict = false;
 			if (t == root)t->color = Color::black;
 			else t->color = Color::red;
-
+			_size++;
 			createFict(t);
 
 
@@ -372,7 +374,7 @@ class RBTree {
 			if ((S(oldpos) && S(oldpos)->is_fict == false) || oldpos->is_fict == false)
 				balanceDelete(oldpos);
 
-
+			_size--;
 			delete t;
 
 		}
@@ -502,13 +504,14 @@ public:
 	}
 
 
-	RBTree() { root = new Node(); root->is_fict = true; }
+	RBTree() { root = new Node(); root->is_fict = true; _size = 0; }
 	RBTree(T first, D elem) {
 		height = 0;
+		_size = 1;
 		root = new Node(first, elem);
 	}
 
-	RBTree(const RBTree& t) { root = copy(t.root); }
+	RBTree(const RBTree& t) { root = copy(t.root); size = t._size; }
 	~RBTree() {
 		Tdestructor(root);
 
@@ -557,7 +560,7 @@ public:
 		if (t == nullptr)return nullptr;
 		return t->parent;
 	}
-
+	size_t size() { return _size; }
 
 	friend std::ostream& operator<<(std::ostream& ostream, const RBTree& t) {
 		recOut(ostream, t.root);
