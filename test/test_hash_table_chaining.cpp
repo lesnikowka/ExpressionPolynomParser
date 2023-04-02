@@ -14,7 +14,7 @@ TEST(HashTable_Chaining, can_emplace_few_times) {
 	for(int i=0;i<10;i++)
 	ASSERT_NO_THROW(ht.emplace(i, i));
 }
-TEST(HashTable_Chaining, do_nothing_when_emplace_the_same_first) {
+TEST(HashTable_Chaining, do_nothing_when_emplace_the_same_key) {
 	HashTableC<int, int> ht;
 	for(int i=0;i<10;i++)
 	ht.emplace(1, 1);
@@ -59,13 +59,13 @@ TEST_F(HashTable_Chaining_F, find_work_correctly) {
 	}
 }
 
-TEST_F(HashTable_Chaining_F, erase_work_with_existing_first) {
+TEST_F(HashTable_Chaining_F, erase_work_with_existing_key) {
 	ASSERT_NO_THROW(ht.erase(0));
 }
-TEST_F(HashTable_Chaining_F, erase_work_with_non_existing_first) {
+TEST_F(HashTable_Chaining_F, erase_work_with_non_existing_key) {
 	ASSERT_ANY_THROW(ht.erase(1000));
 }
-TEST_F(HashTable_Chaining_F, erase_work_correctly_with_existing_first) {
+TEST_F(HashTable_Chaining_F, erase_work_correctly_with_existing_key) {
 	ht.erase(0);
 	EXPECT_EQ(ht.find(0),ht.end());
 }
