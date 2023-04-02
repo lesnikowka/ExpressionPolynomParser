@@ -7,40 +7,35 @@ class OrderedTable {
 public:
 	class iterator {
 		typename std::vector<std::pair<T1, T2>>::iterator _iterator;
+		typename std::vector<std::pair<T1, T2>>::iterator _end;
 
 		friend class OrderedTable;
 	public:
 		iterator() = delete;
-		iterator(const typename std::vector<std::pair<T1, T2>>::iterator& iterator) : _iterator(iterator) {}
-		iterator(const iterator& iterator) : _iterator(iterator._iterator) {}
+		iterator(const typename std::vector<std::pair<T1, T2>>::iterator& iterator, 
+			const typename std::vector<std::pair<T1, T2>>::iterator& end) : _iterator(iterator), _end(end) {}
+		iterator(const iterator& iterator) : _iterator(iterator._iterator), _end(iterator._end) {}
 
 		iterator& operator=(const iterator& it) {
 			_iterator = it._iterator;
+			_end = it._end;
 			return *this;
 		}
 
 		std::pair<T1, T2> operator*() {
+			if(_iterator == _end) throw std::exception("end iterator");
 			return *_iterator;
 		}
 
 		iterator operator++() {
+			if(_iterator == _end) throw std::exception("end iterator");
 			++_iterator;
-			return iterator(_iterator);
+			return iterator(_iterator, _end);
 		}
 
 		iterator operator++(int) {
 			iterator result = *this;
 			operator++();
-			return result;
-		}
-
-		iterator operator--() {
-			return iterator(--_iterator);
-		}
-
-		iterator operator--(int) {
-			iterator result = *this;
-			operator--();
 			return result;
 		}
 
@@ -66,10 +61,10 @@ private:
 
 public:
 	iterator begin() {
-		return iterator(_data.begin());
+		return iterator(_data.begin(), _data.end());
 	}
 	iterator end() {
-		return iterator(_data.end());
+		return iterator(_data.end(), _data.end());
 	}
 
 	OrderedTable() = default;
@@ -126,7 +121,7 @@ public:
 		if (it == _data.end() || (*it).first != key) {
 			return end();
 		}
-		return iterator(it);
+		return iterator(it, _data.end());
 	}
 
 	T2& operator[](const T1& key) {

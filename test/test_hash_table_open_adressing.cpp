@@ -62,7 +62,18 @@ TEST_F(HT_fixture, iterators_are_working) {
 	}
 }
 
+TEST_F(HT_fixture, iteration_does_not_start_after_erasing_all_elements) {
+	for (auto i : v1) {
+		ht1.insert(i);
+	}
+	for (auto i : v1) {
+		ht1.erase(i.first);
+	}
 
+	for (auto i : ht1) {
+		ADD_FAILURE();
+	}
+}
 
 TEST_F(HT_fixture, throw_if_erase_element_that_was_not_emplaced) {
 	for (auto i : v1) {

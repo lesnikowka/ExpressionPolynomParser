@@ -139,3 +139,22 @@ TEST_F(OT_fixture, can_move_ordered_table_in_assign_operator) {
 	EXPECT_EQ(o3, o2);
 }
 
+
+
+TEST_F(OT_fixture, throw_if_deference_end_iterator) {
+	ASSERT_ANY_THROW(*(o.end()));
+}
+
+TEST_F(OT_fixture, iterators_are_working) {
+	for (auto i : v) {
+		o.emplace(i,i);
+	}
+
+	for (auto i : v) {
+		EXPECT_FALSE(o.find(i) == o.end());
+	}
+
+	for (auto i : o) {
+		EXPECT_FALSE(std::find(v.begin(), v.end(), i.first) == v.end());
+	}
+}
