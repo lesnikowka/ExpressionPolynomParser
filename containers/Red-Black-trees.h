@@ -242,22 +242,6 @@ class RBTree {
 			flag = false;
 		}
 
-		/*
-		//height and black_height calculation
-		int hl=0, hr=0,bhl=0,bhr=0;
-		if (t->left) {
-			hl = t->left->height;
-			if (t->left->color == Color::black)
-				bhl = t->left->black_height;
-		}
-		if (t->right) {
-			hr = t->right->height;
-			if (t->right->color == Color::black)
-				bhr = t->right->black_height;
-		}
-		t->height = ((hl>hr) ? hl: hr)+1;
-		t->black_height = ((bhl > bhr) ? bhl : bhr)+1;
-		*/
 		return t;
 	}
 	Node* pfind(T first, Node* t) {
@@ -356,12 +340,17 @@ class RBTree {
 		return oldpos;
 	}
 
-	void perase(T first, Node* t) {
-		if (t == nullptr) return;
-		if (t->first > first) perase(first, t->left);
-		else if (t->first < first) perase(first, t->right);
+	bool perase(T first, Node* t) {
+		bool flag;
+		if (t == nullptr) return false;
+		if (t->first > first) {
+			flag=perase(first, t->left);
+		}
+		else if (t->first < first) {
+			flag=perase(first, t->right);
+	}
 		else {
-			
+			flag = true;
 			Node* prev = findMax(t->left);
 			Node* left = t->left, * right = t->right;
 			Node* x = prev->left;
@@ -376,9 +365,12 @@ class RBTree {
 
 			_size--;
 			delete t;
+			return flag;
 
 		}
-		return;
+		if(!flag)
+		throw std::exception("key is not founded");
+		return flag;
 	}
 
 
@@ -436,6 +428,7 @@ public:
 			finish = false;
 		}
 		Node& operator*() {
+			if(history.empty())throw "iterator points to the end";
 			return *(history.top());
 		}
 		iterator& operator=(const iterator& it) {
@@ -482,10 +475,10 @@ public:
 			}
 			return *this;
 		}
-		bool operator!=(const iterator& it) {
+		bool operator!=(const iterator& it) const {
 			return !operator==(it);
 		}
-		bool operator==(const iterator& it) {
+		bool operator==(const iterator& it) const {
 			if (history.empty() && it.history.empty())return true;
 			else if (history.empty() == false || it.history.empty() == false) return false;
 			return history.top() == it.history.top();
@@ -511,7 +504,7 @@ public:
 		root = new Node(first, elem);
 	}
 
-	RBTree(const RBTree& t) { root = copy(t.root); size = t._size; }
+	RBTree(const RBTree& t) { root = copy(t.root); _size = t._size; }
 	~RBTree() {
 		Tdestructor(root);
 
@@ -531,13 +524,28 @@ public:
 		perase(first, root);
 	}
 
-	Node* find(T first) {
-		return pfind(first, root);
+	iterator find(T first) {
+		return iterator(pfind(first, root));
 	}
-
+	size_t getBlackHeight(Node* t) {
+		int hl=0, hr=0,bhl=0,bhr=0;
+		if (t->left) {
+			hl = t->left->height;
+			if (t->left->color == Color::black)
+				bhl = t->left->black_height;
+		}
+		if (t->right) {
+			hr = t->right->height;
+			if (t->right->color == Color::black)
+				bhr = t->right->black_height;
+		}
+		t->height = ((hl>hr) ? hl: hr)+1;
+		t->black_height = ((bhl > bhr) ? bhl : bhr)+1;
+		
+	}
 	D& operator[](const T& first) {
-		Node* it = find(first);
-		if (it == nullptr)
+		iterator it = find(first);
+		if (it == end())
 			emplace(first, D());
 		return (*find(first)).second;
 	}
