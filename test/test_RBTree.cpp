@@ -94,23 +94,23 @@ TEST(RBTree, erase_NODE_work_with_existing_key_correctly) {
 	EXPECT_EQ(t.find(4), t.end());
 }
 
-class F_RBTree :public ::testing::Test {
-public:
-	std::vector<RBTree<int, int>>v;
-	size_t size;
-	F_RBTree() {
-		size = 6;
-		v.resize(size);
-	}
-	void insert(int key) {
-		for (int i = 0; i < size; i++)
-			v[i].emplace(i, i);
-	}
-	void erase(int key) {
-		for (int i = 0; i < size; i++)
-			v[i].erase(i);
-	}
-};
+//class F_RBTree :public ::testing::Test {
+//public:
+//	std::vector<RBTree<int, int>>v;
+//	size_t size;
+//	F_RBTree() {
+//		size = 6;
+//		v.resize(size);
+//	}
+//	void insert(int key) {
+//		for (int i = 0; i < size; i++)
+//			v[i].emplace(i, i);
+//	}
+//	void erase(int key) {
+//		for (int i = 0; i < size; i++)
+//			v[i].erase(i);
+//	}
+//};
 
 //TEST_F(F_RBTree, property_BLACK_HEIGHT_is_executed) {
 //	
