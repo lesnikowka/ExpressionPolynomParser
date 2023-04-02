@@ -27,7 +27,7 @@ class HashTableC {
 	//settings for hash()
 	int a, b,c;
 	std::vector<int> simp_nums = { 13,53,151, 503,1553, 5101, 2764437 };//, 1000000007};
-	int p = 1000000007;
+	int p = 1000000007,pstr=17;
 	
 	//counter of seconds
 	int size;
@@ -172,15 +172,15 @@ public:
 	int hash(const T& first) {
 		return first.hash();
 	}
-	int hash(std::string first)
+	int hash(std::string& first)
 	{
 		int res = 0;
 		for (int i = 0; i < first.size();i++) {
-			res += (int)first[i]*pow(p,i);
+			res += (int)first[i]*pow(pstr,i);
 		}
 		return res%capacity;
 	}
-	int hash(int first) {
+	int hash(int& first) {
 		int h = ((a * first + b) % p) % c;
 		if (h < 0)h +=c;
 		return h;
