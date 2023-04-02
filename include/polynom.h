@@ -21,10 +21,10 @@ class Polynom {
 	public:
 		bool operator()(const Monom& m1, const Monom& m2)  const noexcept {
 			for (size_t i = 0; i < m1.degree.size(); i++) {
-				if (m1.degree[i] < m2.degree[i])
+				if (m1.degree[i] > m2.degree[i])
 					return true;
 	
-				else if (m1.degree[i] > m2.degree[i])
+				else if (m1.degree[i] < m2.degree[i])
 					return false;
 			}
 	
@@ -59,7 +59,7 @@ class Polynom {
 		
 		if (monoms.size() >= 2) {
 			auto current = monoms.begin();
-			for (auto next = ++(monoms.begin()); ++next != monoms.end();){
+			for (auto next = (monoms.begin()); ++next != monoms.end();){
 				if ((*current).isSimilar(*next)) {
 					*next += *current;
 					if ((*next).getCoef() == 0) {
@@ -71,8 +71,6 @@ class Polynom {
 				else if (current != monoms.end())
 					++current;
 			}
-
-
 		}
 	}
 	void cut(const std::string& str) {
@@ -165,6 +163,9 @@ public:
 			}
 			++p_it;
 		}
+
+		sort();
+
 		return *this; 
 	}
 	Polynom operator+(const Polynom& p) const {
@@ -231,6 +232,7 @@ public:
 		else {
 			monoms.clear();
 		}
+
 		return *this;
 	}
 	Polynom operator*(const Monom& m) const {
@@ -239,6 +241,7 @@ public:
 			result = *this;
 			result *= m;
 		}
+		
 		return result;
 	}
 
@@ -260,23 +263,27 @@ public:
 		return result;
 	}
 
-	std::pair<Polynom, Polynom> operator/(const Polynom& p) { 
-		Polynom remainder = *this, quotient, divider = p;
+	std::pair<Polynom, Polynom> operator/(Polynom p) { 
+
+		Polynom remainder = *this, quotient;
 		Monom div;
 
-		for (Monom dl : divider.monoms) {
-			auto de = remainder.monoms.begin();
-			while(de != remainder.monoms.end()){
-				if (isDivider(*de, dl)) {
-					div = getDivider(*de, dl);
-					quotient += div;
-					remainder -= divider * div;
-					de = remainder.monoms.begin();
-				}
-				else 
-					++de;
+		Monom dl = *(p.monoms.begin());
+
+
+		auto de = remainder.monoms.begin();
+		while(de != remainder.monoms.end()){
+			if (isDivider(*de, dl)) {
+				div = getDivider(*de, dl);
+				quotient += div;
+				Polynom tmp = p * div;
+				remainder -= tmp;
+				de = remainder.monoms.begin();
 			}
+			else 
+				++de;
 		}
+		
 		return { quotient, remainder }; 
 	}
 	
