@@ -27,8 +27,8 @@ FetchContent_MakeAvailable(googletest)
 
 
 
-#add_subdirectory(UI)
-#include_directories(UI)
+add_subdirectory(UI)
+include_directories(UI)
 
 add_subdirectory(containers)
 add_subdirectory(expressions)
