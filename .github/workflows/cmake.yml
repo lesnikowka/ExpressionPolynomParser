@@ -11,17 +11,21 @@ env:
 
 jobs:
   build-windows:
-    runs-on: windows-latest
-
+    name: windows
+    runs-on: windows-2019
+    timeout-minutes: 60
     steps:
     - uses: actions/checkout@v3
-
-    - name: Configure CMake
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-
-    - name: Build
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
-
-    - name: Test
-      working-directory: ${{github.workspace}}/build
-      run: ctest -V ${{env.BUILD_TYPE}}
+    - uses: ilammy/msvc-dev-cmd@v1
+    - uses: lukka/get-cmake@latest
+    - name: configure and build
+      uses: lukka/run-cmake@v3
+      env:
+        ENV_DIR: '${{ github.workspace }}'
+      with:
+        cmakeListsTxtPath: '${{ github.workspace }}/ProjectFolder/CMakeLists.txt'
+        buildWithCMakeArgs: '-- -v'
+        buildDirectory: '${{ github.workspace }}/build/'
+    - name: run tests
+      working-directory: ${{ github.workspace }}
+      run: ctest --output-on-failure --test-dir ./build/tests
