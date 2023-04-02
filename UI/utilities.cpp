@@ -91,7 +91,6 @@ namespace ui {
 System::Void MyForm1::deletePolynom() {
 	this->textBox2->Text = "";
 
-
 	if (orderedTable->size()&&unorderedTable->size()&&hashTableC->getSize()&&hashTableOA->size()) {
 		try {
 			this->unorderedTable->erase(toString(textBox1->Text));
