@@ -22,6 +22,8 @@ protected:
 	std::vector<std::pair<int, int>> v3 = { {4,0},{3,0},{10,0},{1,0},{2,0}, {-1,0} };
 	std::vector<std::pair<int, int>> v4 = { {4, 0}, {3, 0},{10, 0}, {2,0} ,{10, 0}, {7, 0}, {12, 0}, {6, 0}, {8,0}, {9,0} };
 	std::vector<std::pair<int, int>> v5 = { {-4, 0}, {-3, 0},{-10, 0}, {-2,0}, {-7, 0}, {-12, 0}, {-6, 0}, {-8,0}, {-9,0} };
+	std::vector<std::pair<int, int>> v6 = { {4,0},{3,0},{10,0},{2,0},{7,0},{12,0},{6,0},{8,0} };
+	std::vector<std::pair<int, int>> v7 = { {-4,0},{-3,0},{-10,0},{-2,0},{-7,0},{-12,0},{-6,0},{-8,0} };
 };
 
 TEST_F(AVL_fixture, size_is_correct_on_empty_tree) {
@@ -161,4 +163,28 @@ TEST_F(AVL_fixture, can_do_big_right_rotate_during_the_insert) {
 
 
 	EXPECT_EQ(t.height(), 4);
+}
+
+TEST_F(AVL_fixture, can_do_big_left_rotate_during_the_erase) {
+	for (int i = 0; i < v6.size(); i++) {
+		t.insert(v6[i]);
+	}
+
+	EXPECT_EQ(t.height(), 4);
+
+	t.erase(2);
+
+	EXPECT_EQ(t.height(), 3);
+}
+
+TEST_F(AVL_fixture, can_do_big_right_rotate_during_the_erase) {
+	for (int i = 0; i < v7.size(); i++) {
+		t.insert(v7[i]);
+	}
+
+	EXPECT_EQ(t.height(), 4);
+
+	t.erase(-2);
+
+	EXPECT_EQ(t.height(), 3);
 }
