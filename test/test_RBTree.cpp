@@ -94,7 +94,9 @@ TEST(RBTree, erase_NODE_work_with_existing_key_correctly) {
 	EXPECT_EQ(t.find(4), t.end());
 }
 
-class F_RBTree :public ::testing::Test {
+
+
+class F_RBTree :public ::testing::TestWithParam<int> {
 public:
 	std::vector<RBTree<int, int>>t;
 	std::vector<std::vector<int>>vk = {
@@ -109,62 +111,51 @@ public:
 	F_RBTree() {
 		size = 6;
 		t.resize(size);
-				
-		//for (int i = 0; i < vk.size();i++) {
-		//	for (auto it2 : vk[i])
-		//		t[i].emplace(it2, it2);
-		//}
-
-
 	}
-	void emplaceALL() {
-		for (int i = 0; i < vk.size(); i++)
-			for (int j = 0; j < vk[i].size(); j++)
-				t[i].emplace(vk[i][j], vk[i][j]);
-	}
-	void erase(int key) {
-		for (int i = 0; i < size; i++)
-			t[i].erase(i);
+	void fullEmplace(int index) {
+		for (int i = 0; i < vk[index].size(); i++) {
+			t[index].emplace(vk[index][i], vk[index][i]);
+		}
 	}
 };
 
-
-TEST_F(F_RBTree, properties_on_empty_trees_is_executed) {
-	for (auto it : t) {
-		EXPECT_EQ(it.property_ALL(it.begin()),1);
+TEST_P(F_RBTree, properties_on_empty_trees_is_executed) {
+	int index = GetParam();
+	EXPECT_EQ(t[index].property_ALL(t[index].begin()), 1);
+	
+}
+TEST_P(F_RBTree, properties_after_one_insert_trees_is_executed) {
+	int i = GetParam();
+	t[i].emplace(vk[i][0], vk[i][0]);
+	EXPECT_EQ(t[i].property_ALL(t[i].begin()), 1);
+	
+}
+TEST_P(F_RBTree, properties_after_one_insert_and_one_erase_trees_is_executed) {
+	int i= GetParam();
+	t[i].emplace(vk[i][0], vk[i][0]);
+	t[i].erase(vk[i][0]);
+	EXPECT_EQ(t[i].property_ALL(t[i].begin()), 1);
+	
+}
+TEST_P(F_RBTree, properties_after_few_insert_trees_is_executed) {
+	int index = GetParam();
+	for (int i = 0; i < vk[index].size(); i++) {
+		t[index].emplace(vk[index][i],vk[index][i]);
+		EXPECT_EQ(t[index].property_ALL(t[index].begin()), 1);
 	}
 }
-
-TEST_F(F_RBTree, properties_after_one_insert_trees_is_executed) {
-	for (int i = 0; i < vk.size();i++) {
-		t[i].emplace(vk[i][0],vk[i][0]);
-		EXPECT_EQ(t[i].property_ALL(t[i].begin()), 1);
-	}
-}
-TEST_F(F_RBTree, properties_after_one_insert_and_one_erase_trees_is_executed) {
-	for (int i = 0; i < vk.size(); i++) {
-		t[i].emplace(vk[i][0], vk[i][0]);
-		t[i].erase(vk[i][0]);
-		EXPECT_EQ(t[i].property_ALL(t[i].begin()), 1);
-	}
-}
-TEST_F(F_RBTree, properties_after_few_insert_trees_is_executed) {
-	(*this).emplaceALL();
-	for (int i = 0; i < vk.size(); i++) {
-		EXPECT_EQ(t[i].property_ALL(t[i].begin()), 1);
-	}
-}
-TEST_F(F_RBTree, properties_after_few_erase_is_executed) {
-	(*this).emplaceALL();
-	for (int i = 0; i < t.size(); i++) {
-		for (int j = 0; j < vk[i].size() / 2; j++) {
-			t[i].erase(vk[i][j]);
-			EXPECT_EQ(t[i].property_ALL(t[i].begin()), 1);
-		}
+TEST_P(F_RBTree, properties_after_few_erase_is_executed) {
+	int index = GetParam();
+	fullEmplace(index);
+	for (int i = 0; i < t[index].size() / 2; i++) {
+		t[index].erase(vk[index][i]);
+		EXPECT_EQ(t[index].property_ALL(t[index].begin()), 1);
 	}
 
 }
-
-
-
-
+INSTANTIATE_TEST_CASE_P(
+	Test_properties,
+	F_RBTree,
+	::testing::Values(
+		0,1,2,3,4,5
+	));
