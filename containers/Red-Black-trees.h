@@ -159,14 +159,17 @@ class RBTree {
 		//1
 		if (!t->parent) return;
 		Node* s = S(t), * p = P(t);
+
 		//2
 		if (s->color == Color::red) {
-			p->color = Color::red;
-			s->color = Color::black;
+				p->color = Color::red;
+				s->color = Color::black;
 			if (t == p->left)
 				rotateLeft(p);
 			else
 				rotateRight(p);
+				s = S(t); p = P(t);
+
 		}
 
 		if (s->color == Color::black && p && p->color == Color::black && s->left && s->left->color == Color::black && s->right && s->right->color == Color::black) {
@@ -184,6 +187,7 @@ class RBTree {
 				s->color = Color::red;
 				s->left->color = Color::black;
 				rotateRight(s);
+				s = S(t); p = P(t);
 			}
 			s->color = p->color;
 			p->color = Color::black;
@@ -197,6 +201,8 @@ class RBTree {
 				s->color = Color::red;
 				s->right->color = Color::black;
 				rotateLeft(s);
+				s = S(t); p = P(t);
+
 			}
 
 			s->color = p->color;
@@ -295,7 +301,7 @@ class RBTree {
 
 		Node* oldpos, * x = prev->left;
 		if (t->parent)
-			(t->parent->left == t) ? t->parent->left = prev : t->parent->right = t;
+			(t->parent->left == t) ? t->parent->left = prev : t->parent->right = prev;
 
 
 		if (t == prev) {
@@ -324,7 +330,7 @@ class RBTree {
 
 
 		}
-		else {
+		else if(t->left==prev) {
 			oldpos = prev->left;
 			prev->parent = t->parent;
 			delete prev->right;
@@ -345,7 +351,7 @@ class RBTree {
 
 	bool perase(T first, Node* t) {
 		bool flag;
-		if (t == nullptr) return false;
+		if (t == nullptr||t->is_fict) return false;
 		if (t->first > first) {
 			flag = perase(first, t->left);
 		}
@@ -355,16 +361,18 @@ class RBTree {
 		else {
 			flag = true;
 			Node* prev = findMax(t->left);
+			//prev = (prev == t) ? t->left : prev;
+
 			Node* left = t->left, * right = t->right;
 			Node* x = prev->left;
-
+			bool c=prev->color;
 
 
 			Node* oldpos = swap(t, prev);
 
 
-			if ((S(oldpos) && S(oldpos)->is_fict == false) || oldpos->is_fict == false)
-				balanceDelete(oldpos);
+			if (oldpos->color == Color::red) { oldpos->color = Color::black; }
+			else if (oldpos->color == Color::black && c == Color::black) { balanceDelete(oldpos); }
 
 			_size--;
 			delete t;
@@ -539,7 +547,7 @@ public:
 		if (t->left)bhl = getBlackHeight(t->left);
 		if (t->right)bhr = getBlackHeight(t->right);
 		size_t h = ((bhr > bhl) ? bhr : bhl);
-		if (t->color == Color::black && t->is_fict == false) h++;
+		if (t->color == Color::black) h++;
 		return h;
 
 	}
