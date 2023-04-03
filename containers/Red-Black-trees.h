@@ -19,8 +19,7 @@ class RBTree {
 		Node* right;
 		Node* parent;
 		bool color;//0-black; 1-red
-		int height;
-		int black_height;
+
 		T first;
 		D second;
 		bool is_fict;
@@ -29,10 +28,6 @@ class RBTree {
 			right = nullptr;
 			is_fict = true;
 			parent = nullptr;
-
-			height = 0;
-			black_height = 0;
-			is_fict = 0;
 			color = Color::black;
 		}
 		Node(T first, D elem, Color c = Color::black, bool fict = false, Node* parent = nullptr) :first(first), parent(parent), second(elem), color(c) {
@@ -40,8 +35,6 @@ class RBTree {
 			left = nullptr;
 			right = nullptr;
 
-			black_height = 0;
-			height = 0;
 		};
 		Node(const Node& n) :
 			color(n.color),
@@ -49,8 +42,7 @@ class RBTree {
 			first(n.first),
 			second(n.second),
 			left(n.left), right(n.right),
-			parent(n.parent),
-			height(n.height), black_height(n.black_height) {};
+			parent(n.parent) {};
 		Node& operator=(const Node& n) {
 			root = n.root;
 
@@ -61,8 +53,6 @@ class RBTree {
 			right = n.right;
 
 			parent = n.parent;
-			height = n.height;
-			black_height = n.black_height;
 			is_fict = n.is_fict;
 			return *this;
 		}
@@ -111,15 +101,12 @@ class RBTree {
 
 	void createFict(Node* t) {
 		t->left = new Node();
-		t->left->is_fict = 1;
 		t->left->parent = t;
 
 		t->right = new Node();
-		t->right->is_fict = 1;
 		t->right->parent = t;
 	}
 
-	//HORROR
 	void balanceInsert(Node* t) {
 		if (!t) return;
 		if (t->parent == nullptr) { t->color = Color::black; return; }
@@ -214,7 +201,7 @@ class RBTree {
 
 		}
 	}
-	//HORROR
+	
 
 	Node* pinsert(T first, D elem, Node* t, Node* pt = nullptr) {
 		//insert
@@ -360,8 +347,7 @@ class RBTree {
 		}
 		else {
 			flag = true;
-			Node* prev = findMax(t->left);
-			//prev = (prev == t) ? t->left : prev;
+			Node* prev=findMax(t->left);
 
 			Node* left = t->left, * right = t->right;
 			Node* x = prev->left;
@@ -409,18 +395,16 @@ class RBTree {
 	Node* findMax(Node* t)
 	{
 		if (t->is_fict == true) return t->parent;
-		else findMax(t->right);
+		else return findMax(t->right);
 	}
 	Node* findMin(Node* t)
 	{
 		if (t->is_fict == true) return t->parent;
-		else findMax(t->left);
+		else return findMax(t->left);
 	}
 
 	friend std::ostream& recOut(std::ostream& ostream, const Node* n) {
 		if (n->is_fict == false) {
-			for (int i = 0; i < n->height; i++)
-				ostream << " ";
 			ostream << n << "\n";
 			if (n->left)recOut(ostream, n->left);
 			if (n->right)recOut(ostream, n->right);
@@ -434,7 +418,7 @@ public:
 	public:
 		iterator() { finish = true; }
 		iterator(Node* node) {
-			if (node && !node->is_fict)
+			if (node && node->is_fict==false)
 				history.push(node);
 			finish = false;
 		}
@@ -447,10 +431,42 @@ public:
 			return *this;
 		}
 		iterator operator++() {
-			bool flag = false;
-			if (finish) return iterator();
-			Node* top = history.top(), * parent;
 
+			if (finish) return iterator();
+			Node* top = history.top(), * parent = top->parent;
+			
+			if (top->left->is_fict == false) {
+				history.push(top->left);
+			}
+			else if (top->right->is_fict == false) {
+				history.push(top->right);
+			}
+			else if (parent&&parent->right == top) {
+				do {
+					top = parent;
+					parent = top->parent;
+					history.pop();
+				} while (parent && (parent->right == top || parent->right->is_fict));
+				if (!parent) { finish = true; history.pop(); }
+				else if (parent->right->is_fict == false) { history.pop(); history.push(parent->right); }
+			}
+			else if (parent&&parent->left == top) {
+				do {
+					top = parent;
+					parent = top->parent;
+					history.pop();
+
+				} while (top->right->is_fict);
+				history.push(top->right);
+			}
+			else {
+				history.pop();
+				finish = true;
+			}
+
+
+
+			/*
 			if (top->left->is_fict == false) {
 				history.push(top->left);
 			}
@@ -468,8 +484,8 @@ public:
 						parent = history.top();
 
 					flag = true;
-				} while (parent && parent->right == top);
-				while (parent && parent->right->is_fict) {
+				} while (parent && parent->right->is_fict);
+				while (parent &&(parent->right==top||parent->right->is_fict||parent->right)) {
 					top = history.top();
 					history.pop();
 					if (history.empty())
@@ -484,6 +500,7 @@ public:
 
 				history.push(parent->right);
 			}
+			*/
 			return *this;
 		}
 		bool operator!=(const iterator& it) const {
@@ -500,17 +517,16 @@ public:
 			return tmp;
 		}
 	};
-	iterator begin() {
+	iterator begin()const {
 		return iterator(root);
 	}
-	iterator end() {
+	iterator end()const {
 		return iterator();
 	}
 
 
-	RBTree() { root = new Node(); root->is_fict = true; _size = 0; }
+	RBTree() { root = new Node();_size = 0; }
 	RBTree(T first, D elem) {
-		height = 0;
 		_size = 1;
 		root = new Node(first, elem);
 	}
@@ -628,7 +644,6 @@ public:
 
 	friend std::ostream& operator<<(std::ostream& ostream, const RBTree& t) {
 		recOut(ostream, t.root);
-
 		return ostream;
 	}
 };
