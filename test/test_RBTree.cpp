@@ -82,7 +82,7 @@ TEST(RBTree, erase_LEAF_work_with_existing_key_correctly) {
 	t.erase(2);
 	EXPECT_EQ(t.find(2), t.end());
 }
-TEST(RBTree, erase_NODE_work_with_existing_key_correctly) {
+TEST(RBTree, test) {
 	RBTree<int, int> t;
 	t.emplace(1, 1);
 	t.emplace(2, 1);
