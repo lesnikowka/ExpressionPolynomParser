@@ -18,6 +18,9 @@ class AVL_fixture : public testing::Test{
 protected:
 	AVLTree<int, int> t;
 	std::vector<std::pair<int, int>> v = { {4, 5}, {3, 7}, {10, 17}, {8, 13}, {12, 7}, {13, 14} , {1, 10} };
+	std::vector<std::pair<int, int>> v2 = { {4, 0}, {3, 0}, {10, 0}, {8, 0}, {12, 0}, {13, 0} };
+	std::vector<std::pair<int, int>> v3 = { {4,0},{3,0},{10,0},{1,0},{2,0}, {-1,0} };
+	std::vector<std::pair<int, int>> v4 = { {4, 0}, {3, 0}, {10, 0}, {7, 0}, {12, 0}, {6, 0}, {8,0}, {9,0} };
 };
 
 TEST_F(AVL_fixture, size_is_correct_on_empty_tree) {
@@ -109,3 +112,38 @@ TEST_F(AVL_fixture, throw_if_erase_element_that_was_not_added) {
 	ASSERT_ANY_THROW(t.erase(9));
 }
 
+TEST_F(AVL_fixture, can_do_simple_left_rotate) {
+	for (int i = 0; i < v2.size() - 1; i++) {
+		t.insert(v2[i]);
+	}
+
+	EXPECT_EQ(t.height(), 3);
+	
+	t.insert(v2[v2.size() - 1]);
+
+	EXPECT_EQ(t.height(), 3);
+}
+
+TEST_F(AVL_fixture, can_do_simple_right_rotate) {
+	for (int i = 0; i < v3.size() - 1; i++) {
+		t.insert(v3[i]);
+	}
+
+	EXPECT_EQ(t.height(), 3);
+
+	t.insert(v3[v3.size() - 1]);
+
+	EXPECT_EQ(t.height(), 3);
+}
+
+TEST_F(AVL_fixture, can_do_big_left_rotate) {
+	for (int i = 0; i < v4.size() - 1; i++) {
+		t.insert(v4[i]);
+	}
+
+	EXPECT_EQ(t.height(), 4);
+
+	t.insert(v4[v4.size() - 1]);
+
+	EXPECT_EQ(t.height(), 4);
+}
