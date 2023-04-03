@@ -141,9 +141,14 @@ TEST_F(AVL_fixture, can_do_big_left_rotate) {
 		t.insert(v4[i]);
 	}
 
-	EXPECT_EQ(t.height(), 4);
+	EXPECT_EQ(t.height(), 3);
 
 	t.insert(v4[v4.size() - 1]);
 
+
 	EXPECT_EQ(t.height(), 4);
+}
+
+TEST_F(AVL_fixture, can_do_big_right_rotate) {
+	ADD_FAILURE();
 }
