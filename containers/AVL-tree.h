@@ -408,5 +408,20 @@ public:
 		t.out(o, t.root);
 		return o;
 	}
+
+	bool is_balanced() {
+		if (!node) return node;
+
+		size_t right_height = node->right ? node->right->height : 0;
+		size_t left_height = node->left ? node->left->height : 0;
+
+		for (const auto& i : (*this)) {
+			right_height = i.history.top()->right ? i.history.top()->right->height : 0;
+			left_height = i.history.top()->left ? i.history.top()->left->height : 0;
+			if (std::abs(right_height - left_height) > 1) return false;
+		}
+		
+		return true;
+	}
 };
 
