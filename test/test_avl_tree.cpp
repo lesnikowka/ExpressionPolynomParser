@@ -18,6 +18,12 @@ class AVL_fixture : public testing::Test{
 protected:
 	AVLTree<int, int> t;
 	std::vector<std::pair<int, int>> v = { {4, 5}, {3, 7}, {10, 17}, {8, 13}, {12, 7}, {13, 14} , {1, 10} };
+	std::vector<int> v1 = { 10,5,20,13,25, 15 };
+	std::vector<int> v2 = { -10,-5,-20,-13,-25, -15 };
+	std::vector<int> v3 = { 10, 15, 20 };
+	std::vector<int> v4 = { -10, -15, -20 };
+	std::vector<int> v5 = { 10, 5, 20, 13, 25,3,30 };
+	std::vector<int> v6 = { -10, -5, -20, -13, -25,-3, -30 };
 };
 
 TEST_F(AVL_fixture, size_is_correct_on_empty_tree) {
@@ -108,4 +114,92 @@ TEST_F(AVL_fixture, throw_if_erase_element_that_was_not_added) {
 
 	ASSERT_ANY_THROW(t.erase(9));
 }
+
+TEST_F(AVL_fixture, can_do_simple_left_rotate_1) {
+	for (int i = 0; i < v3.size() - 1; i++) {
+		t.emplace(v3[i], 0);
+	}
+
+	EXPECT_EQ(t.height(), 2);
+
+
+	t.emplace(v3[v3.size() - 1], 0);
+
+	EXPECT_EQ(t.height(), 2);
+	EXPECT_TRUE(t.is_balanced());
+
+}
+
+TEST_F(AVL_fixture, can_do_simple_right_rotate_1) {
+	for (int i = 0; i < v4.size() - 1; i++) {
+		t.emplace(v4[i], 0);
+	}
+
+	EXPECT_EQ(t.height(), 2);
+
+
+	t.emplace(v4[v4.size() - 1], 0);
+
+	EXPECT_EQ(t.height(), 2);
+	EXPECT_TRUE(t.is_balanced());
+
+}
+
+TEST_F(AVL_fixture, can_do_simple_left_rotate_2) {
+	for (int i = 0; i < v5.size(); i++) {
+		t.emplace(v5[i], 0);
+	}
+
+	EXPECT_EQ(t.height(), 4);
+
+
+	t.erase(3);
+
+	EXPECT_EQ(t.height(), 3);
+	EXPECT_TRUE(t.is_balanced());
+
+}
+
+TEST_F(AVL_fixture, can_do_simple_right_rotate_2) {
+	for (int i = 0; i < v6.size(); i++) {
+		t.emplace(v6[i], 0);
+	}
+
+	EXPECT_EQ(t.height(), 4);
+
+
+	t.erase(-3);
+
+	EXPECT_EQ(t.height(), 3);
+	EXPECT_TRUE(t.is_balanced());
+
+}
+
+TEST_F(AVL_fixture, can_do_big_left_rotate) {
+	for (int i = 0; i < v1.size() - 1; i++) {
+		t.emplace(v1[i], 0);
+	}
+
+	EXPECT_EQ(t.height(), 3);
+
+	t.emplace(v1[v1.size() - 1], 0);
+
+	EXPECT_EQ(t.height(), 3);
+	EXPECT_TRUE(t.is_balanced());
+
+}
+
+TEST_F(AVL_fixture, can_do_big_right_rotate) {
+	for (int i = 0; i < v2.size() - 1; i++) {
+		t.emplace(v2[i], 0);
+	}
+
+	EXPECT_EQ(t.height(), 3);
+
+	t.emplace(v2[v2.size() - 1], 0);
+
+	EXPECT_EQ(t.height(), 3);
+	EXPECT_TRUE(t.is_balanced());
+}
+
 

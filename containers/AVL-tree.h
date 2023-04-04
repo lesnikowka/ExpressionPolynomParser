@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stack>
+#include <cmath>
 
 template <class T, class Y>
 class AVLTree {
@@ -410,14 +411,11 @@ public:
 	}
 
 	bool is_balanced() {
-		if (!node) return node;
+		int right_height, left_height;
 
-		size_t right_height = node->right ? node->right->height : 0;
-		size_t left_height = node->left ? node->left->height : 0;
-
-		for (const auto& i : (*this)) {
-			right_height = i.history.top()->right ? i.history.top()->right->height : 0;
-			left_height = i.history.top()->left ? i.history.top()->left->height : 0;
+		for (auto it = begin(); it != end(); it++) {
+			right_height = it.history.top().first->right ? it.history.top().first->right->height : 0;
+			left_height = it.history.top().first->left ? it.history.top().first->left->height : 0;
 			if (std::abs(right_height - left_height) > 1) return false;
 		}
 		
