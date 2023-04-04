@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stack>
+#include <cmath>
 
 template <class T, class Y>
 class AVLTree {
@@ -79,7 +80,7 @@ public:
 private:
 	Node* root = nullptr;
 
-	size_t _size;
+	size_t _size = 0;
 
 	Node* insert_(const T& key, const Y& value, Node* node) {
 		if (!node) {
@@ -119,7 +120,7 @@ private:
 				node = prev;
 			}
 			else {
-				node = node->left;
+				node = node->right;
 			}
 		}
 
@@ -337,7 +338,8 @@ public:
 		emplace(pair.first, pair.second);
 	}
 	void erase(const T& key) {
-		if (find(key) == end()) throw std::exception("element was not founded");
+		if (find(key) == end()) 
+			throw std::exception("element was not founded");
 		else {
 			_size--;
 			root = erase_(key, root);
@@ -406,6 +408,18 @@ public:
 	friend std::ostream& operator<<(std::ostream& o, const AVLTree& t) {
 		t.out(o, t.root);
 		return o;
+	}
+
+	bool is_balanced() {
+		int right_height, left_height;
+
+		for (auto it = begin(); it != end(); it++) {
+			right_height = it.history.top().first->right ? it.history.top().first->right->height : 0;
+			left_height = it.history.top().first->left ? it.history.top().first->left->height : 0;
+			if (std::abs(right_height - left_height) > 1) return false;
+		}
+		
+		return true;
 	}
 };
 

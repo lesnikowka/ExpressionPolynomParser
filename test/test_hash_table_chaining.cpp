@@ -75,4 +75,3 @@ TEST_F(HashTable_Chaining_F, cant_erase_empty_table) {
 	for (int i = -110; i < 110; i++)
 		EXPECT_ANY_THROW(ht.erase(i));
 }
-

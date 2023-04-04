@@ -474,7 +474,6 @@ public:
 				history.push(top->right);
 			}
 			else {
-
 				do {
 					top = history.top();
 					history.pop();
@@ -482,7 +481,6 @@ public:
 						parent = nullptr;
 					else
 						parent = history.top();
-
 					flag = true;
 				} while (parent && parent->right->is_fict);
 				while (parent &&(parent->right==top||parent->right->is_fict||parent->right)) {
@@ -497,7 +495,6 @@ public:
 					finish = true;
 					return *this;
 				}
-
 				history.push(parent->right);
 			}
 			*/
