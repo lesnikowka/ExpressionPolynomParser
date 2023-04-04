@@ -456,8 +456,9 @@ public:
 					parent = top->parent;
 					history.pop();
 
-				} while (top->right->is_fict);
-				history.push(top->right);
+				} while (parent&&top->right->is_fict);
+				if (top->right->is_fict) { finish = true; history.pop(); }
+				else history.push(top->right);
 			}
 			else {
 				history.pop();
