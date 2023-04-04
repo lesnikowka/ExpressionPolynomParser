@@ -109,7 +109,7 @@ public:
 	};
 	size_t size;
 	F_RBTree() {
-		size = 6;
+		size = vk.size();
 		t.resize(size);
 	}
 	void fullEmplace(int index) {
