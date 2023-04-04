@@ -149,13 +149,13 @@ class RBTree {
 
 		//2
 		if (s->color == Color::red) {
-			p->color = Color::red;
-			s->color = Color::black;
+				p->color = Color::red;
+				s->color = Color::black;
 			if (t == p->left)
 				rotateLeft(p);
 			else
 				rotateRight(p);
-			s = S(t); p = P(t);
+				s = S(t); p = P(t);
 
 		}
 
@@ -170,7 +170,7 @@ class RBTree {
 			return;
 		}
 		else if (t == p->left) {
-			if (s->left && s->left->color == Color::red && s->right && s->right->color == Color::black) {
+			if ( s->left && s->left->color == Color::red && s->right && s->right->color == Color::black) {
 				s->color = Color::red;
 				s->left->color = Color::black;
 				rotateRight(s);
@@ -201,7 +201,7 @@ class RBTree {
 
 		}
 	}
-
+	
 
 	Node* pinsert(T first, D elem, Node* t, Node* pt = nullptr) {
 		//insert
@@ -317,7 +317,7 @@ class RBTree {
 
 
 		}
-		else if (t->left == prev) {
+		else if(t->left==prev) {
 			oldpos = prev->left;
 			prev->parent = t->parent;
 			delete prev->right;
@@ -338,7 +338,7 @@ class RBTree {
 
 	bool perase(T first, Node* t) {
 		bool flag;
-		if (t == nullptr || t->is_fict) return false;
+		if (t == nullptr||t->is_fict) return false;
 		if (t->first > first) {
 			flag = perase(first, t->left);
 		}
@@ -347,11 +347,11 @@ class RBTree {
 		}
 		else {
 			flag = true;
-			Node* prev = findMax(t->left);
+			Node* prev=findMax(t->left);
 
 			Node* left = t->left, * right = t->right;
 			Node* x = prev->left;
-			bool c = prev->color;
+			bool c=prev->color;
 
 
 			Node* oldpos = swap(t, prev);
@@ -418,7 +418,7 @@ public:
 	public:
 		iterator() { finish = true; }
 		iterator(Node* node) {
-			if (node && node->is_fict == false)
+			if (node && node->is_fict==false)
 				history.push(node);
 			finish = false;
 		}
@@ -434,14 +434,14 @@ public:
 
 			if (finish) return iterator();
 			Node* top = history.top(), * parent = top->parent;
-
+			
 			if (top->left->is_fict == false) {
 				history.push(top->left);
 			}
 			else if (top->right->is_fict == false) {
 				history.push(top->right);
 			}
-			else if (parent && parent->right == top) {
+			else if (parent&&parent->right == top) {
 				do {
 					top = parent;
 					parent = top->parent;
@@ -450,7 +450,7 @@ public:
 				if (!parent) { finish = true; history.pop(); }
 				else if (parent->right->is_fict == false) { history.pop(); history.push(parent->right); }
 			}
-			else if (parent && parent->left == top) {
+			else if (parent&&parent->left == top) {
 				do {
 					top = parent;
 					parent = top->parent;
@@ -522,7 +522,7 @@ public:
 	}
 
 
-	RBTree() { root = new Node(); _size = 0; }
+	RBTree() { root = new Node();_size = 0; }
 	RBTree(T first, D elem) {
 		_size = 1;
 		root = new Node(first, elem);
