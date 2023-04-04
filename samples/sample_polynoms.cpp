@@ -15,9 +15,9 @@
 int main()
 {
 	RBTree<int, int> t;
-	
-
-
+	t.emplace(1, 1);
+	t.emplace(2, 2);
+	std::cout << t;
 	/*
 	RBTree<int, int> t;
 	std::vector<int> v;
