@@ -106,6 +106,9 @@ public:
 		{1},
 		{1,2},
 		{2,1},
+		{12,10,15,13},
+		{12,10,15,8},
+		{12,10,15,8,13}
 	};
 	size_t size;
 	F_RBTree() {
@@ -149,7 +152,7 @@ TEST_P(F_RBTree, properties_after_few_erase_is_executed) {
 	fullEmplace(index);
 	for (int i = 0; i < t[index].size() / 2; i++) {
 		t[index].erase(vk[index][i]);
-		EXPECT_EQ(t[index].property_ALL(t[index].begin()), 1);
+		EXPECT_TRUE(t[index].property_ALL(t[index].begin()));
 	}
 
 }
@@ -164,5 +167,5 @@ INSTANTIATE_TEST_CASE_P(
 	Test_properties_and_other,
 	F_RBTree,
 	::testing::Values(
-		0,1,2,3,4,5
+		0,1,2,3,4,5,6,7,8
 	));
