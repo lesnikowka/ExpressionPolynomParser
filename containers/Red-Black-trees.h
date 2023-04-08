@@ -285,7 +285,7 @@ class RBTree {
 	Node* swap(Node* t, Node* prev) {
 		//if (t->first == 1)
 		//	std::cout << t<<'\n' << prev;
-
+		bool flagForColors = true;
 		Node* oldpos, * x = prev->left;
 		if (t->parent)
 			(t->parent->left == t) ? t->parent->left = prev : t->parent->right = prev;
@@ -331,13 +331,15 @@ class RBTree {
 		}
 		else if (t == root)root = prev;
 
-		x->color = prev->color;
-		prev->color = t->color;
+		if (flagForColors) {
+			//x->color = prev->color;
+			prev->color = t->color;
+		}
 		return oldpos;
 	}
 
 	bool perase(T first, Node* t) {
-		bool flag;
+		bool flag=false;
 		if (t == nullptr||t->is_fict) return false;
 		if (t->first > first) {
 			flag = perase(first, t->left);
@@ -418,6 +420,32 @@ public:
 	class iterator {
 		std::stack<Node*> history;
 		bool finish;
+		iterator recPP(Node* last_node,bool up=false) {
+			if (history.empty()) return iterator();
+			Node* top = history.top();
+			Node* parent = top->parent;
+
+			if (up) {
+				if (top->right!=last_node&&top->right->is_fict == false) { history.push(top->right); return *this; }
+				history.pop();
+				recPP(top,true);
+			}
+			else {
+				if (top->left->is_fict == false) {
+					history.push(top->left);
+					return *this;
+				}
+				else if (top->right->is_fict == false) {
+					history.push(top->right);
+					return *this;
+				}
+				else {
+					history.pop();
+					recPP(top,true);
+				}
+			}
+			return *this;
+		}	
 	public:
 		iterator() { finish = true; }
 		iterator(Node* node) {
@@ -437,6 +465,7 @@ public:
 		}
 		iterator operator++() {
 
+			/*
 			if (finish) return iterator();
 			Node* top = history.top(), * parent = top->parent;
 			
@@ -445,6 +474,16 @@ public:
 			}
 			else if (top->right->is_fict == false) {
 				history.push(top->right);
+			}
+			else if (parent && parent->left == top) {
+				do {
+					top = parent;
+					parent = top->parent;
+					history.pop();
+
+				} while (parent && top->right->is_fict);
+				if (top->right->is_fict) { finish = true; history.pop(); }
+				else history.push(top->right);
 			}
 			else if (parent&&parent->right == top) {
 				do {
@@ -455,56 +494,15 @@ public:
 				if (!parent) { finish = true; history.pop(); }
 				else if (parent->right->is_fict == false) { history.pop(); history.push(parent->right); }
 			}
-			else if (parent&&parent->left == top) {
-				do {
-					top = parent;
-					parent = top->parent;
-					history.pop();
-
-				} while (parent&&top->right->is_fict);
-				if (top->right->is_fict) { finish = true; history.pop(); }
-				else history.push(top->right);
-			}
+			
 			else {
 				history.pop();
 				finish = true;
 			}
 
-
-
-			/*
-			if (top->left->is_fict == false) {
-				history.push(top->left);
-			}
-			else if (top->right->is_fict == false) {
-				history.push(top->right);
-			}
-			else {
-				do {
-					top = history.top();
-					history.pop();
-					if (history.empty())
-						parent = nullptr;
-					else
-						parent = history.top();
-					flag = true;
-				} while (parent && parent->right->is_fict);
-				while (parent &&(parent->right==top||parent->right->is_fict||parent->right)) {
-					top = history.top();
-					history.pop();
-					if (history.empty())
-						parent = nullptr;
-					else
-						parent = history.top();
-				}
-				if (parent == nullptr) {
-					finish = true;
-					return *this;
-				}
-				history.push(parent->right);
-			}
-			*/
 			return *this;
+			*/
+			return recPP(history.top());
 		}
 		bool operator!=(const iterator& it) const {
 			return !operator==(it);
@@ -551,7 +549,10 @@ public:
 	}
 
 	void erase(T first) {
+		size_t tmp = _size;
 		perase(first, root);
+		if (tmp == _size)
+			throw std::exception("Can't delete");
 	}
 	
 	iterator find(T first) {
@@ -563,6 +564,7 @@ public:
 	size_t getBlackHeight(Node* t) {
 		size_t bhr = 0, bhl = 0;
 		if (!t) return 0;
+		if (t->is_fict) return 0;
 		if (t->left)bhl = getBlackHeight(t->left);
 		if (t->right)bhr = getBlackHeight(t->right);
 		size_t h = ((bhr > bhl) ? bhr : bhl);
@@ -612,9 +614,10 @@ public:
 	bool property_BlackHeightsSimilar(Node* t) {
 		bool flag = true;
 
-		if (getBlackHeight(t->left) != getBlackHeight(t->right)) return false;
+		if (getBlackHeight(t->left) != getBlackHeight(t->right)) 
+			return false;
 
-		if (t->left && t->right)flag = (property_BlackHeightsSimilar(t->left) && property_BlackHeightsSimilar(t->right));
+		if (t->left->is_fict==false && t->right->is_fict==false)flag = (property_BlackHeightsSimilar(t->left) && property_BlackHeightsSimilar(t->right));
 
 		return flag;
 	}
