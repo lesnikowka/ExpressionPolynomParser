@@ -71,7 +71,6 @@ namespace ui {
 	private: System::Windows::Forms::TextBox^ textBox2;
 	private: System::Windows::Forms::Label^ label1;
 	private: System::Windows::Forms::Label^ label2;
-	private: System::Windows::Forms::Button^ button2;
 	private: System::Windows::Forms::RichTextBox^ richTextBox1;
 
 	private:
@@ -99,7 +98,6 @@ namespace ui {
 			this->textBox2 = (gcnew System::Windows::Forms::TextBox());
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->label2 = (gcnew System::Windows::Forms::Label());
-			this->button2 = (gcnew System::Windows::Forms::Button());
 			this->button3 = (gcnew System::Windows::Forms::Button());
 			this->richTextBox1 = (gcnew System::Windows::Forms::RichTextBox());
 			this->SuspendLayout();
@@ -123,7 +121,7 @@ namespace ui {
 			this->button1->UseVisualStyleBackColor = true;
 			this->button1->Click += gcnew System::EventHandler(this, &MyForm1::button1_Click);
 
-			this->button3->Location = System::Drawing::Point(424, 44);
+			this->button3->Location = System::Drawing::Point(509, 8);
 			this->button3->Name = L"button1";
 			this->button3->Size = System::Drawing::Size(75, 23);
 			this->button3->TabIndex = 2;
@@ -158,24 +156,14 @@ namespace ui {
 			this->label2->TabIndex = 5;
 			this->label2->Text = L"Полином:";
 			// 
-			// button2
-			// 
-			this->button2->Location = System::Drawing::Point(15, 44);
-			this->button2->Name = L"button2";
-			this->button2->Size = System::Drawing::Size(394, 23);
-			this->button2->TabIndex = 6;
-			this->button2->Text = L"Вывести все полиномы:";
-			this->button2->UseVisualStyleBackColor = true;
-			this->button2->Click += gcnew System::EventHandler(this, &MyForm1::button2_Click);
-			// 
 			// richTextBox1
 			// 
 			this->richTextBox1->BackColor = System::Drawing::SystemColors::Window;
 			this->richTextBox1->BorderStyle = System::Windows::Forms::BorderStyle::None;
-			this->richTextBox1->Location = System::Drawing::Point(15, 83);
+			this->richTextBox1->Location = System::Drawing::Point(15, 40);
 			this->richTextBox1->Name = L"richTextBox1";
 			this->richTextBox1->ReadOnly = true;
-			this->richTextBox1->Size = System::Drawing::Size(480, 236);
+			this->richTextBox1->Size = System::Drawing::Size(565, 276);
 			this->richTextBox1->TabIndex = 7;
 			this->richTextBox1->Text = L"";
 			// 
@@ -183,9 +171,8 @@ namespace ui {
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(507, 331);
+			this->ClientSize = System::Drawing::Size(592, 331);
 			this->Controls->Add(this->richTextBox1);
-			this->Controls->Add(this->button2);
 			this->Controls->Add(this->label2);
 			this->Controls->Add(this->label1);
 			this->Controls->Add(this->textBox2);
@@ -212,23 +199,23 @@ namespace ui {
 	}
 	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
 		addPolynom();
-	}
-	private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) {
 		printPolynoms();
 	}
 
-
 private: System::Void button3_Click(System::Object^ sender, System::EventArgs^ e) {
 	deletePolynom();
+	printPolynoms();
 }
 private: System::Void textBox2_KeyPress(System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e) {
 	if (e->KeyChar == '\r') {
 		addPolynom();
+		printPolynoms();
 	}
 }
 private: System::Void textBox1_KeyPress(System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e) {
 	if (e->KeyChar == '\r') {
 		addPolynom();
+		printPolynoms();
 	}
 }
 };
