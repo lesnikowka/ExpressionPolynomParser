@@ -7,7 +7,6 @@
 #include <iostream>
 
 class Polynom {
-
 	std::list<Monom> monoms;
 	
 
@@ -22,10 +21,10 @@ class Polynom {
 	public:
 		bool operator()(const Monom& m1, const Monom& m2)  const noexcept {
 			for (size_t i = 0; i < m1.degree.size(); i++) {
-				if (m1.degree[i] < m2.degree[i])
+				if (m1.degree[i] > m2.degree[i])
 					return true;
 	
-				else if (m1.degree[i] > m2.degree[i])
+				else if (m1.degree[i] < m2.degree[i])
 					return false;
 			}
 	
@@ -60,7 +59,7 @@ class Polynom {
 		
 		if (monoms.size() >= 2) {
 			auto current = monoms.begin();
-			for (auto next = ++(monoms.begin()); ++next != monoms.end();){
+			for (auto next = (monoms.begin()); ++next != monoms.end();){
 				if ((*current).isSimilar(*next)) {
 					*next += *current;
 					if ((*next).getCoef() == 0) {
@@ -72,8 +71,6 @@ class Polynom {
 				else if (current != monoms.end())
 					++current;
 			}
-
-
 		}
 	}
 	void cut(const std::string& str) {
@@ -92,16 +89,14 @@ class Polynom {
 				start = i;
 			}
 			else if (str[i] == using_operators[0]) {
-				m = Monom();
-				m.cut(str.substr(start, i - start));
+				m = Monom(str.substr(start, i - start));
 				if (m.getCoef() != 0) {
 					monoms.push_back(m);
 				}
 				start = i + 1;
 			}
 			else if (i == str.size()) {
-				m = Monom();
-				m.cut(str.substr(start, i - start));
+				m = Monom(str.substr(start, i - start));
 				if (m.getCoef() != 0) {
 					monoms.push_back(m);
 				}
@@ -120,6 +115,7 @@ public:
 	Polynom(const Monom& m) {
 		monoms.push_back(m);
 	}
+
 	Polynom& operator=(const Polynom& m) { 
 		monoms = m.monoms; 
 		return *this;
@@ -167,6 +163,9 @@ public:
 			}
 			++p_it;
 		}
+
+		sort();
+
 		return *this; 
 	}
 	Polynom operator+(const Polynom& p) const {
@@ -233,6 +232,7 @@ public:
 		else {
 			monoms.clear();
 		}
+
 		return *this;
 	}
 	Polynom operator*(const Monom& m) const {
@@ -241,6 +241,7 @@ public:
 			result = *this;
 			result *= m;
 		}
+		
 		return result;
 	}
 
@@ -262,23 +263,27 @@ public:
 		return result;
 	}
 
-	std::pair<Polynom, Polynom> operator/(const Polynom& p) { 
-		Polynom remainder = *this, quotient, divider = p;
+	std::pair<Polynom, Polynom> operator/(Polynom p) { 
+
+		Polynom remainder = *this, quotient;
 		Monom div;
 
-		for (Monom dl : divider.monoms) {
-			auto de = remainder.monoms.begin();
-			while(de != remainder.monoms.end()){
-				if (isDivider(*de, dl)) {
-					div = getDivider(*de, dl);
-					quotient += div;
-					remainder -= divider * div;
-					de = remainder.monoms.begin();
-				}
-				else 
-					++de;
+		Monom dl = *(p.monoms.begin());
+
+
+		auto de = remainder.monoms.begin();
+		while(de != remainder.monoms.end()){
+			if (isDivider(*de, dl)) {
+				div = getDivider(*de, dl);
+				quotient += div;
+				Polynom tmp = p * div;
+				remainder -= tmp;
+				de = remainder.monoms.begin();
 			}
+			else 
+				++de;
 		}
+		
 		return { quotient, remainder }; 
 	}
 	
@@ -315,22 +320,33 @@ public:
 		return !operator==(p);
 	}
 
+	std::string str() const {
+		bool begin = true;
+		std::string result;
+
+		for (auto& e : monoms) {
+			if (e.getCoef() > 0 && !begin)
+				result += "+";
+			begin = false;
+
+			result += e.str();
+		}
+
+		if (result.size() == 0) result += "0";
+
+		return result;
+	}
+
 	friend std::istream& operator>>(std::istream& istream, Polynom& p) {
 		p.monoms.clear();
 		std::string str;
 		istream >> str;
 		p.cut(str);
+
 		return istream;
 	}
 	friend std::ostream& operator<<(std::ostream& ostream, Polynom p) { 
-		bool begin = true;
-		for (auto& e : p.monoms) {
-			if (e.getCoef() > 0 && !begin) 
-				ostream << "+";
-			begin = false;
-
-			ostream << e;
-		}
+		ostream << p.str();
 
 		return ostream;
 	}

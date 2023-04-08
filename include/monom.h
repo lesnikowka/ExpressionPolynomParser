@@ -1,5 +1,4 @@
 #pragma once
-#include"list.h"
 #include<vector>
 #include<string>
 #include<iostream>
@@ -230,9 +229,9 @@ public:
 		degree.resize(using_alphabet.size(), 0);
 		coef = 0;
 		correctness = isCorrect(str);
-		//if (correctness == false) throw "Wrong monom";
 		if (correctness)
 			cut(str);
+		else if(str.size()!=0) throw "Monom is not correct";
 	};
 
 
@@ -354,7 +353,34 @@ public:
 	  bool operator>(const Monom& m)const  noexcept {
 		return (!isSimilar(m) && operator>=(m));
 	};
+
+	  std::string eraseExcessZeroes(const std::string& s) const{
+		  int lenght = s.size();
+		  for (int i = s.size() - 1; i && (s[i] == '0' || s[i] == '.'); i--) lenght--;
+		  return s.substr(0, lenght);
+	  }
 	
+	  std::string str() const{
+		  int tmp = 0;
+		  std::string result;
+		  for (int i = 0; i < degree.size(); i++)
+			  tmp += degree[i];
+		  if (tmp == 0) {
+			  result += eraseExcessZeroes(std::to_string(coef));
+		  }
+		  else {
+			  if (coef == -1) result += "-";
+			  else if (coef != 1) result+= eraseExcessZeroes(std::to_string(coef));
+			  for (int i = 0; i < using_alphabet.size(); i++) {
+				  if (degree[i] != 0) {
+					  result += using_alphabet[i];
+					  if (degree[i] != 1)
+						  result += "^" + std::to_string(degree[i]);
+				  }
+			  }
+		  }
+		  return result;
+	}
 
 	friend std::istream& operator>>(std::istream& istream, Monom& m) {
 		std::string str;
@@ -362,22 +388,8 @@ public:
 		m = Monom(str);
 		return istream;
 	};
-	friend std::ostream& operator<<(std::ostream& ostream, Monom& m) {
-		int tmp=0;
-		for (int i = 0; i < m.degree.size(); i++)
-			tmp += m.degree[i];
-		if ((m.coef * m.coef) != 1 || m.coef == 0||tmp==0)return ostream << m.coef;
-		if (m.coef == -1 && tmp!=0) {
-			ostream << "-";
-		}
-		for (int i = 0; i < m.using_alphabet.size(); i++) {
-			
-			if (m.degree[i] > 1)
-				ostream << m.using_alphabet[i] << "^" << m.degree[i];
-			else if (m.degree[i] == 1)
-				ostream << m.using_alphabet[i];
-		}
-		
+	friend std::ostream& operator<<(std::ostream& ostream, const Monom& m) {
+		ostream << m.str();
 		return ostream;
 	};
 
