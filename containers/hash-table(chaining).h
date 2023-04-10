@@ -2,6 +2,8 @@
 #include<vector>
 #include<list>
 #include<string>
+#include<ctime>
+#include<cmath>
 
 
 template<typename T, typename D>
