@@ -17,20 +17,19 @@ project(ui CXX)
 # Note: The designable form is assumed to have a .resx file with the same name and path (save extension) as is default in Visual Studio
 
 set(TARGET_H
-  MyForm.h
-  MyForm1.h
-  #WindowsFormsResx/Header.h
+  MainWindow.h
+  TestingPolynoms.h
   )
 
 set(TARGET_SRC
-  MyForm.cpp
+  MainWindow.cpp
   utilities.cpp
-  #WindowsFormsResx/Source.cpp
   )
 set_source_files_properties(${TARGET_SRC} PROPERTIES COMPILE_FLAGS "/clr")
 
 set(TARGET_RESX
-  MyForm.resx
+  MainWindow.resx
+  TestingPolynoms.resx
   )
 
 set(TARGET_LIBRARIES ${SYSLIBS})

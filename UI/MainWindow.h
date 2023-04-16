@@ -1,5 +1,5 @@
 #pragma once
-#include "MyForm1.h"
+#include "TestingPolynoms.h"
 
 
 namespace ui {
@@ -18,12 +18,12 @@ namespace ui {
 	std::string pointsToCommas(std::string& s);
 
 	/// <summary>
-	/// Summary for MyForm
+	/// Summary for MainWindow
 	/// </summary>
-	public ref class MyForm : public System::Windows::Forms::Form
+	public ref class MainWindow : public System::Windows::Forms::Form
 	{
 	public:
-		MyForm(void)
+		MainWindow(void)
 		{
 			InitializeComponent();
 			//
@@ -35,7 +35,7 @@ namespace ui {
 		/// <summary>
 		/// Clean up any resources being used.
 		/// </summary>
-		~MyForm()
+		~MainWindow()
 		{
 			if (components)
 			{
@@ -59,7 +59,7 @@ namespace ui {
 	private: System::String^ usedContainerName = L"Òèï êîíòåéíåðà";
 	private: int numberOfSelectedContainer = 0;
 
-	private: MyForm1^ form1;
+	private: TestingPolynoms^ form1;
 	private: System::Windows::Forms::TextBox^ textBox1;
 	private: System::Windows::Forms::TextBox^ textBox2;
 	private: System::Windows::Forms::TextBox^ textBox3;
@@ -108,7 +108,7 @@ namespace ui {
 			this->exOrderedTable = new Expression<OrderedTable<std::string, Polynom>>;
 			this->exUnorderedTable = new Expression<UnorderedTable<std::string, Polynom>>;
 
-			this->form1 = gcnew MyForm1;
+			this->form1 = gcnew TestingPolynoms;
 			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
 			this->textBox2 = (gcnew System::Windows::Forms::TextBox());
 			this->textBox3 = (gcnew System::Windows::Forms::TextBox());
@@ -140,7 +140,7 @@ namespace ui {
 			this->textBox1->Name = L"textBox1";
 			this->textBox1->Size = System::Drawing::Size(293, 20);
 			this->textBox1->TabIndex = 0;
-			this->textBox1->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &MyForm::textBox1_KeyPress);
+			this->textBox1->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &MainWindow::textBox1_KeyPress);
 			// 
 			// textBox2  X
 			// 
@@ -149,7 +149,7 @@ namespace ui {
 			this->textBox2->Size = System::Drawing::Size(40, 20);
 			this->textBox2->TabIndex = 2;
 			this->textBox2->Text = "1";
-			this->textBox2->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &MyForm::textBox2_KeyPress);
+			this->textBox2->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &MainWindow::textBox2_KeyPress);
 			// 
 			// textBox3  Y
 			// 
@@ -158,7 +158,7 @@ namespace ui {
 			this->textBox3->Size = System::Drawing::Size(40, 20);
 			this->textBox3->Text = "1";
 			this->textBox3->TabIndex = 3;
-			this->textBox3->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &MyForm::textBox3_KeyPress);
+			this->textBox3->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &MainWindow::textBox3_KeyPress);
 			// 
 			// textBox4  Z
 			// 
@@ -167,7 +167,7 @@ namespace ui {
 			this->textBox4->Size = System::Drawing::Size(40, 20);
 			this->textBox4->Text = "1";
 			this->textBox4->TabIndex = 4;
-			this->textBox4->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &MyForm::textBox4_KeyPress);
+			this->textBox4->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &MainWindow::textBox4_KeyPress);
 			// 
 			// textBox5
 			// 
@@ -253,7 +253,7 @@ namespace ui {
 			this->button2->TabIndex = 8;
 			this->button2->Text = L"Î÷èñòèòü";
 			this->button2->UseVisualStyleBackColor = true;
-			this->button2->Click += gcnew System::EventHandler(this, &MyForm::button2_Click);
+			this->button2->Click += gcnew System::EventHandler(this, &MainWindow::button2_Click);
 			// 
 			// menuStrip1
 			// 
@@ -286,51 +286,51 @@ namespace ui {
 			this->dToolStripMenuItem->Name = L"dToolStripMenuItem";
 			this->dToolStripMenuItem->Size = System::Drawing::Size(222, 22);
 			this->dToolStripMenuItem->Text = L"AVL äåðåâî";
-			this->dToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::dToolStripMenuItem_Click);
+			this->dToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainWindow::dToolStripMenuItem_Click);
 			// 
 			// dToolStripMenuItem1
 			// 
 			this->dToolStripMenuItem1->Name = L"dToolStripMenuItem1";
 			this->dToolStripMenuItem1->Size = System::Drawing::Size(222, 22);
 			this->dToolStripMenuItem1->Text = L"R-B äåðåâî";
-			this->dToolStripMenuItem1->Click += gcnew System::EventHandler(this, &MyForm::dToolStripMenuItem1_Click);
+			this->dToolStripMenuItem1->Click += gcnew System::EventHandler(this, &MainWindow::dToolStripMenuItem1_Click);
 			// 
 			// óïîðÿäî÷åííàÿÒàáëèöàToolStripMenuItem
 			// 
 			this->óïîðÿäî÷åííàÿÒàáëèöàToolStripMenuItem->Name = L"óïîðÿäî÷åííàÿÒàáëèöàToolStripMenuItem";
 			this->óïîðÿäî÷åííàÿÒàáëèöàToolStripMenuItem->Size = System::Drawing::Size(222, 22);
 			this->óïîðÿäî÷åííàÿÒàáëèöàToolStripMenuItem->Text = L"Óïîðÿäî÷åííàÿ òàáëèöà";
-			this->óïîðÿäî÷åííàÿÒàáëèöàToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::óïîðÿäî÷åííàÿÒàáëèöàToolStripMenuItem_Click);
+			this->óïîðÿäî÷åííàÿÒàáëèöàToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainWindow::óïîðÿäî÷åííàÿÒàáëèöàToolStripMenuItem_Click);
 			// 
 			// íåóïîðÿäî÷åííàÿÒàáëèöàToolStripMenuItem
 			// 
 			this->íåóïîðÿäî÷åííàÿÒàáëèöàToolStripMenuItem->Name = L"íåóïîðÿäî÷åííàÿÒàáëèöàToolStripMenuItem";
 			this->íåóïîðÿäî÷åííàÿÒàáëèöàToolStripMenuItem->Size = System::Drawing::Size(222, 22);
 			this->íåóïîðÿäî÷åííàÿÒàáëèöàToolStripMenuItem->Text = L"Íåóïîðÿäî÷åííàÿ òàáëèöà";
-			this->íåóïîðÿäî÷åííàÿÒàáëèöàToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::íåóïîðÿäî÷åííàÿÒàáëèöàToolStripMenuItem_Click);
+			this->íåóïîðÿäî÷åííàÿÒàáëèöàToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainWindow::íåóïîðÿäî÷åííàÿÒàáëèöàToolStripMenuItem_Click);
 			// 
 			// õåøòàáëèöàìåòîäÖåïî÷åêToolStripMenuItem
 			// 
 			this->õåøòàáëèöàìåòîäÖåïî÷åêToolStripMenuItem->Name = L"õåøòàáëèöàìåòîäÖåïî÷åêToolStripMenuItem";
 			this->õåøòàáëèöàìåòîäÖåïî÷åêToolStripMenuItem->Size = System::Drawing::Size(222, 22);
 			this->õåøòàáëèöàìåòîäÖåïî÷åêToolStripMenuItem->Text = L"Õåø-òàáëèöà CHAIN";
-			this->õåøòàáëèöàìåòîäÖåïî÷åêToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::õåøòàáëèöàìåòîäÖåïî÷åêToolStripMenuItem_Click);
+			this->õåøòàáëèöàìåòîäÖåïî÷åêToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainWindow::õåøòàáëèöàìåòîäÖåïî÷åêToolStripMenuItem_Click);
 			// 
 			// õåøòàáëèöàìåòîäÎòêðûòîéÀäðåñàöèèToolStripMenuItem
 			// 
 			this->õåøòàáëèöàìåòîäÎòêðûòîéÀäðåñàöèèToolStripMenuItem->Name = L"õåøòàáëèöàìåòîäÎòêðûòîéÀäðåñàöèèToolStripMenuItem";
 			this->õåøòàáëèöàìåòîäÎòêðûòîéÀäðåñàöèèToolStripMenuItem->Size = System::Drawing::Size(222, 22);
 			this->õåøòàáëèöàìåòîäÎòêðûòîéÀäðåñàöèèToolStripMenuItem->Text = L"Õåø-òàáëèöà OA";
-			this->õåøòàáëèöàìåòîäÎòêðûòîéÀäðåñàöèèToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::õåøòàáëèöàìåòîäÎòêðûòîéÀäðåñàöèèToolStripMenuItem_Click);
+			this->õåøòàáëèöàìåòîäÎòêðûòîéÀäðåñàöèèToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainWindow::õåøòàáëèöàìåòîäÎòêðûòîéÀäðåñàöèèToolStripMenuItem_Click);
 			// 
 			// òåñòèðîâàíèåÊîíòåéíåðîâToolStripMenuItem
 			// 
 			this->òåñòèðîâàíèåÊîíòåéíåðîâToolStripMenuItem->Name = L"òåñòèðîâàíèåÊîíòåéíåðîâToolStripMenuItem";
 			this->òåñòèðîâàíèåÊîíòåéíåðîâToolStripMenuItem->Size = System::Drawing::Size(170, 20);
 			this->òåñòèðîâàíèåÊîíòåéíåðîâToolStripMenuItem->Text = L"Òåñòèðîâàíèå êîíòåéíåðîâ";
-			this->òåñòèðîâàíèåÊîíòåéíåðîâToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::òåñòèðîâàíèåÊîíòåéíåðîâToolStripMenuItem_Click);
+			this->òåñòèðîâàíèåÊîíòåéíåðîâToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainWindow::òåñòèðîâàíèåÊîíòåéíåðîâToolStripMenuItem_Click);
 			// 
-			// MyForm
+			// MainWindow
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
@@ -352,7 +352,7 @@ namespace ui {
 			this->Controls->Add(this->menuStrip1);
 			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedSingle;
 			this->MainMenuStrip = this->menuStrip1;
-			this->Name = L"MyForm";
+			this->Name = L"MainWindow";
 			this->Text = L"Polynomial Ñalculation";
 			this->menuStrip1->ResumeLayout(false);
 			this->menuStrip1->PerformLayout();
@@ -363,11 +363,11 @@ namespace ui {
 	
 private: System::Void printResult();
 private: System::Void reset();
-System::Void MyForm::addExpression();
+System::Void MainWindow::addExpression();
 
 private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) { reset(); }
 
-private: System::Void òåñòèðîâàíèåÊîíòåéíåðîâToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) { (gcnew MyForm1)->Show(); }
+private: System::Void òåñòèðîâàíèåÊîíòåéíåðîâToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) { (gcnew TestingPolynoms)->Show(); }
 private: System::Void õåøòàáëèöàìåòîäÎòêðûòîéÀäðåñàöèèToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
 	this->usedContainerName = L"Õåø-òàáëèöà OA";
 	this->numberOfSelectedContainer = 5;

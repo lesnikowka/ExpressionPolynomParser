@@ -1,5 +1,5 @@
-#include "MyForm.h"
-#include "MyForm1.h"
+#include "MainWindow.h"
+#include "TestingPolynoms.h"
 
 namespace ui {
 
@@ -34,7 +34,7 @@ namespace ui {
 		return result;
 	}
 
-	System::Void MyForm1::addPolynom() {
+	System::Void TestingPolynoms::addPolynom() {
 		std::string name = toString(this->textBox1->Text);
 		std::string polynom = toString(this->textBox2->Text);
 
@@ -59,7 +59,7 @@ namespace ui {
 		}
 }
 
-	System::Void MyForm1:: printPolynoms() {
+	System::Void TestingPolynoms:: printPolynoms() {
 	this->richTextBox1->Text = "";
 
 	this->richTextBox1->Text += "\r\nНеупорядоченная таблица:\r\n";
@@ -88,7 +88,7 @@ namespace ui {
 	}
 }
 
-System::Void MyForm1::deletePolynom() {
+System::Void TestingPolynoms::deletePolynom() {
 	this->textBox2->Text = "";
 
 
@@ -110,7 +110,7 @@ System::Void MyForm1::deletePolynom() {
 	}
 }
 
-System::Void MyForm::printResult() {
+System::Void MainWindow::printResult() {
 	std::vector<double> xyz(3);
 
 	try {
@@ -149,7 +149,7 @@ System::Void MyForm::printResult() {
 		break;
 	}
 }
-System::Void MyForm::reset() {
+System::Void MainWindow::reset() {
 		Expression<AVLTree<std::string, Polynom>>* newExAvlTree = new Expression<AVLTree<std::string, Polynom>>;
 		Expression<RBTree<std::string, Polynom>>* newExRbTree = new Expression<RBTree<std::string, Polynom>>;
 		Expression<HashTableC<std::string, Polynom>>* newExHashTableC = new Expression<HashTableC<std::string, Polynom>>;
@@ -169,7 +169,7 @@ System::Void MyForm::reset() {
 		this->label5->Text = "Подстановка: ";
 	}
 
-System::Void MyForm::addExpression() {
+System::Void MainWindow::addExpression() {
 	std::string tmp = commasToPoints(toString(this->textBox1->Text));
 	try {
 		this->exAvlTree->addExp(tmp);

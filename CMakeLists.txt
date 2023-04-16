@@ -32,7 +32,6 @@ include_directories(UI)
 
 add_subdirectory(containers)
 add_subdirectory(expressions)
-add_subdirectory(list)
 add_subdirectory(samples)
 
 add_subdirectory(include)
@@ -40,7 +39,6 @@ add_subdirectory(include)
 include_directories(containers)
 
 include_directories(expressions)
-include_directories(list)
 include_directories(samples)
 
 include_directories(include)
