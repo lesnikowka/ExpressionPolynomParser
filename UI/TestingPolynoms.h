@@ -25,12 +25,12 @@ namespace ui {
 	System::String^ toSystemString(std::string s);
 
 	/// <summary>
-	/// Сводка для MyForm1
+	/// Сводка для TestingPolynoms
 	/// </summary>
-	public ref class MyForm1 : public System::Windows::Forms::Form
+	public ref class TestingPolynoms : public System::Windows::Forms::Form
 	{
 	public:
-		MyForm1(void)
+		TestingPolynoms(void)
 		{
 			InitializeComponent();
 			//
@@ -42,7 +42,7 @@ namespace ui {
 		/// <summary>
 		/// Освободить все используемые ресурсы.
 		/// </summary>
-		~MyForm1()
+		~TestingPolynoms()
 		{
 			if (components)
 			{
@@ -109,7 +109,7 @@ namespace ui {
 			this->textBox1->Size = System::Drawing::Size(118, 20);
 			this->textBox1->TabIndex = 0;
 			this->textBox1->Text = "";
-			this->textBox1->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &MyForm1::textBox1_KeyPress);
+			this->textBox1->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &TestingPolynoms::textBox1_KeyPress);
 			// 
 			// button1
 			// 
@@ -119,7 +119,7 @@ namespace ui {
 			this->button1->TabIndex = 2;
 			this->button1->Text = L"Добавить";
 			this->button1->UseVisualStyleBackColor = true;
-			this->button1->Click += gcnew System::EventHandler(this, &MyForm1::button1_Click);
+			this->button1->Click += gcnew System::EventHandler(this, &TestingPolynoms::button1_Click);
 
 			this->button3->Location = System::Drawing::Point(509, 8);
 			this->button3->Name = L"button1";
@@ -127,7 +127,7 @@ namespace ui {
 			this->button3->TabIndex = 2;
 			this->button3->Text = L"Удалить";
 			this->button3->UseVisualStyleBackColor = true;
-			this->button3->Click += gcnew System::EventHandler(this, &MyForm1::button3_Click);
+			this->button3->Click += gcnew System::EventHandler(this, &TestingPolynoms::button3_Click);
 			// 
 			// textBox2 POLYNOM
 			// 
@@ -136,7 +136,7 @@ namespace ui {
 			this->textBox2->Size = System::Drawing::Size(169, 20);
 			this->textBox2->TabIndex = 3;
 			this->textBox2->Text = "";
-			this->textBox2->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &MyForm1::textBox2_KeyPress);
+			this->textBox2->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &TestingPolynoms::textBox2_KeyPress);
 			// 
 			// label1
 			// 
@@ -167,7 +167,7 @@ namespace ui {
 			this->richTextBox1->TabIndex = 7;
 			this->richTextBox1->Text = L"";
 			// 
-			// MyForm1
+			// TestingPolynoms
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
@@ -182,7 +182,7 @@ namespace ui {
 			this->Name = L"Тестирование контейнеров";
 			this->Text = L"Тестирование контейнеров";
 			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedSingle;
-			this->Load += gcnew System::EventHandler(this, &MyForm1::MyForm1_Load);
+			this->Load += gcnew System::EventHandler(this, &TestingPolynoms::TestingPolynoms_Load);
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -195,7 +195,7 @@ namespace ui {
 
 	private: System::Void deletePolynom();
 
-	private: System::Void MyForm1_Load(System::Object^ sender, System::EventArgs^ e) {
+	private: System::Void TestingPolynoms_Load(System::Object^ sender, System::EventArgs^ e) {
 	}
 	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
 		addPolynom();
