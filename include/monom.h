@@ -41,7 +41,7 @@ class Monom {
 
 	}
 
-	bool in(char symb, std::string alph) {
+	bool in(char symb, std::string alph){
 		for (int i = 0; i < alph.size(); i++) {
 			if (symb == alph[i]) return true;
 		}
@@ -356,6 +356,8 @@ public:
 
 	  std::string eraseExcessZeroes(const std::string& s) const{
 		  int lenght = s.size();
+		  for (int i = 0; i < using_separator.size(); i++)
+			  if (std::find(s.begin(),s.end(),using_separator[i])==s.end()) return s;
 		  for (int i = s.size() - 1; i && (s[i] == '0' || s[i] == '.'); i--) lenght--;
 		  return s.substr(0, lenght);
 	  }

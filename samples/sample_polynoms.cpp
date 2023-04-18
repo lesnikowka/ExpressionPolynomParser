@@ -8,16 +8,30 @@
 #include"hash-table(open-adressing).h"
 #include"AVL-tree.h"
 
-#include<ctime>
-//x^3+3x^2z+3z^2x+z^3
-//x^2+2xz+z^2
-
 int main()
 {
-	RBTree<int, int> t;
-	t.emplace(1, 1);
-	t.emplace(2, 2);
-	std::cout << t;
+	RBTree<int, int> t1,t2,t3;
+	std::vector<int> v1={7, 5, 10, 2, 8, 6, 11, 1},
+	v2={ 9,8,7,6,5,4,3,2,1,0 },
+		v3= { 12,10,15,8,13 };
+	for (auto it : v1)t1.emplace(it, it);
+	for (auto it : v2)t2.emplace(it, it);
+	for (auto it : v3)t3.emplace(it, it);
+
+	std::cout << t3<<'\n';
+
+	for (int i = 0; i < v3.size(); i++) {
+		std::cout << "deleted:" << v3[i]<<'\n';
+		t3.erase(v3[i]);
+		std::cout << t3<<'\n';
+	}
+	//for (int i = 0; i < v2.size() / 2; i++) {
+	//	t2.erase(v2[i]);
+	//}
+
+	//std::cout << t1;
+	//std::cout << t2.property_ALL(t2.begin());
+
 	/*
 	RBTree<int, int> t;
 	std::vector<int> v;

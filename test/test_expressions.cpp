@@ -77,5 +77,3 @@ TYPED_TEST(Expression_Typed, exception_when_polynoms_cant_be_divided) {
 	a.addExp("tmp2=xyz^2");
 	ASSERT_ANY_THROW(a.addExp("tmp1/tmp2"));
 }
-
-
