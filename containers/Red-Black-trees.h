@@ -411,6 +411,9 @@ class RBTree {
 		}
 		return ostream;
 	}
+	Node* Nfind(T first) {
+		return pfind(first,root);
+	}
 public:
 	class iterator {
 		std::stack<Node*> history;
@@ -422,8 +425,10 @@ public:
 				history.push(node);
 			finish = false;
 		}
-		Node& operator*() {
+		Node operator*() {
 			if (history.empty())throw "iterator points to the end";
+			Node* tmp = history.top();
+
 			return *(history.top());
 		}
 		iterator& operator=(const iterator& it) {
@@ -456,8 +461,9 @@ public:
 					parent = top->parent;
 					history.pop();
 
-				} while (top->right->is_fict);
-				history.push(top->right);
+				} while (parent&&top->right->is_fict);
+				if (top->right->is_fict) { finish = true; history.pop(); }
+				else history.push(top->right);
 			}
 			else {
 				history.pop();
@@ -547,7 +553,7 @@ public:
 	void erase(T first) {
 		perase(first, root);
 	}
-
+	
 	iterator find(T first) {
 		return iterator(pfind(first, root));
 	}
@@ -565,15 +571,16 @@ public:
 
 	}
 	D& operator[](const T& first) {
-		iterator it = find(first);
-		if (it == end())
+		Node* t = Nfind(first);
+		if (t == nullptr)
 			emplace(first, D());
-		return (*find(first)).second;
+		return Nfind(first)->second;
 	}
 	D& operator[](T&& first) {
-		Node* it = find(first);
-		if (it == nullptr)emplace(first, D());
-		return (*find(first)).second;
+		Node* t = Nfind(first);
+		if (t == nullptr)emplace(first, D());
+		else return t->second;
+		return Nfind(first)->second;
 	}
 
 

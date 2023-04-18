@@ -14,8 +14,30 @@
 
 int main()
 {
+	RBTree<int, int> t;
+	t.emplace(1, 1);
+	t.emplace(2, 2);
+	std::cout << t;
+	/*
+	RBTree<int, int> t;
+	std::vector<int> v;
+	int size = 10;
+	for (int i = 0; i < size; i++) {
+		t.emplace(i, i);
+	}
+	std::cout << t <<"\n";
+	bool flag = false;
+	for (int i = size-1; i >=0; i--) {
 
+		t.erase(i);
+		std::cout << "Deleted:" << i << '\n';
+		std::cout << "Propertys:" << ((t.property_ALL(t.begin())) ? "execut" : "non-execute") << '\n';
+		//std::cout << t<<"\n\n";
+
+	}
+	*/
 	
+	/*
 	RBTree<int,int> t,t2;
 	std::vector<int> v = {7,5,10,2,8,6,11,1};
 
@@ -26,12 +48,12 @@ int main()
 	
 
 	for (auto i:v) {
-		if (i == 5)
-		i=5;
+		if (i == 6)
+		i=6;
 		t.erase(i);
 		std::cout << "Deleted:" << i << "\n" << "Propertys:" << t.property_ALL(t.begin()) << "\n\n";
 		std::cout << t<<"\n\n";
 	}
-	
+	*/
 	return 0;
 }

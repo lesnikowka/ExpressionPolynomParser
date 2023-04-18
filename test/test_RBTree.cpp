@@ -109,7 +109,7 @@ public:
 	};
 	size_t size;
 	F_RBTree() {
-		size = 6;
+		size = vk.size();
 		t.resize(size);
 	}
 	void fullEmplace(int index) {
@@ -153,8 +153,15 @@ TEST_P(F_RBTree, properties_after_few_erase_is_executed) {
 	}
 
 }
+TEST_P(F_RBTree, iterator_work_without_cycles) {
+	int index = GetParam(),i=0;
+	fullEmplace(index);
+	for (auto it : t[index]) i++;
+	EXPECT_EQ(i,t[index].size());
+}
+
 INSTANTIATE_TEST_CASE_P(
-	Test_properties,
+	Test_properties_and_other,
 	F_RBTree,
 	::testing::Values(
 		0,1,2,3,4,5

@@ -364,9 +364,15 @@ class Expression {
 				token1 += str[i];
 			else token2 += str[i];
 		}
+		if (!flag && token2.size() == 0)throw std::exception("Expression is not correct");
 
 		if (token2.size() != 0) {
-			if (in(token2, variables_list)) {
+			if (in(token1, alph_constants))throw std::exception("Can't change value of constant");
+
+			if (in(token2, alph_constants)) {
+				operands[token1] = constants[token2];
+			}
+			else if (in(token2, variables_list)) {
 				operands[token1] = operands[token2];
 			}
 			else {

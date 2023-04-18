@@ -164,8 +164,6 @@ public:
 			++p_it;
 		}
 
-		sort();
-
 		return *this; 
 	}
 	Polynom operator+(const Polynom& p) const {
