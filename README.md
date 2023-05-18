@@ -1,3 +1,10 @@
+![winforms1](https://github.com/lesnikowka/ExpressionPolynomParser/assets/92714965/4262ce98-93ea-45df-9bc7-eda8bcf9baa1)
+![winforms2](https://github.com/lesnikowka/ExpressionPolynomParser/assets/92714965/a800b71f-6291-4a2c-bc25-43dfdf1308b8)
+![winforms3](https://github.com/lesnikowka/ExpressionPolynomParser/assets/92714965/89143935-da81-4b85-b825-670424e8e873)
+![winforms4](https://github.com/lesnikowka/ExpressionPolynomParser/assets/92714965/4575dd27-d6c7-46d6-bdc9-ee848f8ec37e)
+
+
+
 ТЗ:
 ===
 - реализовать класс Monom
